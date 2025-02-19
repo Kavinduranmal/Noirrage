@@ -45,7 +45,7 @@ const OrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("http://13.60.91.24:5000/api/products");
+      const { data } = await axios.get("http://13.50.4.1:5000api/products");
       const selected = data.find((p) => p._id === productId);
       setSelectedProduct(selected);
       setAvailableColors(selected.colors || []);
@@ -78,7 +78,7 @@ const OrderForm = () => {
     };
 
     try {
-      await axios.post("{process.env.REACT_APP_API_ENDPOINT}/api/orders", orderData, {
+      await axios.post("http://13.50.4.1:5000/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order Placed Successfully!");

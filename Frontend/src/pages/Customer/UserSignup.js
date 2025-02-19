@@ -42,7 +42,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "{process.env.REACT_APP_API_ENDPOINT}/api/auth/user/register",
+        "http://13.50.4.1:5000/api/auth/user/register",
         formData
       );
       toast.success("Signup successful! ");

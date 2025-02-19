@@ -34,7 +34,7 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("{process.env.REACT_APP_API_ENDPOINT}/api/products/");
+      const response = await axios.get("http://13.50.4.1:5000api/products/");
       setProducts(response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products");
@@ -55,7 +55,7 @@ const ProductList = () => {
 
     try {
       await axios.post(
-        "{process.env.REACT_APP_API_ENDPOINT}/api/cart/add",
+        "http://13.50.4.1:5000/api/cart/add",
         { productId, qty: quantity, size, color }, // Use productId
         { headers: { Authorization: `Bearer ${token}` } }
       );

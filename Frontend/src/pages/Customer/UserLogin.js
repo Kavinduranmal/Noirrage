@@ -38,7 +38,7 @@ const UserLogin = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "{process.env.REACT_APP_API_ENDPOINT}/api/auth/user/login",
+        "http://13.50.4.1:5000/api/auth/user/login",
         admin
       );
 
@@ -52,7 +52,7 @@ const UserLogin = () => {
       toast.success("LogIn Successfully..");
       navigate("/"); // Redirect to orders page
     } catch (error) {
-      toast.info(error.response?.data?.message || "Login Failed");
+      toast.error(error.response?.data?.message || "Login Failed");
     }
   };
 
