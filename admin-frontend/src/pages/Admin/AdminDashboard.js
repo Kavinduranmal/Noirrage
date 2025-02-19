@@ -67,7 +67,7 @@ const AdminDashboard = () => {
     }
     try {
       const { data } = await axios.get(
-        "http://13.60.91.24:5000/api/orders/all",
+        "http://13.50.4.1:5000/api/orders/all",
         {}
       );
       setOrders(data);
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
     }
     try {
       const response = await axios.put(
-        `http://13.60.91.24:5000/api/orders/${orderId}/ship`,
+        `http://13.50.4.1:5000/api/orders/${orderId}/ship`,
         {},
         {
           headers: {

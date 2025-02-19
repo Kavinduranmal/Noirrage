@@ -95,7 +95,7 @@ const AddProduct = () => {
 
     try {
       const response = await axios.post(
-        "http://13.60.91.24:5000/api/products/add",
+        "http://13.50.4.1:5000/api/products/add",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

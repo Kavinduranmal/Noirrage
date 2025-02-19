@@ -36,7 +36,7 @@ const ProductList = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://13.60.91.24:5000/api/products");
+      const response = await axios.get("http://13.50.4.1:5000/api/products");
       setProducts(response.data); // The response should contain the inStock status now
     } catch (error) {
       toast.error("Error fetching products");
@@ -47,7 +47,7 @@ const ProductList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://13.60.91.24:5000/api/products/${id}`);
+      await axios.delete(`http://13.50.4.1:5000/api/products/${id}`);
       toast.success("Product deleted successfully");
       fetchProducts();
     } catch {
@@ -65,7 +65,7 @@ const ProductList = () => {
       );
   
       await axios.put(
-        `http://51.20.106.224:5000/api/products/${id}/out-of-stock`,
+        `http://13.50.4.1:5000/api/products/${id}/out-of-stock`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -89,7 +89,7 @@ const ProductList = () => {
       );
   
       await axios.put(
-        `http://51.20.106.224:5000/api/products/${id}/restored`,
+        `http://13.50.4.1:5000/api/products/${id}/restored`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
