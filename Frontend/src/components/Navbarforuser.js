@@ -44,6 +44,7 @@ const Navbar = ({ showNavBar }) => {
     { path: "/ContactUs", label: "Contact US" },
   ];
 
+  
   return (
     <Box
       sx={{
