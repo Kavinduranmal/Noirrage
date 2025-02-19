@@ -377,7 +377,7 @@ const AdminDashboard = () => {
                           <CardMedia
                             component="img"
                             height="100"
-                            image={`http://localhost:5000${
+                            image={`http://13.50.4.1:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
                               ]
@@ -523,7 +523,7 @@ const AdminDashboard = () => {
                           <CardMedia
                             component="img"
                             height="100"
-                            image={`http://localhost:5000${
+                            image={`http://13.50.4.1:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
                               ]
