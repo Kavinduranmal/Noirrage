@@ -30,7 +30,7 @@ const Profile = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http://13.60.91.24:5000/api/orders/byid",
+          "{process.env.REACT_APP_API_ENDPOINT}/api/orders/byid",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);
@@ -72,7 +72,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.delete(
-        `http://13.60.91.24:5000/api/orders/${orderId}/deleted`,
+        `{process.env.REACT_APP_API_ENDPOINT}/api/orders/${orderId}/deleted`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Order deleted successfully!");

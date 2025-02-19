@@ -39,7 +39,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(
-          "http://13.60.91.24:5000/api/auth/profileview",
+          "{process.env.REACT_APP_API_ENDPOINT}/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(data);
@@ -74,7 +74,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.put(
-        "http://13.60.91.24:5000/api/auth/profiledit",
+        "{process.env.REACT_APP_API_ENDPOINT}/api/auth/profiledit",
         { name, email },
         { headers: { Authorization: `Bearer ${token}` } }
       );

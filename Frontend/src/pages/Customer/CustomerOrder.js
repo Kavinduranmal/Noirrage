@@ -78,7 +78,7 @@ const OrderForm = () => {
     };
 
     try {
-      await axios.post("http://13.60.91.24:5000/api/orders", orderData, {
+      await axios.post("{process.env.REACT_APP_API_ENDPOINT}/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order Placed Successfully!");

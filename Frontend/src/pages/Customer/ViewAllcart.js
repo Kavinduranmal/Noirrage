@@ -31,7 +31,7 @@ const Cart = () => {
     const fetchCart = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/cart/view",
+          "{process.env.REACT_APP_API_ENDPOINT}/api/cart/view",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -59,7 +59,7 @@ const Cart = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/cart/remove/${itemId}`, {
+      await axios.delete(`{process.env.REACT_APP_API_ENDPOINT}/api/cart/remove/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -36,13 +36,13 @@ const Profile = () => {
 
     // Create promises for all API requests
     const fetchProfile = axios.get(
-      "http://13.60.91.24:5000/api/auth/profileview",
+      "{process.env.REACT_APP_API_ENDPOINT}/api/auth/profileview",
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    const fetchOrders = axios.get("http://13.60.91.24:5000/api/orders", {
+    const fetchOrders = axios.get("{process.env.REACT_APP_API_ENDPOINT}/api/orders", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    const fetchCart = axios.get("http://13.60.91.24:5000/api/cart", {
+    const fetchCart = axios.get("{process.env.REACT_APP_API_ENDPOINT}/api/cart", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -72,7 +72,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.put(
-        "http://13.60.91.24:5000/api/auth/profiledit",
+        "{process.env.REACT_APP_API_ENDPOINT}/api/auth/profiledit",
         { name, email },
         { headers: { Authorization: `Bearer ${token}` } }
       );
