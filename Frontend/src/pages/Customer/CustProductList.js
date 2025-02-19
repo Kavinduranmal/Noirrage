@@ -34,7 +34,7 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://13.50.4.1:5000api/products/");
+      const response = await axios.get("http://13.50.4.1:5000/api/products/");
       setProducts(response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products");

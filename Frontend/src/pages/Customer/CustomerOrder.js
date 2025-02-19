@@ -45,7 +45,7 @@ const OrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("http://13.50.4.1:5000api/products");
+      const { data } = await axios.get("http://13.50.4.1:5000/api/products");
       const selected = data.find((p) => p._id === productId);
       setSelectedProduct(selected);
       setAvailableColors(selected.colors || []);

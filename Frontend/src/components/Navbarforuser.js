@@ -34,7 +34,8 @@ const Navbar = ({ showNavBar }) => {
   };
 
   const navLinks = [
-    { path: "/", label: "Home" },
+    { path: "/admin/AdminDashboard", label: "admin" },
+    { path: "/home", label: "Home" },
     { path: "/CustProductList", label: "Feed" },
     { path: "/ViewAllcart", label: "My Mycart" },
     { path: "/Myorders", label: "My orders" },
