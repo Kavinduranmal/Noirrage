@@ -154,7 +154,7 @@ const OrderForm = () => {
                 {/* Main Image Preview */}
                 <CardMedia
                   component="img"
-                  image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
+                  image={`http://13.50.4.1:5000${selectedProduct.images[selectedImageIndex]}`}
                   alt={selectedProduct.name}
                   sx={{ borderRadius: "10px", marginBottom: "10px" }}
                 />
@@ -178,7 +178,7 @@ const OrderForm = () => {
                       height: 50,
                       border: "1px solid black",
                       borderRadius: "3px",
-                      backgroundImage: `url(http://localhost:5000${img})`,
+                      backgroundImage: `url(http://13.50.4.1:5000${img})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       border:

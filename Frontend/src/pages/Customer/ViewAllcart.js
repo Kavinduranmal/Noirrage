@@ -154,7 +154,7 @@ const Cart = () => {
                         <CardMedia
                           component="img"
                           height="250"
-                          image={`http://localhost:5000${
+                          image={`http://13.50.4.1:5000${
                             item.product?.images[
                               productImageState[item._id] || 0
                             ]
