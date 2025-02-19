@@ -192,7 +192,7 @@ const Profile = () => {
     <CardMedia
       component="img"
       height="210"
-      image={`http://13.50.4.1:5000${
+      image={`http://localhost:5000${
         item?.images[productImageState[item?.product?._id] || 0]
       }`} // Dynamic image index for each product
       alt={item?.product?.name}

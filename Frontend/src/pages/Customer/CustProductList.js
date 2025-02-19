@@ -128,7 +128,7 @@ const ProductList = () => {
                     <CardMedia
                       component="img"
                       height="250"
-                      image={`http://13.50.4.1:5000${
+                      image={`http://localhost:5000${
                         product.images[productImageState[product._id] || 0]
                       }`} // Dynamic image index for each product
                       alt={product.name}
