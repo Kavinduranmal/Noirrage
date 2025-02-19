@@ -1,0 +1,65 @@
+Noirrage2127
+linukalolitha2002
+
+
+clothing-ecommerce/
+│── backend/
+│   ├── config/
+│   │   ├── db.js                # MongoDB connection
+│   │   ├── keys.js              # API keys (use .env instead)
+│   ├── controllers/
+│   │   ├── authController.js     # User authentication logic
+│   │   ├── productController.js  # CRUD operations for products
+│   │   ├── orderController.js    # Order handling
+│   │   ├── paymentController.js  # Payment gateway integration (Stripe/PayPal)
+│   ├── middleware/
+│   │   ├── authMiddleware.js     # Protect routes
+│   │   ├── errorMiddleware.js    # Global error handling
+│   ├── models/
+│   │   ├── User.js               # User schema
+│   │   ├── Product.js            # Product schema
+│   │   ├── Order.js              # Order schema
+│   ├── routes/
+│   │   ├── authRoutes.js         # Authentication routes
+│   │   ├── productRoutes.js      # Product routes
+│   │   ├── orderRoutes.js        # Order routes
+│   │   ├── paymentRoutes.js      # Payment routes
+│   ├── utils/
+│   │   ├── generateToken.js      # JWT token generation
+│   ├── server.js                 # Express server entry point
+│   ├── .env                      # Environment variables
+│   ├── package.json              # Backend dependencies
+│── frontend/
+│   ├── public/
+│   │   ├── index.html             # Main HTML file
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Navbar.js          # Navigation bar
+│   │   │   ├── ProductCard.js     # Product card component
+│   │   │   ├── CartItem.js        # Cart item display
+│   │   ├── pages/
+│   │   │   ├── Home.js            # Home page
+│   │   │   ├── ProductPage.js     # Product details page
+│   │   │   ├── Cart.js            # Shopping cart page
+│   │   │   ├── Checkout.js        # Payment and order confirmation
+│   │   │   ├── Login.js           # User login page
+│   │   │   ├── Register.js        # User registration page
+│   │   │   ├── AdminDashboard.js  # Admin panel
+│   │   ├── context/
+│   │   │   ├── AuthContext.js     # Context for authentication state
+│   │   │   ├── CartContext.js     # Context for cart state
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js         # Custom hook for authentication
+│   │   ├── api/
+│   │   │   ├── api.js             # API requests setup
+│   │   ├── App.js                 # Main application component
+│   │   ├── index.js               # React entry point
+│   │   ├── theme.js               # Material UI theme setup
+│   ├── .env                        # Environment variables for frontend
+│   ├── package.json                # Frontend dependencies
+│── README.md                        # Project documentation
+│── .gitignore                        # Git ignore file
+
+
+
+give me all the order part endpoint url with dummy data to test it in postamn
