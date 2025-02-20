@@ -108,48 +108,60 @@ const OrderForm = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
       }}
     >
       <Container maxWidth="xl">
         <Box
           sx={{
             p: 3,
-            position: "relative",
-            boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)",
+            position: 'relative',
+            boxShadow: '0px 12px 20px rgba(0, 0, 0, 0.88)',
             borderRadius: 2,
-            background: "linear-gradient(90deg, #232526, #414345)",
+            background: 'linear-gradient(90deg, #232526, #414345)',
           }}
         >
           {/* Close Button in Top-Right */}
           <IconButton
             onClick={cancel}
             sx={{
-              position: "absolute",
+              position: 'absolute',
               top: 8,
               right: 8,
-              color: "red",
-              backgroundColor: "transparent",
-              "&:hover": {
-                backgroundColor: "rgba(255, 0, 0, 0.1)",
+              color: 'red',
+              backgroundColor: 'transparent',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 0, 0, 0.1)',
               },
             }}
           >
             <CloseIcon />
           </IconButton>
 
-          {/* Flexbox for Left Image & Right Form */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
-            {/* Left Side - Product Image (40%) */}
-            <Box sx={{ width: "35%", textAlign: "center" }}>
+          {/* Flexbox for Top Image & Bottom Form */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            {/* Top - Product Image */}
+            <Box
+              sx={{
+                width: { xs: '100%', md: '35%' },
+                textAlign: 'center',
+              }}
+            >
               <Card
                 sx={{
-                  boxShadow: "0px 12px 20px rgb(0, 0, 0)",
+                  boxShadow: '0px 12px 20px rgb(0, 0, 0)',
                   height: 500,
-                  textAlign: "center",
+                  textAlign: 'center',
                   p: 2,
                 }}
               >
@@ -158,15 +170,15 @@ const OrderForm = () => {
                   component="img"
                   image={`http://51.21.127.196:5000${selectedProduct.images[selectedImageIndex]}`}
                   alt={selectedProduct.name}
-                  sx={{ borderRadius: "10px", marginBottom: "10px" }}
+                  sx={{ borderRadius: '10px', marginBottom: '10px' }}
                 />
               </Card>
 
               {/* Image Selection Thumbnails */}
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
                   gap: 2,
                   mt: 4,
                 }}
@@ -178,23 +190,29 @@ const OrderForm = () => {
                     sx={{
                       minWidth: 50,
                       height: 50,
-                      border: "1px solid black",
-                      borderRadius: "3px",
+                      border: '1px solid black',
+                      borderRadius: '3px',
                       backgroundImage: `url(http://51.21.127.196:5000${img})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
                       border:
                         selectedImageIndex === index
-                          ? "2px solid gold"
-                          : "2px solid transparent",
+                          ? '2px solid gold'
+                          : '2px solid transparent',
                     }}
                   />
                 ))}
               </Box>
             </Box>
 
-            {/* Right Side - Order Form (60%) */}
-            <Box sx={{ width: "60%", p: 3, borderRadius: 2 }}>
+            {/* Bottom - Order Form */}
+            <Box
+              sx={{
+                width: { xs: '100%', md: '60%' },
+                p: 3,
+                borderRadius: 2,
+              }}
+            >
               <form onSubmit={handleOrderSubmit}>
                 {/* Step 1: Product Details */}
                 {step === 1 && selectedProduct && (
@@ -203,7 +221,7 @@ const OrderForm = () => {
                       variant="h5"
                       sx={{
                         fontFamily: "'Raleway', sans-serif",
-                        fontSize: "2em",
+                        fontSize: '2em',
                       }}
                       color="#fdc200"
                       mb={5}
@@ -211,20 +229,24 @@ const OrderForm = () => {
                       Fill Order Details of {selectedProduct.name}
                     </Typography>
 
-                    <Box sx={{ color: "lightgray", pb: 3, fontSize: "1.3rem" }}>
-                      <Typography sx={{ fontSize: "1.7rem" }}>
+                    <Box sx={{ color: 'lightgray', pb: 3, fontSize: '1.3rem' }}>
+                      <Typography sx={{ fontSize: '1.7rem' }}>
                         Rs {selectedProduct.price}.00
                       </Typography>
                     </Box>
 
                     <Box
-                      sx={{ display: "flex", flexDirection: "row", gap: 12 }}
+                      sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        gap: { xs: 4, md: 12 },
+                      }}
                     >
                       {/* Quantity Selector */}
                       <Box
                         sx={{
-                          display: "flex",
-                          flexDirection: "column",
+                          display: 'flex',
+                          flexDirection: 'column',
                           gap: 1,
                         }}
                       >
@@ -236,16 +258,20 @@ const OrderForm = () => {
                           Quantity
                         </Typography>
                         <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                          }}
                         >
                           <IconButton
                             onClick={() =>
                               setQuantity((prev) => Math.max(prev - 1, 1))
                             }
                             sx={{
-                              color: "white",
-                              border: "1px solid #ccc",
-                              borderRadius: "500px",
+                              color: 'white',
+                              border: '1px solid #ccc',
+                              borderRadius: '500px',
                             }}
                           >
                             <Remove />
@@ -258,16 +284,16 @@ const OrderForm = () => {
                             }
                             inputProps={{
                               min: 1,
-                              style: { color: "white", textAlign: "center" },
+                              style: { color: 'white', textAlign: 'center' },
                             }}
-                            sx={{ width: "50px" }}
+                            sx={{ width: '50px' }}
                           />
                           <IconButton
                             onClick={() => setQuantity((prev) => prev + 1)}
                             sx={{
-                              color: "white",
-                              border: "1px solid #ccc",
-                              borderRadius: "500px",
+                              color: 'white',
+                              border: '1px solid #ccc',
+                              borderRadius: '500px',
                             }}
                           >
                             <Add />
@@ -278,8 +304,8 @@ const OrderForm = () => {
                       {/* Color Selector */}
                       <Box
                         sx={{
-                          display: "flex",
-                          flexDirection: "column",
+                          display: 'flex',
+                          flexDirection: 'column',
                           gap: 1,
                         }}
                       >
@@ -295,7 +321,7 @@ const OrderForm = () => {
                           exclusive
                           onChange={(e) => setColor(e.target.value)}
                           aria-label="color selection"
-                          sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
                         >
                           {availableColors.map((color, index) => (
                             <ToggleButton
@@ -303,9 +329,9 @@ const OrderForm = () => {
                               value={color}
                               sx={{
                                 backgroundColor: color.toLowerCase(),
-                                color: "white",
-                                border: "1px solid black",
-                                "&.Mui-selected": { border: "2px solid gold" },
+                                color: 'white',
+                                border: '1px solid black',
+                                '&.Mui-selected': { border: '2px solid gold' },
                               }}
                             >
                               {color}
@@ -317,8 +343,8 @@ const OrderForm = () => {
                       {/* Size Selector */}
                       <Box
                         sx={{
-                          display: "flex",
-                          flexDirection: "column",
+                          display: 'flex',
+                          flexDirection: 'column',
                           gap: 1,
                         }}
                       >
@@ -334,19 +360,19 @@ const OrderForm = () => {
                           exclusive
                           onChange={(e) => setSize(e.target.value)}
                           aria-label="size selection"
-                          sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                          sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
                         >
                           {availableSizes.map((sizeOption, index) => (
                             <ToggleButton
                               key={index}
                               value={sizeOption}
                               sx={{
-                                color: "black",
-                                backgroundColor: "#c6c6c6",
-                                border: "1px solid #ccc",
-                                "&.Mui-selected": {
-                                  backgroundColor: "black",
-                                  color: "white",
+                                color: 'black',
+                                backgroundColor: '#c6c6c6',
+                                border: '1px solid #ccc',
+                                '&.Mui-selected': {
+                                  backgroundColor: 'black',
+                                  color: 'white',
                                 },
                               }}
                             >
@@ -379,11 +405,11 @@ const OrderForm = () => {
                         })
                       }
                       sx={{
-                        "& label": { color: "gray" }, // Default label color
-                        "& label.Mui-focused": { color: "white" }, // Focused label color
-                        "& input": { color: "white" }, // User-typed text color
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: "gray" }, // Default border color
+                        '& label': { color: 'gray' }, // Default label color
+                        '& label.Mui-focused': { color: 'white' }, // Focused label color
+                        '& input': { color: 'white' }, // User-typed text color
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': { borderColor: 'gray' }, // Default border color
                         },
                       }}
                       required
@@ -400,11 +426,11 @@ const OrderForm = () => {
                         })
                       }
                       sx={{
-                        "& label": { color: "gray" }, // Default label color
-                        "& label.Mui-focused": { color: "white" }, // Focused label color
-                        "& input": { color: "white" }, // User-typed text color
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: "gray" }, // Default border color
+                        '& label': { color: 'gray' }, // Default label color
+                        '& label.Mui-focused': { color: 'white' }, // Focused label color
+                        '& input': { color: 'white' }, // User-typed text color
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': { borderColor: 'gray' }, // Default border color
                         },
                       }}
                       required
@@ -421,11 +447,11 @@ const OrderForm = () => {
                         })
                       }
                       sx={{
-                        "& label": { color: "gray" }, // Default label color
-                        "& label.Mui-focused": { color: "white" }, // Focused label color
-                        "& input": { color: "white" }, // User-typed text color
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: "gray" }, // Default border color
+                        '& label': { color: 'gray' }, // Default label color
+                        '& label.Mui-focused': { color: 'white' }, // Focused label color
+                        '& input': { color: 'white' }, // User-typed text color
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': { borderColor: 'gray' }, // Default border color
                         },
                       }}
                       required
@@ -436,16 +462,16 @@ const OrderForm = () => {
                       variant="contained"
                       color="primary"
                       sx={{
-                        position: "absolute",
-                        right: "0",
-                        bottom: "0",
+                        position: 'absolute',
+                        right: '0',
+                        bottom: '0',
                         px: 5,
                         mr: 6,
                         mb: 1,
-                        bgcolor: "black",
-                        color: "white",
-                        fontWeight: "bold",
-                        "&:hover": { color: "black", bgcolor: "gold" },
+                        bgcolor: 'black',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        '&:hover': { color: 'black', bgcolor: 'gold' },
                       }}
                       onClick={handleNext}
                     >
@@ -473,7 +499,7 @@ const OrderForm = () => {
                       sx={{
                         mt: 2,
                         background:
-                          "linear-gradient(90deg, #FFD200, #F7971E, #FFD200)",
+                          'linear-gradient(90deg, #FFD200, #F7971E, #FFD200)',
                       }}
                       type="submit"
                       fullWidth

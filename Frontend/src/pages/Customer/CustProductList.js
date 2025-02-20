@@ -87,7 +87,7 @@ const ProductList = () => {
           />
         </Box>
       )}
-
+  
       <Grid container spacing={2} sx={{ justifyContent: "center" }}>
         {!loading && products.length === 0 ? (
           <Typography
@@ -99,15 +99,21 @@ const ProductList = () => {
           </Typography>
         ) : (
           products.map((product) => (
-            <Grid item xs={12} sm={6} md={3} key={product._id}>
+            <Grid
+              item
+              xs={6} // 2 cards per row on mobile
+              sm={6} // 2 cards per row on small screens
+              md={3} // 4 cards per row on medium screens
+              key={product._id}
+            >
               <Card
                 sx={{
-                  width: "75%",
+                  width: "80%", // Full width for mobile
                   border: "1px solid rgba(109, 109, 109, 0.34)",
                   display: "flex",
                   flexDirection: "column",
                   padding: "10px",
-                  margin: "30px", // Reduced margin here
+                  margin: "20px", // Reduced margin for mobile
                   borderRadius: 2,
                   background: "linear-gradient(45deg, #232526, #414345)",
                   boxShadow: "0 4px 10px rgb(39, 38, 38)",
@@ -116,7 +122,7 @@ const ProductList = () => {
               >
                 <Box
                   sx={{
-                    height: 350,
+                    height: { xs: 200, sm: 250, md: 350 }, // Responsive height
                     width: "100%",
                     overflow: "hidden",
                     display: "flex",
@@ -128,7 +134,7 @@ const ProductList = () => {
                   <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
                     <CardMedia
                       component="img"
-                      height="250"
+                      height="100%" // Responsive height
                       image={`http://51.21.127.196:5000${
                         product.images[productImageState[product._id] || 0]
                       }`} // Dynamic image index for each product
@@ -151,7 +157,6 @@ const ProductList = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-
                     padding: "10px",
                     textAlign: "center",
                   }}
@@ -160,25 +165,28 @@ const ProductList = () => {
                     variant="h6"
                     sx={{
                       fontFamily: "'Raleway', sans-serif",
-                      fontSize: "35px",
+                      fontSize: { xs: "20px", sm: "25px", md: "35px" }, // Responsive font size
                       fontWeight: 500,
                       color: "#fdc200",
                     }}
                   >
                     {product.name}
                   </Typography>
-                  <Typography variant="h7" color="#d0d0d0">
+                  <Typography
+                    variant="h7"
+                    color="#d0d0d0"
+                    sx={{ fontSize: { xs: "12px", sm: "14px", md: "16px" } }} // Responsive font size
+                  >
                     {product.description}
                   </Typography>
                   <Typography
                     variant="h6"
                     color="text.secondary"
-                    sx={{ mt: 1, color: "#fff" }}
+                    sx={{ mt: 1, color: "#fff", fontSize: { xs: "14px", sm: "16px", md: "18px" } }} // Responsive font size
                   >
-                    {" "}
-                    Rs:{product.price}
+                    Rs: {product.price}
                   </Typography>
-
+  
                   <Grid
                     container
                     spacing={1}
@@ -206,13 +214,14 @@ const ProductList = () => {
                           sx={{
                             color: "white",
                             "&:hover": { color: "white" },
+                            fontSize: { xs: "12px", sm: "14px", md: "16px" }, // Responsive font size
                           }}
                         >
                           {product.inStock ? "Order Now" : "Out of Stock"}
                         </Typography>
                       </Button>
                     </Grid>
-
+  
                     {/* Add to Cart Button */}
                     <Grid item xs={2}>
                       <Button
@@ -225,7 +234,6 @@ const ProductList = () => {
                         }}
                         onClick={() => handleAddToCart(product._id)} // Pass product ID
                       >
-                        {" "}
                         <ShoppingCartIcon />
                       </Button>
                     </Grid>
