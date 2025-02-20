@@ -8,13 +8,6 @@ import {
   useLocation,
 } from "react-router-dom";
 
-//Admin imports
-import AdminSignup from "./pages/Admin/AdminSignup";
-import AdminLogin from "./pages/Admin/AdminLogin";
-import AddProduct from "./pages/Admin/AddProduct";
-import ProductList from "./pages/Admin/ProductList";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-
 // Customer Imports
 import UserSignup from "./pages/Customer/UserSignup";
 import UserLogin from "./pages/Customer/UserLogin";
@@ -37,23 +30,13 @@ const Layout = () => {
 
   // Hide navbar on login and signup pages
   const hideNavbar =
-    location.pathname === "/user/Login" ||
-    location.pathname === "/" ||
-    location.pathname === "/user/signup" ||
-    location.pathname === "/admin/signup";
+    location.pathname === "/user/Login" || location.pathname === "/user/signup";
 
   return (
     <>
       {!hideNavbar && <NavBarforuser />}
       <ToastContainer position="bottom-right" autoClose={1100} />
       <Routes>
-        {/* Admin Routes */}
-        <Route path="/" element={<AdminLogin />} />
-        <Route path="/admin/signup" element={<AdminSignup />} />
-        <Route path="/admin/ProductAdd" element={<AddProduct />} />
-        <Route path="/admin/ProductList" element={<ProductList />} />
-        <Route path="/admin/AdminDashboard" element={<AdminDashboard />} />
-
         {/* Customer Routes */}
         <Route path="/user/Login" element={<UserLogin />} />
         <Route path="/user/signup" element={<UserSignup />} />
@@ -65,7 +48,7 @@ const Layout = () => {
         <Route path="/userorders" element={<Orderstatus />} />
 
         {/* Other Routes */}
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/ContactUs" element={<ContactUs />} />
       </Routes>
