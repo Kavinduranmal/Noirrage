@@ -95,7 +95,7 @@ const Cart = () => {
           fontFamily: "'Raleway', sans-serif",
         }}
       >
-        My cart
+        My Cart
       </Typography>
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
@@ -121,7 +121,7 @@ const Cart = () => {
       ) : (
         <Grid container spacing={3} justifyContent="center">
           {cartItems.map((item) => (
-            <Grid item xs={12} sm={10} md={6} key={item._id}>
+            <Grid item xs={12} key={item._id}>
               <Card
                 sx={{
                   boxShadow: "0px 12px 20px rgb(0, 0, 0)",
@@ -139,7 +139,7 @@ const Cart = () => {
                 <CardContent
                   sx={{
                     display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
+                    flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
                     alignItems: "center",
                     justifyContent: "space-between",
                     padding: "20px",
@@ -148,14 +148,19 @@ const Cart = () => {
                   {item.product ? (
                     <>
                       {/* Product Image */}
-                      <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
+                      <Card
+                        sx={{
+                          maxWidth: { xs: "100%", sm: 210 }, // Full width on mobile, fixed width on larger screens
+                          perspective: "1000px",
+                          mb: { xs: 2, sm: 0 }, // Margin bottom for mobile
+                        }}
+                      >
                         <CardMedia
                           component="img"
                           height="250"
+                          width="250"
                           image={`http://51.21.127.196:5000${
-                            item.product?.images[
-                              productImageState[item._id] || 0
-                            ]
+                            item.product?.images[productImageState[item._id] || 0]
                           }`}
                           alt={item.product?.name}
                           id={`image-${item._id}`}
@@ -170,15 +175,20 @@ const Cart = () => {
                           onMouseLeave={() => handleImageHover(item._id, false)}
                         />
                       </Card>
-
+  
                       {/* Product Details */}
-                      <Box ml={3} sx={{ flex: 1 }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          ml: { xs: 0, sm: 3 }, // No margin on mobile, margin on larger screens
+                          textAlign: { xs: "center", sm: "left" }, // Center text on mobile
+                        }}
+                      >
                         <Typography
                           variant="h4"
                           mb={2}
                           sx={{
                             fontFamily: "'Raleway', sans-serif",
-
                             color: "#f1c40f",
                           }}
                         >
@@ -188,7 +198,6 @@ const Cart = () => {
                           variant="h7"
                           sx={{
                             color: "white",
-                            textAlign: "center",
                             opacity: 0.8,
                           }}
                         >
@@ -210,7 +219,6 @@ const Cart = () => {
                     <Typography
                       sx={{
                         fontSize: "20px",
-
                         color: "red",
                         textAlign: "center",
                         width: "100%",
@@ -220,9 +228,18 @@ const Cart = () => {
                     </Typography>
                   )}
                 </CardContent>
-
+  
                 {/* Buttons */}
-                <Box sx={{ ml: 30, mb: 5, textAlign: "center" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 2, // Space between buttons
+                    mb: 3,
+                    flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
+                    alignItems: "center",
+                  }}
+                >
                   {item.product ? (
                     <Button
                       variant="contained"
@@ -232,22 +249,23 @@ const Cart = () => {
                         color: "white",
                         fontWeight: "bold",
                         "&:hover": { bgcolor: "gray" },
+                        width: { xs: "80%", sm: "auto" }, // Full width on mobile, auto on larger screens
                       }}
                       onClick={() => handleOrderNow(item.product?._id)}
                     >
                       Order Now
                     </Button>
                   ) : null}
-
+  
                   <Button
                     variant="contained"
                     color="primary"
                     sx={{
-                      marginLeft: 3,
                       bgcolor: "gold",
                       color: "black",
                       fontWeight: "bold",
                       "&:hover": { bgcolor: "red" },
+                      width: { xs: "80%", sm: "auto" }, // Full width on mobile, auto on larger screens
                     }}
                     onClick={() => handleRemoveFromCart(item._id)}
                   >

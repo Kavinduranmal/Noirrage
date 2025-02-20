@@ -1,24 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
-  IconButton,
-  Drawer,
   Button,
-  List,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import logo from "../images/logo.png";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; // Import for navigation
 
 const Navbar = ({ showNavBar }) => {
   const isMobile = useMediaQuery("(max-width: 900px)");
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = (userType) => {
@@ -29,22 +21,16 @@ const Navbar = ({ showNavBar }) => {
     navigate("/user/Login"); // Redirect to home after logout
   };
 
-  const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
-  };
-
   const navLinks = [
-
     { path: "/", label: "Home" },
     { path: "/CustProductList", label: "Feed" },
-    { path: "/ViewAllcart", label: "My Mycart" },
-    { path: "/Myorders", label: "My orders" },
-    { path: "/Profile", label: "View Profile" },
+    { path: "/ViewAllcart", label: "My Cart" },
+    { path: "/Myorders", label: "My Orders" },
+    { path: "/Profile", label: "My Profile" },
     { path: "/AboutUs", label: "About Us" },
     { path: "/ContactUs", label: "Contact US" },
   ];
 
-  
   return (
     <Box
       sx={{
@@ -73,39 +59,67 @@ const Navbar = ({ showNavBar }) => {
 
       {/* Mobile Menu */}
       {isMobile ? (
-        <>
-          <IconButton onClick={toggleDrawer(true)} sx={{ color: "white" }}>
-            <MenuIcon fontSize="large" />
-          </IconButton>
-          <Drawer
-            anchor="right"
-            open={drawerOpen}
-            onClose={toggleDrawer(false)}
-          >
-            <List sx={{ width: 250 }}>
-              {navLinks.map((link) => (
-                <ListItem
-                  button
-                  key={link.path}
-                  component={NavLink}
-                  to={link.path}
-                  onClick={toggleDrawer(false)}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center", // Center horizontally
+            justifyContent: "center", // Center vertically
+            gap: 2,
+            width: "100%",
+            height: "100vh", // Full viewport height
+            position: "fixed",
+            top: 0,
+            left: 0,
+            background: "linear-gradient(90deg,rgb(46, 46, 46),rgb(37, 37, 37))",
+            zIndex: 1200,
+          }}
+        >
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              style={{ textDecoration: "none", width: "100%", textAlign: "center" }}
+            >
+              {({ isActive }) => (
+                <Typography
+                  sx={{
+                    fontSize: "1.2rem",
+                    fontFamily: "'Raleway', sans-serif",
+                    color: isActive ? "#FFEB3B" : "#FFF",
+                    "&:hover": {
+                      color: "#FFEB3B",
+                      transform: "scale(1.05)",
+                      transition: "transform 0.3s ease-in-out",
+                    },
+                    transition:
+                      "color 0.3s ease-in-out, transform 0.3s ease-in-out",
+                    padding: "8px 16px",
+                  }}
                 >
-                  <ListItemText
-                    primary={link.label}
-                    sx={{ textAlign: "center" }}
-                  />
-                </ListItem>
-              ))}
-              <ListItem button onClick={() => handleLogout("user")}>
-                <ListItemText
-                  primary="Logout"
-                  sx={{ textAlign: "center", color: "red" }}
-                />
-              </ListItem>
-            </List>
-          </Drawer>
-        </>
+                  {link.label}
+                </Typography>
+              )}
+            </NavLink>
+          ))}
+          <Button
+            onClick={() => handleLogout("user")}
+            sx={{
+              fontSize: "1rem",
+              fontWeight: "500",
+              color: "white",
+              "&:hover": {
+                color: "red",
+                transform: "scale(1.1)",
+                transition:
+                  "transform 0.2s ease-in-out, color 0.3s ease-in-out",
+              },
+              padding: "8px 16px",
+            }}
+          >
+            Logout
+          </Button>
+        </Box>
       ) : (
         <Box sx={{ display: "flex", textAlign: "center", gap: 8 }}>
           <Box
