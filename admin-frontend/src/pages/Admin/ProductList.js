@@ -36,7 +36,9 @@ const ProductList = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://13.50.4.1:5000/api/products");
+      const response = await axios.get(
+        "http://51.21.127.196:5000/api/products"
+      );
       setProducts(response.data); // The response should contain the inStock status now
     } catch (error) {
       toast.error("Error fetching products");
@@ -47,7 +49,7 @@ const ProductList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://13.50.4.1:5000/api/products/${id}`);
+      await axios.delete(`http://51.21.127.196:5000/api/products/${id}`);
       toast.success("Product deleted successfully");
       fetchProducts();
     } catch {
@@ -63,22 +65,24 @@ const ProductList = () => {
           product._id === id ? { ...product, inStock: false } : product
         )
       );
-  
+
       await axios.put(
-        `http://13.50.4.1:5000/api/products/${id}/out-of-stock`,
+        `http://51.21.127.196:5000/api/products/${id}/out-of-stock`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       toast.success("Product marked as out of stock");
       fetchProducts(); // Refresh product list
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error updating product status");
+      toast.error(
+        error.response?.data?.message || "Error updating product status"
+      );
     }
   };
-  
+
   const markRestoreStock = async (id) => {
     try {
       // Optimistic update: set inStock to true locally
@@ -87,22 +91,23 @@ const ProductList = () => {
           product._id === id ? { ...product, inStock: true } : product
         )
       );
-  
+
       await axios.put(
-        `http://13.50.4.1:5000/api/products/${id}/restored`,
+        `http://51.21.127.196:5000/api/products/${id}/restored`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       toast.success("Product marked as in stock");
       fetchProducts(); // Refresh product list
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error updating product status");
+      toast.error(
+        error.response?.data?.message || "Error updating product status"
+      );
     }
   };
-  
 
   const [productImageState, setProductImageState] = useState({});
 
@@ -183,7 +188,7 @@ const ProductList = () => {
                       <CardMedia
                         component="img"
                         height="150"
-                        image={`http://localhost:5000${
+                        image={`http://51.21.127.196:5000${
                           product.images[productImageState[product._id] || 0]
                         }`} // Dynamic image index for each product
                         alt={product.name}
@@ -228,37 +233,40 @@ const ProductList = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                  <Box sx={{ display: "flex", gap: 2 }}>
-  <Button
-    variant="contained"
-    
-    onClick={() => markOutOfStock(product._id)}
-    sx={{
-    
-      backgroundColor: "black",
-      color: "lightgreen",
-      "&:hover": {color: "green", fontWeight: "bold", backgroundColor: "#333" },
-      
-    }}
-    disabled={!product.inStock} // Enable only if product is in stock
-  >Restored Stock
-    
-  </Button>
-  <Button
-    variant="contained"
-    onClick={() => markRestoreStock(product._id)}
-    sx={{
-     
-      backgroundColor: "black",
-      color: "red",
-      "&:hover": {color: "red", fontWeight: "bold", backgroundColor: "#333" },
-    }}
-    disabled={product.inStock} // Enable only if product is out of stock
-  >
-    Out of Stock
-  </Button>
-</Box>
-
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Button
+                        variant="contained"
+                        onClick={() => markOutOfStock(product._id)}
+                        sx={{
+                          backgroundColor: "black",
+                          color: "lightgreen",
+                          "&:hover": {
+                            color: "green",
+                            fontWeight: "bold",
+                            backgroundColor: "#333",
+                          },
+                        }}
+                        disabled={!product.inStock} // Enable only if product is in stock
+                      >
+                        Restored Stock
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => markRestoreStock(product._id)}
+                        sx={{
+                          backgroundColor: "black",
+                          color: "red",
+                          "&:hover": {
+                            color: "red",
+                            fontWeight: "bold",
+                            backgroundColor: "#333",
+                          },
+                        }}
+                        disabled={product.inStock} // Enable only if product is out of stock
+                      >
+                        Out of Stock
+                      </Button>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))

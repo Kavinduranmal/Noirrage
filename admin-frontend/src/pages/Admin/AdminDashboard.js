@@ -67,7 +67,7 @@ const AdminDashboard = () => {
     }
     try {
       const { data } = await axios.get(
-        "http://13.50.4.1:5000/api/orders/all",
+        "http://51.21.127.196:5000/api/orders/all",
         {}
       );
       setOrders(data);
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
     }
     try {
       const response = await axios.put(
-        `http://13.50.4.1:5000/api/orders/${orderId}/ship`,
+        `http://51.21.127.196:5000/api/orders/${orderId}/ship`,
         {},
         {
           headers: {
@@ -377,7 +377,7 @@ const AdminDashboard = () => {
                           <CardMedia
                             component="img"
                             height="100"
-                            image={`http://localhost:5000${
+                            image={`http://51.21.127.196:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
                               ]
@@ -523,7 +523,7 @@ const AdminDashboard = () => {
                           <CardMedia
                             component="img"
                             height="100"
-                            image={`http://localhost:5000${
+                            image={`http://51.21.127.196:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
                               ]
@@ -571,7 +571,7 @@ const AdminDashboard = () => {
                     ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                  {order.products[0]?.quantity}
+                    {order.products[0]?.quantity}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
                     ${order.totalPrice.toFixed(2)}
