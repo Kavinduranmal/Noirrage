@@ -36,13 +36,13 @@ const Profile = () => {
 
     // Create promises for all API requests
     const fetchProfile = axios.get(
-      "http://13.50.4.1:5000/api/auth/profileview",
+      "http://51.21.127.196:5000/api/auth/profileview",
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    const fetchOrders = axios.get("http://13.50.4.1:5000/api/orders", {
+    const fetchOrders = axios.get("http://51.21.127.196:5000/api/orders", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    const fetchCart = axios.get("http://13.50.4.1:5000/api/cart", {
+    const fetchCart = axios.get("http://51.21.127.196:5000/api/cart", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -57,7 +57,6 @@ const Profile = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        
       })
       .finally(() => {
         setLoading(false);
@@ -68,11 +67,9 @@ const Profile = () => {
   const handleClose = () => setOpen(false);
 
   const handleUpdateProfile = async () => {
-
-
     try {
       const { data } = await axios.put(
-        "http://13.50.4.1:5000/api/auth/profiledit",
+        "http://51.21.127.196:5000/api/auth/profiledit",
         { name, email },
         { headers: { Authorization: `Bearer ${token}` } }
       );

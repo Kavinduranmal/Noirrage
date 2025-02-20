@@ -31,7 +31,7 @@ const Cart = () => {
     const fetchCart = async () => {
       try {
         const response = await axios.get(
-          "http://13.50.4.1:5000/api/cart/view",
+          "http://51.21.127.196:5000/api/cart/view",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -43,7 +43,6 @@ const Cart = () => {
             : response.data.items || []
         );
       } catch (error) {
-       
       } finally {
         setLoading(false);
       }
@@ -54,14 +53,16 @@ const Cart = () => {
 
   const handleRemoveFromCart = async (itemId) => {
     if (!token) {
-   
       return;
     }
 
     try {
-      await axios.delete(`http://13.50.4.1:5000/api/cart/remove/${itemId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `http://51.21.127.196:5000/api/cart/remove/${itemId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.success("Item removed from cart!");
       setCartItems((prevItems) =>
@@ -86,19 +87,16 @@ const Cart = () => {
 
   return (
     <Box sx={{ padding: "40px", minHeight: "100vh" }}>
-      
-       <Typography
-                variant="h3"
-                textAlign="center"
-                mb={4}
-                sx={{
-                  fontFamily: "'Raleway', sans-serif",
-      
-                
-                }}
-              >
-                 My cart
-              </Typography>
+      <Typography
+        variant="h3"
+        textAlign="center"
+        mb={4}
+        sx={{
+          fontFamily: "'Raleway', sans-serif",
+        }}
+      >
+        My cart
+      </Typography>
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
           <LinearProgress
@@ -154,7 +152,7 @@ const Cart = () => {
                         <CardMedia
                           component="img"
                           height="250"
-                          image={`http://13.50.4.1:5000${
+                          image={`http://51.21.127.196:5000${
                             item.product?.images[
                               productImageState[item._id] || 0
                             ]
@@ -180,7 +178,7 @@ const Cart = () => {
                           mb={2}
                           sx={{
                             fontFamily: "'Raleway', sans-serif",
-                           
+
                             color: "#f1c40f",
                           }}
                         >
@@ -212,7 +210,7 @@ const Cart = () => {
                     <Typography
                       sx={{
                         fontSize: "20px",
-                       
+
                         color: "red",
                         textAlign: "center",
                         width: "100%",

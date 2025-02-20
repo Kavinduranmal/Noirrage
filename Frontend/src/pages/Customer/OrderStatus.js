@@ -23,14 +23,13 @@ const Profile = () => {
 
   useEffect(() => {
     if (!token) {
-   
       return;
     }
 
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http://13.50.4.1:5000/api/orders/byid",
+          "http://51.21.127.196:5000/api/orders/byid",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);
@@ -66,13 +65,12 @@ const Profile = () => {
     }
 
     if (!token) {
-      
       return;
     }
 
     try {
       const { data } = await axios.delete(
-        `http://13.50.4.1:5000/api/orders/${orderId}/deleted`,
+        `http://51.21.127.196:5000/api/orders/${orderId}/deleted`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Order deleted successfully!");
@@ -88,46 +86,40 @@ const Profile = () => {
     padding: "40px 0", // Adds spacing on top and bottom
   });
 
-  
- // State to keep track of image index for each product (0: default, 1: hover)
- const [productImageState, setProductImageState] = useState({});
+  // State to keep track of image index for each product (0: default, 1: hover)
+  const [productImageState, setProductImageState] = useState({});
 
- const handleImageHover = (productId, hover) => {
-   setProductImageState((prevState) => ({
-     ...prevState,
-     [productId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
-   }));
- };
- 
+  const handleImageHover = (productId, hover) => {
+    setProductImageState((prevState) => ({
+      ...prevState,
+      [productId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+    }));
+  };
 
- 
-  
   return (
     <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
       <FullWidthSection>
         {loading ? (
-           <Box sx={{ width: "100%", mb: 2 }}>
-                    <LinearProgress
-                      sx={{
-                        backgroundColor: "black",
-                        borderRadius: 10,
-                        "& .MuiLinearProgress-bar": { backgroundColor: "gold" },
-                      }}
-                    />
-                  </Box>
+          <Box sx={{ width: "100%", mb: 2 }}>
+            <LinearProgress
+              sx={{
+                backgroundColor: "black",
+                borderRadius: 10,
+                "& .MuiLinearProgress-bar": { backgroundColor: "gold" },
+              }}
+            />
+          </Box>
         ) : (
           <Typography></Typography>
         )}
         {/* <Divider sx={{ backgroundColor: "#FFD700", height: "0.8px", my: 2 }} /> */}
-        
+
         <Typography
           variant="h3"
           textAlign="center"
           mb={4}
           sx={{
             fontFamily: "'Raleway', sans-serif",
-
-           
           }}
         >
           My Orders
@@ -188,27 +180,36 @@ const Profile = () => {
                   >
                     {/* Image on Left */}
                     {order?.products?.map((item) => (
-  <Card key={item?.product?._id} sx={{ maxWidth: 210, perspective: "1000px" }}>
-    <CardMedia
-      component="img"
-      height="210"
-      image={`http://13.50.4.1:5000${
-        item?.images[productImageState[item?.product?._id] || 0]
-      }`} // Dynamic image index for each product
-      alt={item?.product?.name}
-      id={`image-${item?.product?._id}`}
-      sx={{
-        transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
-        transformStyle: "preserve-3d",
-        ":hover": {
-          transform: "rotateY(180deg)", // Rotate right to left
-        },
-      }}
-      onMouseEnter={() => handleImageHover(item?.product?._id, true)} // Hover image
-      onMouseLeave={() => handleImageHover(item?.product?._id, false)} // Default image
-    />
-  </Card>
-))}
+                      <Card
+                        key={item?.product?._id}
+                        sx={{ maxWidth: 210, perspective: "1000px" }}
+                      >
+                        <CardMedia
+                          component="img"
+                          height="210"
+                          image={`http://51.21.127.196:5000${
+                            item?.images[
+                              productImageState[item?.product?._id] || 0
+                            ]
+                          }`} // Dynamic image index for each product
+                          alt={item?.product?.name}
+                          id={`image-${item?.product?._id}`}
+                          sx={{
+                            transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
+                            transformStyle: "preserve-3d",
+                            ":hover": {
+                              transform: "rotateY(180deg)", // Rotate right to left
+                            },
+                          }}
+                          onMouseEnter={() =>
+                            handleImageHover(item?.product?._id, true)
+                          } // Hover image
+                          onMouseLeave={() =>
+                            handleImageHover(item?.product?._id, false)
+                          } // Default image
+                        />
+                      </Card>
+                    ))}
 
                     {/* Details in a Column */}
                     <Box

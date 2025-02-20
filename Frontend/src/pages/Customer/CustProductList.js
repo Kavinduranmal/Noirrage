@@ -34,7 +34,9 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://13.50.4.1:5000/api/products/");
+      const response = await axios.get(
+        "http://51.21.127.196:5000/api/products/"
+      );
       setProducts(response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products");
@@ -49,13 +51,12 @@ const ProductList = () => {
 
   const handleAddToCart = async (productId) => {
     if (!token) {
-     
       return;
     }
 
     try {
       await axios.post(
-        "http://13.50.4.1:5000/api/cart/add",
+        "http://51.21.127.196:5000/api/cart/add",
         { productId, qty: quantity, size, color }, // Use productId
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -74,17 +75,17 @@ const ProductList = () => {
   };
 
   return (
-    <Box >
+    <Box>
       {loading && (
-         <Box sx={{ width: "100%", mb: 2 }}>
-                  <LinearProgress
-                    sx={{
-                      backgroundColor: "black",
-                      borderRadius: 10,
-                      "& .MuiLinearProgress-bar": { backgroundColor: "gold" },
-                    }}
-                  />
-                </Box>
+        <Box sx={{ width: "100%", mb: 2 }}>
+          <LinearProgress
+            sx={{
+              backgroundColor: "black",
+              borderRadius: 10,
+              "& .MuiLinearProgress-bar": { backgroundColor: "gold" },
+            }}
+          />
+        </Box>
       )}
 
       <Grid container spacing={2} sx={{ justifyContent: "center" }}>
@@ -128,7 +129,7 @@ const ProductList = () => {
                     <CardMedia
                       component="img"
                       height="250"
-                      image={`http://13.50.4.1:5000${
+                      image={`http://51.21.127.196:5000${
                         product.images[productImageState[product._id] || 0]
                       }`} // Dynamic image index for each product
                       alt={product.name}
@@ -157,7 +158,12 @@ const ProductList = () => {
                 >
                   <Typography
                     variant="h6"
-                    sx={{fontFamily: "'Raleway', sans-serif", fontSize: "35px", fontWeight: 500, color: "#fdc200" }}
+                    sx={{
+                      fontFamily: "'Raleway', sans-serif",
+                      fontSize: "35px",
+                      fontWeight: 500,
+                      color: "#fdc200",
+                    }}
                   >
                     {product.name}
                   </Typography>
@@ -180,31 +186,32 @@ const ProductList = () => {
                   >
                     {/* Order Now Button */}
                     <Grid item xs={8}>
-  <Button
-    variant="contained"
-    color="primary"
-    fullWidth
-    sx={{
-      bgcolor: product.inStock ? "black" : "gray",
-      color: "white",
-      fontWeight: "bold",
-      border: !product.inStock ? "2px solid red" : "none", // Gray border when out of stock
-      "&:hover": { bgcolor: product.inStock ? "gray" : "gray" },
-    }}
-    onClick={() => handleOrderNow(product._id)}
-    disabled={!product.inStock}
-  >
-    <Typography
-      sx={{
-        color: "white",
-        "&:hover": { color: "white" },
-      }}
-    >
-      {product.inStock ? "Order Now" : "Out of Stock"}
-    </Typography>
-  </Button>
-</Grid>
-
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{
+                          bgcolor: product.inStock ? "black" : "gray",
+                          color: "white",
+                          fontWeight: "bold",
+                          border: !product.inStock ? "2px solid red" : "none", // Gray border when out of stock
+                          "&:hover": {
+                            bgcolor: product.inStock ? "gray" : "gray",
+                          },
+                        }}
+                        onClick={() => handleOrderNow(product._id)}
+                        disabled={!product.inStock}
+                      >
+                        <Typography
+                          sx={{
+                            color: "white",
+                            "&:hover": { color: "white" },
+                          }}
+                        >
+                          {product.inStock ? "Order Now" : "Out of Stock"}
+                        </Typography>
+                      </Button>
+                    </Grid>
 
                     {/* Add to Cart Button */}
                     <Grid item xs={2}>

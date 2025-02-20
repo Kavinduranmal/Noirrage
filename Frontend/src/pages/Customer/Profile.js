@@ -32,22 +32,19 @@ const Profile = () => {
 
   useEffect(() => {
     if (!token) {
-     
       return;
     }
 
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(
-          "http://13.50.4.1:5000/api/auth/profileview",
+          "http://51.21.127.196:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(data);
         setName(data.name);
         setEmail(data.email);
       } catch (error) {
-       
-       
       } finally {
         setPendingRequests((prev) => prev - 1); // Reduce pending requests
       }
@@ -74,7 +71,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.put(
-        "http://13.50.4.1:5000/api/auth/profiledit",
+        "http://51.21.127.196:5000/api/auth/profiledit",
         { name, email },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,9 +92,7 @@ const Profile = () => {
     <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
       <FullWidthSection>
         {loading ? (
-          <Box >
-            
-          </Box>
+          <Box></Box>
         ) : user ? (
           <Card
             sx={{
@@ -178,61 +173,59 @@ const Profile = () => {
         <Orderstatus />
         {/* Edit Profile Modal */}
 
-         {/* Edit Profile Modal */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            background: "linear-gradient(90deg, #232526, #232526)",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            "& label": { color: "gray" }, // Default label color
+        {/* Edit Profile Modal */}
+        <Modal open={open} onClose={handleClose}>
+          <Box
+            sx={{
+              background: "linear-gradient(90deg, #232526, #232526)",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              "& label": { color: "gray" }, // Default label color
               "& label.Mui-focused": { color: "white" }, // Focused label color
               "& input": { color: "white" }, // User-typed text color
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "gray" }, // Default border color
               },
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Edit Profile
-          </Typography>
-          <TextField
-            fullWidth
-            label="Name"
-            variant="outlined"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Email"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Button
-            
-            
-            onClick={handleUpdateProfile}
-            sx={{
-              bgcolor: "gold",
-              color: "black",
-              fontWeight: "bold",
-              "&:hover": { bgcolor: "gray" },
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
             }}
           >
-            Save Changes
-          </Button>
-        </Box>
-      </Modal>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Edit Profile
+            </Typography>
+            <TextField
+              fullWidth
+              label="Name"
+              variant="outlined"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              onClick={handleUpdateProfile}
+              sx={{
+                bgcolor: "gold",
+                color: "black",
+                fontWeight: "bold",
+                "&:hover": { bgcolor: "gray" },
+              }}
+            >
+              Save Changes
+            </Button>
+          </Box>
+        </Modal>
 
         <Divider
           sx={{

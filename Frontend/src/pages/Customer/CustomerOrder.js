@@ -45,7 +45,9 @@ const OrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("http://13.50.4.1:5000/api/products");
+      const { data } = await axios.get(
+        "http://51.21.127.196:5000/api/products"
+      );
       const selected = data.find((p) => p._id === productId);
       setSelectedProduct(selected);
       setAvailableColors(selected.colors || []);
@@ -78,7 +80,7 @@ const OrderForm = () => {
     };
 
     try {
-      await axios.post("http://13.50.4.1:5000/api/orders", orderData, {
+      await axios.post("http://51.21.127.196:5000/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order Placed Successfully!");
@@ -154,7 +156,7 @@ const OrderForm = () => {
                 {/* Main Image Preview */}
                 <CardMedia
                   component="img"
-                  image={`http://13.50.4.1:5000${selectedProduct.images[selectedImageIndex]}`}
+                  image={`http://51.21.127.196:5000${selectedProduct.images[selectedImageIndex]}`}
                   alt={selectedProduct.name}
                   sx={{ borderRadius: "10px", marginBottom: "10px" }}
                 />
@@ -178,7 +180,7 @@ const OrderForm = () => {
                       height: 50,
                       border: "1px solid black",
                       borderRadius: "3px",
-                      backgroundImage: `url(http://13.50.4.1:5000${img})`,
+                      backgroundImage: `url(http://51.21.127.196:5000${img})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       border:
