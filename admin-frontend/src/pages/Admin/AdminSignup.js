@@ -1,23 +1,23 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import for navigation
-import { toast } from "react-toastify"; // Import Toast
 import axios from "axios";
 import {
-  Container,
   TextField,
+  InputAdornment,
   Button,
+  Container,
   Typography,
   Box,
   IconButton,
-  InputAdornment,
 } from "@mui/material";
-import {
-  FcAdvertising,
-  FcBusinessman,
-  FcCellPhone,
-  FcLock,
-  FcUnlock,
-} from "react-icons/fc";
+import { FcCellPhone,} from "react-icons/fc";
+import { Link } from "react-router-dom";
+import { IoEye } from "react-icons/io5";
+import { IoMdEyeOff } from "react-icons/io";
+import { FaUserAlt } from "react-icons/fa";
+import { MdOutlineMail } from "react-icons/md";
+import { useNavigate } from "react-router-dom"; // Import for navigation
+import { toast } from "react-toastify"; // Import Toast
+import logo from "../../images/logo.png";
 
 const Signup = () => {
   const navigate = useNavigate(); // Hook for navigation
@@ -54,44 +54,93 @@ const Signup = () => {
   };
 
   return (
+    <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center", // Center horizontally
+            alignItems: "center", // Center vertically
+            height: "100vh", // Full viewport height
+          }}
+        >
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>
-          Admin Signup
+      <Box
+       sx={{
+        
+        p: 4,
+        boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.88)", // Slightly deeper shadow on hover
+        borderRadius: 3,
+        background: "linear-gradient(90deg, #232526, #414345)", // Smooth gradient
+        textAlign: "center",
+    
+       
+      }}
+      >
+        {/* 🔥 Logo Image */}
+        <img
+          src={logo}
+          alt="Brand Logo"
+          style={{ width: 140, marginBottom: 15 }}
+        />
+
+        <Typography
+          variant="h5"
+          sx={{ fontFamily: "'Raleway', sans-serif", fontSize: "2em" }}
+          color="#fdc200"
+          gutterBottom
+        >
+          Create an Account
         </Typography>
+
         <form onSubmit={handleSubmit}>
           <TextField
+            fullWidth
             label="Name"
             name="name"
-            fullWidth
             margin="normal"
             required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <FcBusinessman style={{ fontSize: "25px" }} />
+                  <FaUserAlt size={20} color="gray" />
                 </InputAdornment>
               ),
             }}
+            sx={{
+              "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
+            }}
             onChange={handleChange}
           />
+
           <TextField
+            fullWidth
             label="Email"
             name="email"
             type="email"
-            fullWidth
             margin="normal"
             required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <FcAdvertising style={{ fontSize: "25px" }} />
+                  <MdOutlineMail color="gray" size={25} />
                 </InputAdornment>
               ),
             }}
+            sx={{
+              "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
+            }}
             onChange={handleChange}
           />
-          <TextField
+<TextField
             label="Phone"
             name="phone"
             fullWidth
@@ -100,43 +149,85 @@ const Signup = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <FcCellPhone style={{ fontSize: "25px" }} />
+                  {/* <FcCellPhone style={{ fontSize: "25px" }} /> */}
                 </InputAdornment>
               ),
+            }}
+            sx={{
+              "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
             }}
             onChange={handleChange}
           />
           <TextField
+            fullWidth
             label="Password"
             name="password"
-            type={showPassword ? "text" : "password"} // Fix for password visibility toggle
+            type={showPassword ? "text" : "password"}
+            margin="normal"
+            required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={handleTogglePassword} edge="end">
-                    {showPassword ? <FcUnlock /> : <FcLock />}
+                    {showPassword ? (
+                      <IoMdEyeOff color="gray" size={25} />
+                    ) : (
+                      <IoEye size={25} color="gray" />
+                    )}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
-            fullWidth
-            margin="normal"
-            required
+            sx={{
+              "& label": { color: "gray" }, // Default label color
+              "& label.Mui-focused": { color: "white" }, // Focused label color
+              "& input": { color: "white" }, // User-typed text color
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" }, // Default border color
+              },
+            }}
+            onCha
             onChange={handleChange}
           />
+          <Typography color="gray" sx={{ mt: 1 }}>
+            Already have an account?{" "}
+            <Link
+              to="/"
+              style={{
+                color: "#003cff",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Log in
+            </Link>
+          </Typography>
+
           <Button
-            variant="contained"
-            color="primary"
             type="submit"
             fullWidth
-            sx={{ mt: 2 }}
+            variant="contained"
+            sx={{
+              mt: 3,
+              bgcolor: "black",
+              color: "white",
+              fontWeight: "bold",
+              "&:hover": { bgcolor: "gray" },
+            }}
           >
-            Register
+            Sign Up
           </Button>
         </form>
       </Box>
-    </Container>
+    </Container></Box>
   );
 };
 
 export default Signup;
+
+//.raleway { font-family: 'Raleway', sans-serif; }
