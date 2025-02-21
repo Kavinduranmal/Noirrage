@@ -13,19 +13,22 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [pendingRequests, setPendingRequests] = useState(2); // Track API requests
+const navigate = useNavigate();
 
   const token = localStorage.getItem("userToken"); // Get token once
 
   useEffect(() => {
     if (!token) {
-      return;
-    }
-
+          toast.error("Unauthorized! Please log in.");
+          navigate("/user/Login")
+          return;
+        }
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(

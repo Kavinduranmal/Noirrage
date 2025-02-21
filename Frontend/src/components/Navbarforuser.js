@@ -95,6 +95,7 @@ const Navbar = () => {
             component={NavLink}
             to={link.path}
             sx={{
+              color: "white",
               "&.active > .MuiListItemText-root > span": { color: "#FFEB3B" },
             }}
           >

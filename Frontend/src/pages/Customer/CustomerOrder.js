@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   Card,
+  LinearProgress,
   IconButton,
   CardMedia,
   ToggleButton,
@@ -19,6 +20,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const OrderForm = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const productId = location.state?.productId || null;
   const [step, setStep] = useState(1); // Track current step
@@ -38,6 +40,14 @@ const OrderForm = () => {
   const token = localStorage.getItem("userToken"); // Get token from localStorage
 
   useEffect(() => {
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      navigate("/user/Login")
+      return;
+    }
+
+
+
     if (productId) {
       fetchProduct();
     }
@@ -54,15 +64,18 @@ const OrderForm = () => {
       setAvailableSizes(selected.sizes || []);
     } catch (error) {
       console.error("Error fetching product details:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
-    if (!token) {
-      toast.error("Unauthorized! Please log in.");
-      return;
-    }
+   if (!token) {
+         toast.error("Unauthorized! Please log in.");
+         navigate("/user/Login")
+         return;
+       }
 
     // Prepare order data with multiple images
     const orderData = {
@@ -102,10 +115,21 @@ const OrderForm = () => {
     !selectedProduct.images ||
     selectedProduct.images.length === 0
   ) {
-    return <p>No images available</p>;
+    return <p> {loading && (
+      <Box sx={{ width: "100%", mb: 2 }}>
+        <LinearProgress
+          sx={{
+            backgroundColor: "black",
+            borderRadius: 10,
+            "& .MuiLinearProgress-bar": { backgroundColor: "gold" },
+          }}
+        />
+      </Box>
+    )}</p>;
   }
 
   return (
+    
     <Box
       sx={{
         display: 'flex',
@@ -115,6 +139,7 @@ const OrderForm = () => {
         mt:3,
       }}
     >
+      
       <Container maxWidth="xl">
         <Box
           sx={{

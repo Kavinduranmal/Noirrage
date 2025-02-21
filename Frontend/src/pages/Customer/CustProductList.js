@@ -29,6 +29,7 @@ const ProductList = () => {
   const token = localStorage.getItem("userToken"); // Get token from localStorage
 
   useEffect(() => {
+    
     fetchProducts();
   }, []);
 
@@ -50,9 +51,11 @@ const ProductList = () => {
   };
 
   const handleAddToCart = async (productId) => {
-    if (!token) {
-      return;
-    }
+   if (!token) {
+         toast.error("Unauthorized! Please log in.");
+         navigate("/user/Login")
+         return;
+       }
 
     try {
       await axios.post(

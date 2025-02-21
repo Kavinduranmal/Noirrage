@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import ViewAllcart from "./ViewAllcart";
 import { styled } from "@mui/system";
 import { Person, Email, Edit } from "@mui/icons-material";
@@ -25,12 +26,14 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("userToken");
 
   useEffect(() => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
+      navigate("/user/Login")
       return;
     }
 

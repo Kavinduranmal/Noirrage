@@ -89,6 +89,7 @@ const settings = {
   autoplaySpeed: 2000,
   pauseOnHover: true,
   fade: true,
+  arrows: false, // This will hide the navigation arrows
 };
 
 // Array of 10 images for the slideshow

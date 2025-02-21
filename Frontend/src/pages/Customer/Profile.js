@@ -17,6 +17,7 @@ import ViewAllcart from "./ViewAllcart";
 import { styled } from "@mui/system";
 import { Person, Email, Edit } from "@mui/icons-material";
 import Orderstatus from "./OrderStatus";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -25,12 +26,16 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [pendingRequests, setPendingRequests] = useState(2);
-
+const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
   const token = localStorage.getItem("userToken");
 
   useEffect(() => {
-    if (!token) return;
+   if (!token) {
+         toast.error("Unauthorized! Please log in.");
+         navigate("/user/Login")
+         return;
+       }
 
     const fetchProfile = async () => {
       try {

@@ -24,6 +24,7 @@ const Cart = () => {
   useEffect(() => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
+      navigate("/user/Login");
       setLoading(false);
       return;
     }
@@ -160,7 +161,9 @@ const Cart = () => {
                           height="250"
                           width="250"
                           image={`http://51.21.127.196:5000${
-                            item.product?.images[productImageState[item._id] || 0]
+                            item.product?.images[
+                              productImageState[item._id] || 0
+                            ]
                           }`}
                           alt={item.product?.name}
                           id={`image-${item._id}`}
@@ -175,7 +178,7 @@ const Cart = () => {
                           onMouseLeave={() => handleImageHover(item._id, false)}
                         />
                       </Card>
-  
+
                       {/* Product Details */}
                       <Box
                         sx={{
@@ -228,7 +231,7 @@ const Cart = () => {
                     </Typography>
                   )}
                 </CardContent>
-  
+
                 {/* Buttons */}
                 <Box
                   sx={{
@@ -256,7 +259,7 @@ const Cart = () => {
                       Order Now
                     </Button>
                   ) : null}
-  
+
                   <Button
                     variant="contained"
                     color="primary"
