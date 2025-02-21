@@ -1,24 +1,38 @@
-import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-} from "@mui/material";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Button } from "@mui/material";
+import { NavLink, useNavigate } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import logo from "../images/logo.png";
-import { useNavigate } from "react-router-dom"; // Import for navigation
+import logo from "../images/logo.png"; // Adjust import path
 
-const Navbar = ({ showNavBar }) => {
+const Navbar = () => {
+  const [showNavBar, setShowNavBar] = useState(true);
   const isMobile = useMediaQuery("(max-width: 900px)");
   const navigate = useNavigate();
+
+  // Scroll-based Nav Logic
+  useEffect(() => {
+    let prevScrollPos = window.pageYOffset;
+
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      // If user scrolls up, show; scrolls down, hide
+      if (prevScrollPos > currentScrollPos) {
+        setShowNavBar(true);
+      } else {
+        setShowNavBar(false);
+      }
+      prevScrollPos = currentScrollPos;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = (userType) => {
     if (userType === "user") {
       localStorage.removeItem("userToken");
     }
-
-    navigate("/user/Login"); // Redirect to home after logout
+    navigate("/user/Login"); // Redirect after logout
   };
 
   const navLinks = [
@@ -28,7 +42,7 @@ const Navbar = ({ showNavBar }) => {
     { path: "/Myorders", label: "My Orders" },
     { path: "/Profile", label: "My Profile" },
     { path: "/AboutUs", label: "About Us" },
-    { path: "/ContactUs", label: "Contact US" },
+    { path: "/ContactUs", label: "Contact Us" },
   ];
 
   return (
@@ -37,7 +51,7 @@ const Navbar = ({ showNavBar }) => {
         position: "sticky",
         top: showNavBar ? 0 : "-100px",
         zIndex: 1100,
-        background: "linear-gradient(90deg,rgb(46, 46, 46),rgb(37, 37, 37))",
+        background: "linear-gradient(90deg, rgb(46, 46, 46), rgb(37, 37, 37))",
         transition: "top 0.3s ease-in-out, background 0.5s ease-in-out",
         padding: 2,
         display: "flex",
@@ -63,23 +77,29 @@ const Navbar = ({ showNavBar }) => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center", // Center horizontally
-            justifyContent: "center", // Center vertically
+            alignItems: "center",
+            justifyContent: "center",
             gap: 2,
             width: "100%",
-            height: "100vh", // Full viewport height
+            height: "100vh",
             position: "fixed",
-            top: 0,
+            // Slide up logic:
+            top: showNavBar ? 0 : "-100vh",
             left: 0,
-            background: "linear-gradient(90deg,rgb(46, 46, 46),rgb(37, 37, 37))",
+            background: "linear-gradient(90deg, rgb(46, 46, 46), rgb(37, 37, 37))",
             zIndex: 1200,
+            transition: "top 0.3s ease-in-out",
           }}
         >
           {navLinks.map((link) => (
             <NavLink
               key={link.path}
               to={link.path}
-              style={{ textDecoration: "none", width: "100%", textAlign: "center" }}
+              style={{
+                textDecoration: "none",
+                width: "100%",
+                textAlign: "center",
+              }}
             >
               {({ isActive }) => (
                 <Typography
@@ -111,8 +131,7 @@ const Navbar = ({ showNavBar }) => {
               "&:hover": {
                 color: "red",
                 transform: "scale(1.1)",
-                transition:
-                  "transform 0.2s ease-in-out, color 0.3s ease-in-out",
+                transition: "transform 0.2s ease-in-out, color 0.3s ease-in-out",
               },
               padding: "8px 16px",
             }}
@@ -121,15 +140,16 @@ const Navbar = ({ showNavBar }) => {
           </Button>
         </Box>
       ) : (
+        // Desktop Menu
         <Box sx={{ display: "flex", textAlign: "center", gap: 8 }}>
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center", // Centers all nav links
+              justifyContent: "center",
               alignItems: "center",
               gap: 5,
-              mr: 20,
-              flexWrap: "wrap", // Ensures wrapping on small screens
+              mr: 33,
+              flexWrap: "wrap", // ensures wrapping on smaller desktops
             }}
           >
             {navLinks.map((link) => (
@@ -162,7 +182,6 @@ const Navbar = ({ showNavBar }) => {
 
           <Button
             onClick={() => handleLogout("user")}
-            to="/"
             sx={{
               fontSize: "1rem",
               fontWeight: "500",
@@ -170,8 +189,7 @@ const Navbar = ({ showNavBar }) => {
               "&:hover": {
                 color: "red",
                 transform: "scale(1.1)",
-                transition:
-                  "transform 0.2s ease-in-out, color 0.3s ease-in-out",
+                transition: "transform 0.2s ease-in-out, color 0.3s ease-in-out",
               },
             }}
           >

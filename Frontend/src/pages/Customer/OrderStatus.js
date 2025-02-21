@@ -29,7 +29,7 @@ const Profile = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http:///localhost:5000/api/orders/byid",
+          "http:///51.21.127.196:5000/api/orders/byid",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);

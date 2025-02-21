@@ -36,13 +36,13 @@ const Profile = () => {
 
     // Create promises for all API requests
     const fetchProfile = axios.get(
-      "http://localhost:5000/api/auth/profileview",
+      "http://51.21.127.196:5000/api/auth/profileview",
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    const fetchOrders = axios.get("http://localhost:5000/api/orders", {
+    const fetchOrders = axios.get("http://51.21.127.196:5000/api/orders", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    const fetchCart = axios.get("http://localhost:5000/api/cart", {
+    const fetchCart = axios.get("http://51.21.127.196:5000/api/cart", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

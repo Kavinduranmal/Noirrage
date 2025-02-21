@@ -8,9 +8,8 @@ import {
   Modal,
   Divider,
   Box,
-  Fade,
-  LinearProgress,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -25,15 +24,13 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
-  const [pendingRequests, setPendingRequests] = useState(2); // Track API requests
+  const [pendingRequests, setPendingRequests] = useState(2);
 
-  const token = localStorage.getItem("userToken"); // Get token once
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const token = localStorage.getItem("userToken");
 
   useEffect(() => {
-    if (!token) {
-      return;
-    }
+    if (!token) return;
 
     const fetchProfile = async () => {
       try {
@@ -45,30 +42,45 @@ const Profile = () => {
         setName(data.name);
         setEmail(data.email);
       } catch (error) {
+        console.error("Error fetching profile:", error);
       } finally {
-        setPendingRequests((prev) => prev - 1); // Reduce pending requests
+        setPendingRequests((prev) => prev - 1);
       }
     };
 
     fetchProfile();
   }, [token]);
 
-  // Set loading to false when all requests complete
   useEffect(() => {
     if (pendingRequests === 0) {
       setLoading(false);
     }
   }, [pendingRequests]);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const updateProfileLive = async (field, value) => {
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      return;
+    }
+    try {
+      const { data } = await axios.put(
+        "http://51.21.127.196:5000/api/auth/profiledit",
+        { [field]: value },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setUser(data);
+      toast.success("Profile updated!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile.");
+    }
+  };
 
   const handleUpdateProfile = async () => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
       return;
     }
-
     try {
       const { data } = await axios.put(
         "http://51.21.127.196:5000/api/auth/profiledit",
@@ -80,46 +92,51 @@ const Profile = () => {
       handleClose();
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error(error.response?.data?.message || "Failed to update profile.");
+      toast.error("Failed to update profile.");
     }
   };
 
-  const FullWidthSection = styled(Box)({
-    width: "100%", // Ensures full width
-    padding: "40px 0", // Adds spacing on top and bottom
-  });
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const FullWidthSection = styled(Box)(({ theme }) => ({
+    width: "100%",
+    padding: theme.spacing(5, 0),
+  }));
+
   return (
-    <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
+    <Container maxWidth={false} >
       <FullWidthSection>
         {loading ? (
-          <Box></Box>
+          <Box>Loading...</Box>
         ) : user ? (
           <Card
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", sm: "row" },
               alignItems: "center",
               justifyContent: "space-between",
-              px: 1.5,
-              mb: 5,
+              p: { xs: 1, sm: 2 },
+              mb: { xs: 3, sm: 5 },
               bgcolor: "rgba(163, 164, 74, 0.3)",
               borderRadius: 20,
               color: "black",
-
               border: "1px solid rgba(255, 215, 0, 0.2)",
             }}
           >
             <CardContent
               sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: { xs: "column", sm: "row" },
                 alignItems: "center",
-                gap: 3,
+                gap: { xs: 2, sm: 3 },
                 flexGrow: 1,
+                width: "100%",
+                textAlign: { xs: "center", sm: "left" },
               }}
             >
               <Typography
-                variant="h6"
+                variant={isMobile ? "body1" : "h6"}
                 sx={{
                   fontWeight: "bold",
                   letterSpacing: 1,
@@ -128,10 +145,10 @@ const Profile = () => {
                   gap: 1,
                 }}
               >
-                <Person sx={{ ml: 1, color: "black" }} /> {user.name}
+                <Person sx={{ color: "black" }} /> {user.name}
               </Typography>
               <Typography
-                variant="h6"
+                variant={isMobile ? "body1" : "h6"}
                 sx={{
                   fontWeight: "bold",
                   letterSpacing: 1,
@@ -140,23 +157,21 @@ const Profile = () => {
                   gap: 1,
                 }}
               >
-                <Email sx={{ ml: 5, color: "black" }} /> {user.email}
+                <Email sx={{ color: "black" }} /> {user.email}
               </Typography>
             </CardContent>
-
             <Button
               variant="contained"
               onClick={handleOpen}
               sx={{
-                height: "45px",
-                minWidth: "130px",
+                
                 bgcolor: "gold",
                 color: "black",
                 fontWeight: "bold",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                borderRadius: 50,
+               
+               
+                borderRadius: "50px",
+                mt: { xs: 2, sm: 0 },
                 "&:hover": {
                   bgcolor: "black",
                   color: "gold",
@@ -171,30 +186,29 @@ const Profile = () => {
         )}
 
         <Orderstatus />
-        {/* Edit Profile Modal */}
 
         {/* Edit Profile Modal */}
         <Modal open={open} onClose={handleClose}>
           <Box
             sx={{
-              background: "linear-gradient(90deg, #232526, #232526)",
+              background: "linear-gradient(90deg, #232526, #414345)",
               position: "absolute",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
-              "& label": { color: "gray" }, // Default label color
-              "& label.Mui-focused": { color: "white" }, // Focused label color
-              "& input": { color: "white" }, // User-typed text color
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "gray" }, // Default border color
-              },
+              width: { xs: "90%", sm: 400 },
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
+              "& label": { color: "gray" },
+              "& label.Mui-focused": { color: "white" },
+              "& input": { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "gray" },
+              },
             }}
           >
-            <Typography variant="h6" sx={{ mb: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
               Edit Profile
             </Typography>
             <TextField
@@ -215,7 +229,9 @@ const Profile = () => {
             />
             <Button
               onClick={handleUpdateProfile}
+              variant="contained"
               sx={{
+                width: "100%",
                 bgcolor: "gold",
                 color: "black",
                 fontWeight: "bold",

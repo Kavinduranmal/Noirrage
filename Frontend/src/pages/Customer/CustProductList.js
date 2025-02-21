@@ -35,7 +35,7 @@ const ProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/products/"
+        "http://51.21.127.196:5000/api/products/"
       );
       setProducts(response.data);
     } catch (error) {
