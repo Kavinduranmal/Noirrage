@@ -36,13 +36,13 @@ const Profile = () => {
 
     // Create promises for all API requests
     const fetchProfile = axios.get(
-      "http://51.21.127.196:5000/api/auth/profileview",
+      "http://localhost:5000/api/auth/profileview",
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    const fetchOrders = axios.get("http://51.21.127.196:5000/api/orders", {
+    const fetchOrders = axios.get("http://localhost:5000/api/orders", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    const fetchCart = axios.get("http://51.21.127.196:5000/api/cart", {
+    const fetchCart = axios.get("http://localhost:5000/api/cart", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -86,7 +86,6 @@ const Profile = () => {
     width: "100%",
     padding: "40px 0",
   });
-
   return (
     <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
       <FullWidthSection>
@@ -99,8 +98,8 @@ const Profile = () => {
           <Card
             sx={{
               display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
+              alignItems: { xs: "flex-start", sm: "center" }, // Align left on mobile, center on larger screens
               justifyContent: "space-between",
               px: 1.5,
               mb: 5,
@@ -108,15 +107,17 @@ const Profile = () => {
               borderRadius: 20,
               color: "black",
               border: "1px solid rgba(255, 215, 0, 0.2)",
+              width: "100%",
             }}
           >
             <CardContent
               sx={{
                 display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 3,
+                flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
+                alignItems: { xs: "flex-start", sm: "center" }, // Align left on mobile, center on larger screens
+                gap: { xs: 1, sm: 3 }, // Smaller gap on mobile
                 flexGrow: 1,
+                width: "100%",
               }}
             >
               <Typography
@@ -141,7 +142,8 @@ const Profile = () => {
                   gap: 1,
                 }}
               >
-                <Email sx={{ ml: 5, color: "black" }} /> {user.email}
+                <Email sx={{ ml: { xs: 0, sm: 5 }, color: "black" }} />{" "}
+                {user.email}
               </Typography>
             </CardContent>
 
@@ -162,6 +164,9 @@ const Profile = () => {
                   bgcolor: "black",
                   color: "gold",
                 },
+                mt: { xs: 2, sm: 0 }, // Margin top on mobile
+                mb: { xs: 2, sm: 0 }, // Margin bottom on mobile
+                alignSelf: { xs: "center", sm: "auto" }, // Center button on mobile
               }}
             >
               <Edit /> Edit Profile
@@ -183,7 +188,7 @@ const Profile = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
+              width: { xs: "90%", sm: 400 }, // Responsive width
               "& label": { color: "gray" },
               "& label.Mui-focused": { color: "white" },
               "& input": { color: "white" },

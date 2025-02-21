@@ -80,7 +80,7 @@ const OrderForm = () => {
     };
 
     try {
-      await axios.post("http://51.21.127.196:5000/api/orders", orderData, {
+      await axios.post("http://localhost:5000/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order Placed Successfully!");

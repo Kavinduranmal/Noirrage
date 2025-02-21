@@ -29,7 +29,7 @@ const Profile = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http://51.21.127.196:5000/api/orders/byid",
+          "http:///localhost:5000/api/orders/byid",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);
@@ -112,8 +112,7 @@ const Profile = () => {
         ) : (
           <Typography></Typography>
         )}
-        {/* <Divider sx={{ backgroundColor: "#FFD700", height: "0.8px", my: 2 }} /> */}
-
+  
         <Typography
           variant="h3"
           textAlign="center"
@@ -137,13 +136,13 @@ const Profile = () => {
               <Card
                 key={order._id}
                 sx={{
-                  width: "550px",
+                  width: { xs: "100%", sm: "550px" }, // Full width on mobile, fixed width on larger screens
                   border: "0.5px solid rgba(100, 100, 100, 0.41)",
                   background: "linear-gradient(135deg, #232526, #414345)",
                   boxShadow: "0 6px 15px rgba(0, 0, 0, 0.7)",
                   borderRadius: "15px",
                   p: 1,
-                  m: 2,
+                  m: { xs: 1, sm: 2 }, // Smaller margin on mobile
                   textAlign: "center",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 }}
@@ -173,7 +172,8 @@ const Profile = () => {
                     mt={2}
                     sx={{
                       display: "flex",
-                      alignItems: "center",
+                      flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
+                      alignItems: { xs: "center", sm: "flex-start" }, // Center on mobile, align left on larger screens
                       color: "#fff",
                       gap: 2,
                     }}
@@ -182,7 +182,10 @@ const Profile = () => {
                     {order?.products?.map((item) => (
                       <Card
                         key={item?.product?._id}
-                        sx={{ maxWidth: 210, perspective: "1000px" }}
+                        sx={{
+                          maxWidth: { xs: "100%", sm: 210 }, // Full width on mobile, fixed width on larger screens
+                          perspective: "1000px",
+                        }}
                       >
                         <CardMedia
                           component="img"
@@ -210,20 +213,22 @@ const Profile = () => {
                         />
                       </Card>
                     ))}
-
+  
                     {/* Details in a Column */}
                     <Box
                       sx={{
-                        ml: 5,
+                        ml: { xs: 0, sm: 5 }, // No margin on mobile, margin on larger screens
                         display: "flex",
                         flexDirection: "column",
                         gap: 2,
+                        textAlign: { xs: "center", sm: "left" }, // Center text on mobile
                       }}
                     >
                       <Typography
                         variant="h6"
                         display="flex"
                         alignItems="center"
+                        justifyContent={{ xs: "center", sm: "flex-start" }} // Center on mobile, align left on larger screens
                       >
                         Status:
                         <Typography
@@ -247,7 +252,7 @@ const Profile = () => {
                           }}
                         />
                       </Typography>
-
+  
                       <Typography variant="h5">
                         Price: ${order.totalPrice}
                       </Typography>
@@ -257,7 +262,7 @@ const Profile = () => {
                       </Typography>
                     </Box>
                   </Box>
-
+  
                   <Button
                     variant="contained"
                     sx={{
@@ -266,6 +271,7 @@ const Profile = () => {
                       background: "gold",
                       mt: 2,
                       "&:hover": { background: "red" },
+                      width: { xs: "100%", sm: "auto" }, // Full width on mobile, auto on larger screens
                     }}
                     onClick={(event) =>
                       handleCancelOrder(order._id, order.status, event)
