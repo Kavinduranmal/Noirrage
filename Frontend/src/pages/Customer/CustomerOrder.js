@@ -111,12 +111,14 @@ const OrderForm = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        mb:3,
+        mt:3,
       }}
     >
       <Container maxWidth="xl">
         <Box
           sx={{
+           
             p: 3,
             position: 'relative',
             boxShadow: '0px 12px 20px rgba(0, 0, 0, 0.88)',
