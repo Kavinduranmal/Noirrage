@@ -16,7 +16,7 @@ import CustomerOrder from "./pages/Customer/CustomerOrder";
 import ViewAllcart from "./pages/Customer/ViewAllcart";
 import Profile from "./pages/Customer/Profile";
 import Orderstatus from "./pages/Customer/OrderStatus";
-import Myorders from "./pages/Customer/Myorders";
+
 
 // Other Imports
 import NavBarforuser from "./components/Navbarforuser";
@@ -44,7 +44,7 @@ const Layout = () => {
         <Route path="/CustomerOrder" element={<CustomerOrder />} />
         <Route path="/ViewAllcart" element={<ViewAllcart />} />
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/Myorders" element={<Myorders />} />
+
         <Route path="/userorders" element={<Orderstatus />} />
 
         {/* Other Routes */}

@@ -94,15 +94,12 @@ const Profile = () => {
     padding: theme.spacing(5, 0),
   }));
 
-  if (loading) {
-    return <Box>Loading...</Box>; // Early return for loading state
-  }
 
   return (
     <Container maxWidth={false}>
       <FullWidthSection>
         {loading ? (
-          <Box>Loading...</Box>
+          <Box>Loading your profile...</Box>
         ) : user ? (
           <Card
             sx={{

@@ -50,7 +50,7 @@ const Navbar = () => {
     { path: "/", label: "Home" },
     { path: "/CustProductList", label: "Feed" },
     { path: "/ViewAllcart", label: "My Cart" },
-    { path: "/Myorders", label: "My Orders" },
+    { path: "/userorders", label: "My Orders" },
     { path: "/Profile", label: "My Profile" },
     { path: "/AboutUs", label: "About Us" },
     { path: "/ContactUs", label: "Contact Us" },
