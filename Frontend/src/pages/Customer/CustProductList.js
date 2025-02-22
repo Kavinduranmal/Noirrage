@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   IconButton,
+  Divider,
   LinearProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -110,12 +111,12 @@ const ProductList = () => {
             >
               <Card
                 sx={{
-                  width: { xs: "100%", sm: "80%" }, // Full width on mobile, 80% on larger screens
+                  width: { xs: "100%", sm: "90%" }, // Full width on mobile, 80% on larger screens
                   border: "1px solid rgba(109, 109, 109, 0.34)",
                   display: "flex",
                   flexDirection: { xs: "row", sm: "column" }, // Row on mobile, column on larger screens
                   padding: "5px",
-                  margin: { sm: "30px" }, // Reduced margin on mobile
+                  margin: { sm: "10px" }, // Reduced margin on mobile
                   borderRadius: 2,
                   background: "linear-gradient(45deg, #232526, #414345)",
                   boxShadow: "0 4px 10px rgb(39, 38, 38)",
@@ -129,12 +130,13 @@ const ProductList = () => {
                     width: { xs: "40%", sm: "100%" }, // 40% width on mobile, full on larger screens
                     overflow: "hidden",
                     display: "flex",
+                    
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: 1,
                   }}
                 >
-                  <Card sx={{ maxWidth: { xs: 120, sm: 210 }, perspective: "1000px" }}>
+                  <Card sx={{ bgcolor:"white", height:"80%", maxWidth: { xs: 120, sm: 250 }, perspective: "1000px" }}>
                     <CardMedia
                       component="img"
                       height="100%"
@@ -171,13 +173,14 @@ const ProductList = () => {
                     variant="h6"
                     sx={{
                       fontFamily: "'Raleway', sans-serif",
-                      fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
+                      fontSize: { xs: "16px", sm: "25px", md: "30px" }, // Smaller on mobile
                     
-                      color: "#fdc200",
+                      color: "rgb(255, 255, 255);",
                     }}
                   >
                     {product.name}
                   </Typography>
+
                   <Typography
                     variant="body2" // Smaller variant for mobile
                     color="#d0d0d0"
