@@ -174,7 +174,7 @@ const Signup = () => {
           <Typography color="gray" sx={{ mt: 1 }}>
             Already have an account?{" "}
             <Link
-              to="/"
+              to="/user/Login"
               style={{
                 color: "#003cff",
                 textDecoration: "none",

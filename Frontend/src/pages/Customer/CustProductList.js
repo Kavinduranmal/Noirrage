@@ -233,7 +233,7 @@ const ProductList = () => {
                         </Typography>
                       </Button>
                     </Grid>
-                    <Grid item xs={2} sm={1}>
+                    <Grid item xs={2} sm={2}>
                       <Button
                         sx={{
                           bgcolor: "#00000000",

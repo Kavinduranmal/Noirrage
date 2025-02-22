@@ -31,6 +31,7 @@ const Profile = () => {
   const token = localStorage.getItem("userToken");
 
   useEffect(() => {
+    console.log("Token:", token); // Debug token
     if (!token) {
       toast.error("Unauthorized! Please log in.");
       navigate("/user/Login");
@@ -43,18 +44,20 @@ const Profile = () => {
           "http://51.21.127.196:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log("Fetched data:", data); // Debug API response
         setUser(data);
         setName(data.name);
         setEmail(data.email);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error fetching profile:", error.response || error); // Log detailed error
+        toast.error("Failed to fetch profile. Please try again.");
       } finally {
         setPendingRequests((prev) => prev - 1);
       }
     };
 
     fetchProfile();
-  }, [token]);
+  }, [token, navigate]); // Added navigate to deps (though unlikely to change)
 
   useEffect(() => {
     if (pendingRequests === 0) {
@@ -62,26 +65,8 @@ const Profile = () => {
     }
   }, [pendingRequests]);
 
-  const updateProfileLive = async (field, value) => {
-    if (!token) {
-      toast.error("Unauthorized! Please log in.");
-      return;
-    }
-    try {
-      const { data } = await axios.put(
-        "http://51.21.127.196:5000/api/auth/profiledit",
-        { [field]: value },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setUser(data);
-      toast.success("Profile updated!");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile.");
-    }
-  };
 
-  const handleUpdateProfile = async () => {
+   const handleUpdateProfile = async () => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
       return;
@@ -96,7 +81,7 @@ const Profile = () => {
       toast.success("Profile updated successfully!");
       handleClose();
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error("Error updating profile:", error.response || error);
       toast.error("Failed to update profile.");
     }
   };
@@ -108,6 +93,10 @@ const Profile = () => {
     width: "100%",
     padding: theme.spacing(5, 0),
   }));
+
+  if (loading) {
+    return <Box>Loading...</Box>; // Early return for loading state
+  }
 
   return (
     <Container maxWidth={false}>
