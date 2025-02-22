@@ -151,6 +151,7 @@ const Cart = () => {
                       {/* Product Image */}
                       <Card
                         sx={{
+                          
                           maxWidth: { xs: "100%", sm: 210 }, // Full width on mobile, fixed width on larger screens
                           perspective: "1000px",
                           mb: { xs: 2, sm: 0 }, // Margin bottom for mobile
@@ -158,7 +159,7 @@ const Cart = () => {
                       >
                         <CardMedia
                           component="img"
-                          height="250"
+                          height="280"
                           width="250"
                           image={`http://51.21.127.196:5000${
                             item.product?.images[
@@ -191,6 +192,7 @@ const Cart = () => {
                           variant="h4"
                           mb={2}
                           sx={{
+                            fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
                             fontFamily: "'Raleway', sans-serif",
                             color: "#f1c40f",
                           }}
@@ -200,6 +202,7 @@ const Cart = () => {
                         <Typography
                           variant="h7"
                           sx={{
+                            fontSize: { xs: "10px", sm: "14px", md: "16px" },
                             color: "white",
                             opacity: 0.8,
                           }}
@@ -211,10 +214,11 @@ const Cart = () => {
                           variant="h6"
                           sx={{
                             fontWeight: "700",
+                            fontSize: { xs: "12px", sm: "16px", md: "18px" },
                             color: "white",
                           }}
                         >
-                          Price: Rs {item.product?.price}
+                          Rs: {item.product?.price}
                         </Typography>
                       </Box>
                     </>
@@ -256,7 +260,13 @@ const Cart = () => {
                       }}
                       onClick={() => handleOrderNow(item.product?._id)}
                     >
-                      Order Now
+                      <Typography
+                                                sx={{
+                                                  color: "white",
+                                                  fontSize: { xs: "10px", sm: "14px", md: "16px" },
+                                                }}
+                                              >
+                      Order Now</Typography>
                     </Button>
                   ) : null}
 
@@ -266,13 +276,24 @@ const Cart = () => {
                     sx={{
                       bgcolor: "gold",
                       color: "black",
+                      fontSize: { xs: "10px", sm: "14px", md: "16px" },
                       fontWeight: "bold",
                       "&:hover": { bgcolor: "red" },
                       width: { xs: "80%", sm: "auto" }, // Full width on mobile, auto on larger screens
                     }}
                     onClick={() => handleRemoveFromCart(item._id)}
                   >
-                    Remove <DeleteIcon />
+                     <Typography
+                                                sx={{
+                                                 fontWeight:"bold",
+                                                  fontSize: { xs: "10px", sm: "14px", md: "16px" },
+                                                }}
+                                              >
+                    Remove <DeleteIcon sx={{
+                                                mb:-0.5, 
+                                                 fontSize: { xs: "15px", sm: "14px", md: "20px" },
+                                               }}/>
+                    </Typography>
                   </Button>
                 </Box>
               </Card>

@@ -19,16 +19,16 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [pendingRequests, setPendingRequests] = useState(2); // Track API requests
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("userToken"); // Get token once
 
   useEffect(() => {
     if (!token) {
-          toast.error("Unauthorized! Please log in.");
-          navigate("/user/Login")
-          return;
-        }
+      toast.error("Unauthorized! Please log in.");
+      navigate("/user/Login");
+      return;
+    }
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
@@ -115,7 +115,7 @@ const navigate = useNavigate();
         ) : (
           <Typography></Typography>
         )}
-  
+
         <Typography
           variant="h3"
           textAlign="center"
@@ -155,8 +155,9 @@ const navigate = useNavigate();
                   <Typography
                     variant="h4"
                     sx={{
+                      fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
                       color: "#FFD700",
-                      fontWeight: "bold",
+
                       textAlign: "left",
                       fontFamily: "'Raleway', sans-serif",
                     }}
@@ -216,14 +217,15 @@ const navigate = useNavigate();
                         />
                       </Card>
                     ))}
-  
+
                     {/* Details in a Column */}
                     <Box
                       sx={{
                         ml: { xs: 0, sm: 5 }, // No margin on mobile, margin on larger screens
+                        mt: { xs: 0, sm: 4 }, 
                         display: "flex",
                         flexDirection: "column",
-                        gap: 2,
+                        gap: 3,
                         textAlign: { xs: "center", sm: "left" }, // Center text on mobile
                       }}
                     >
@@ -237,7 +239,7 @@ const navigate = useNavigate();
                         <Typography
                           component="span" // Use span to keep it inline
                           sx={{
-                            fontSize: "1.3rem",
+                            fontSize: { xs: "12px", sm: "16px", md: "20px" },
                             color: order.status === "Shipped" ? "green" : "red",
                             ml: 1,
                           }} // Apply color & spacing
@@ -255,17 +257,27 @@ const navigate = useNavigate();
                           }}
                         />
                       </Typography>
-  
-                      <Typography variant="h5">
+
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontSize: { xs: "12px", sm: "16px", md: "18px" },
+                        }}
+                      >
                         Price: ${order.totalPrice}
                       </Typography>
-                      <Typography variant="body2" color="rgba(255,255,255,0.7)">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontSize: { xs: "12px", sm: "16px", md: "18px" },
+                        }}
+                      >
                         Ordered on:{" "}
                         {new Date(order.createdAt).toLocaleDateString()}
                       </Typography>
                     </Box>
                   </Box>
-  
+
                   <Button
                     variant="contained"
                     sx={{
@@ -274,13 +286,19 @@ const navigate = useNavigate();
                       background: "gold",
                       mt: 2,
                       "&:hover": { background: "red" },
-                      width: { xs: "100%", sm: "auto" }, // Full width on mobile, auto on larger screens
                     }}
                     onClick={(event) =>
                       handleCancelOrder(order._id, order.status, event)
                     }
                   >
-                    Cancel Order
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: { xs: "15px", sm: "14px", md: "18px" },
+                      }}
+                    >
+                      Cancel Order
+                    </Typography>
                   </Button>
                 </CardContent>
               </Card>

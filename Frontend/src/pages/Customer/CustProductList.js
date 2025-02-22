@@ -172,7 +172,7 @@ const ProductList = () => {
                     sx={{
                       fontFamily: "'Raleway', sans-serif",
                       fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
-                      fontWeight: "bold",
+                    
                       color: "#fdc200",
                     }}
                   >
