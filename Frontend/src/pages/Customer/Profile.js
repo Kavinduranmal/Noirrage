@@ -26,16 +26,16 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [pendingRequests, setPendingRequests] = useState(2);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
   const token = localStorage.getItem("userToken");
 
   useEffect(() => {
-   if (!token) {
-         toast.error("Unauthorized! Please log in.");
-         navigate("/user/Login")
-         return;
-       }
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      navigate("/user/Login");
+      return;
+    }
 
     const fetchProfile = async () => {
       try {
@@ -110,7 +110,7 @@ const navigate = useNavigate();
   }));
 
   return (
-    <Container maxWidth={false} >
+    <Container maxWidth={false}>
       <FullWidthSection>
         {loading ? (
           <Box>Loading...</Box>
@@ -118,72 +118,119 @@ const navigate = useNavigate();
           <Card
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
+              flexDirection: { xs: "column", sm: "row" }, // Column on mobile, row on desktop
               alignItems: "center",
               justifyContent: "space-between",
-              p: { xs: 1, sm: 2 },
-              mb: { xs: 3, sm: 5 },
-              bgcolor: "rgba(163, 164, 74, 0.3)",
-              borderRadius: 20,
-              color: "black",
-              border: "1px solid rgba(255, 215, 0, 0.2)",
+              p: { xs: 1, sm: 1 }, // Tighter padding on mobile
+              mb: { xs: 2, sm: 5 }, // Slightly less margin on mobile
+              bgcolor: "transparent", // Transparent base for gradient
+              background: {
+                xs:" rgba(255, 255, 0, 0.15)",
+                sm: " rgba(255, 255, 0, 0.15)",
+              },
+              borderRadius: { xs: 3, sm: 20 }, // Softer corners on mobile
+              color: "white", // White text for contrast
+              border: "1px solid rgba(255, 215, 0, 0.4)", // Brighter gold border
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.22)", // Deeper shadow for pop
+              transition: "all 0.3s ease",
+              "&:hover": {
+                boxShadow: { sm: "0 6px 20px rgba(255, 215, 0, 0.3)" }, // Glow on desktop hover
+              },
             }}
           >
             <CardContent
               sx={{
                 display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                alignItems: "center",
-                gap: { xs: 2, sm: 3 },
+                flexDirection: { xs: "row", sm: "row" }, // Row on both, but mobile adjusts
+                alignItems: { xs: "flex-start", sm: "center" },
+                gap: { xs: 1, sm: 3 }, // Tighter gap on mobile
                 flexGrow: 1,
                 width: "100%",
-                textAlign: { xs: "center", sm: "left" },
+                textAlign: { xs: "left", sm: "left" }, // Left-align consistently
+                padding: { xs: "8px !important", sm: "16px !important" }, // Override default padding
               }}
             >
-              <Typography
-                variant={isMobile ? "body1" : "h6"}
+              {/* Icon/Person Placeholder */}
+              <Box
                 sx={{
-                  fontWeight: "bold",
-                  letterSpacing: 1,
                   display: "flex",
                   alignItems: "center",
-                  gap: 1,
+                  justifyContent: "center",
+                  width: { xs: 40, sm: 50 },
+                  height: { xs: 40, sm: 50 },
+                  bgcolor: "rgba(255, 215, 0, 0.2)",
+                  borderRadius: "50%",
+                  mr: { xs: 1, sm: 2 },
                 }}
               >
-                <Person sx={{ color: "black" }} /> {user.name}
-              </Typography>
-              <Typography
-                variant={isMobile ? "body1" : "h6"}
+                <Person sx={{ color: "gold", fontSize: { xs: 24, sm: 30 } }} />
+              </Box>
+
+              {/* Text Content */}
+              <Box
                 sx={{
-                  fontWeight: "bold",
-                  letterSpacing: 1,
                   display: "flex",
-                  alignItems: "center",
-                  gap: 1,
+                  flexDirection: "column",
+                  flexGrow: 1,
                 }}
               >
-                <Email sx={{ color: "black" }} /> {user.email}
-              </Typography>
+                <Typography
+                  variant={isMobile ? "body1" : "h6"}
+                  sx={{
+                    fontWeight: "bold",
+                    letterSpacing: 0.5,
+                    color: "gold",
+                    fontSize: { xs: "14px", sm: "18px" }, // Smaller on mobile
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                  }}
+                ><Person sx={{ color: "gold", fontSize: { xs: 16, sm: 20 } }}/>
+                  {user.name}
+                </Typography>
+                <Typography
+                  variant={isMobile ? "body2" : "body1"}
+                  sx={{
+                    fontWeight: "medium",
+                    letterSpacing: 0.5,
+                    color: "gold",
+                    fontSize: { xs: "12px", sm: "16px" }, // Smaller on mobile
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    mt: { xs: 0.5, sm: 0 },
+                  }}
+                >
+                  <Email sx={{ color: "gold", fontSize: { xs: 16, sm: 20 } }} />
+                  {user.email}
+                </Typography>
+              </Box>
             </CardContent>
+
+            {/* Edit Button */}
             <Button
               variant="contained"
               onClick={handleOpen}
               sx={{
-                
                 bgcolor: "gold",
                 color: "black",
                 fontWeight: "bold",
-               
-               
-                borderRadius: "50px",
-                mt: { xs: 2, sm: 0 },
+                borderRadius: { xs: "25px", sm: "50px" }, // Slightly less round on mobile
+                width: { xs: "90%", sm: "auto" }, // Full-width on mobile
+                padding: { xs: "8px 16px", sm: "10px 20px" },
+                m: { xs: 1, sm: 0 }, // Margin on mobile for separation
+                boxShadow: "0 2px 10px rgba(255, 215, 0, 0.5)",
                 "&:hover": {
                   bgcolor: "black",
                   color: "gold",
+                  boxShadow: "0 4px 15px rgba(255, 215, 0, 0.7)",
+                },
+                "&:active": {
+                  transform: "scale(0.98)", // Subtle press effect
                 },
               }}
             >
-              <Edit /> Edit Profile
+              <Edit sx={{ mr: 1, fontSize: { xs: 16, sm: 20 } }} /> Edit Profile
             </Button>
           </Card>
         ) : (

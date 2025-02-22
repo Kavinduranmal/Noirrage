@@ -159,7 +159,7 @@ const OrderForm = () => {
               top: 8,
               right: 8,
               color: 'red',
-              backgroundColor: 'transparent',
+              backgroundColor: 'rgba(59, 0, 0, 0.24)',
               '&:hover': {
                 backgroundColor: 'rgba(255, 0, 0, 0.1)',
               },
@@ -187,7 +187,7 @@ const OrderForm = () => {
               <Card
                 sx={{
                   boxShadow: '0px 12px 20px rgb(0, 0, 0)',
-                  height: 500,
+                  height: "50%",
                   textAlign: 'center',
                   p: 2,
                 }}

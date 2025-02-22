@@ -29,7 +29,6 @@ const ProductList = () => {
   const token = localStorage.getItem("userToken"); // Get token from localStorage
 
   useEffect(() => {
-    
     fetchProducts();
   }, []);
 
@@ -51,11 +50,11 @@ const ProductList = () => {
   };
 
   const handleAddToCart = async (productId) => {
-   if (!token) {
-         toast.error("Unauthorized! Please log in.");
-         navigate("/user/Login")
-         return;
-       }
+    if (!token) {
+      toast.error("Unauthorized! Please log in.");
+      navigate("/user/Login");
+      return;
+    }
 
     try {
       await axios.post(
@@ -90,7 +89,7 @@ const ProductList = () => {
           />
         </Box>
       )}
-  
+
       <Grid container spacing={2} sx={{ justifyContent: "center" }}>
         {!loading && products.length === 0 ? (
           <Typography
@@ -104,29 +103,30 @@ const ProductList = () => {
           products.map((product) => (
             <Grid
               item
-              xs={6} // 2 cards per row on mobile
-              sm={6} // 2 cards per row on small screens
-              md={3} // 4 cards per row on medium screens
+              xs={10.5} // Full width on mobile for single-column rows
+              sm={5} // Original 2 cards per row on small screens
+              md={3} // Original 4 cards per row on medium screens
               key={product._id}
             >
               <Card
                 sx={{
-                  width: "80%", // Full width for mobile
+                  width: { xs: "100%", sm: "80%" }, // Full width on mobile, 80% on larger screens
                   border: "1px solid rgba(109, 109, 109, 0.34)",
                   display: "flex",
-                  flexDirection: "column",
-                  padding: "10px",
-                  margin: "20px", // Reduced margin for mobile
+                  flexDirection: { xs: "row", sm: "column" }, // Row on mobile, column on larger screens
+                  padding: "5px",
+                  margin: { sm: "30px" }, // Reduced margin on mobile
                   borderRadius: 2,
                   background: "linear-gradient(45deg, #232526, #414345)",
                   boxShadow: "0 4px 10px rgb(39, 38, 38)",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 }}
               >
+                {/* Image Section */}
                 <Box
                   sx={{
-                    height: { xs: 200, sm: 250, md: 350 }, // Responsive height
-                    width: "100%",
+                    height: { xs: 200, sm: 250, md: 350 }, // Smaller on mobile
+                    width: { xs: "40%", sm: "100%" }, // 40% width on mobile, full on larger screens
                     overflow: "hidden",
                     display: "flex",
                     justifyContent: "center",
@@ -134,41 +134,44 @@ const ProductList = () => {
                     borderRadius: 1,
                   }}
                 >
-                  <Card sx={{ maxWidth: 210, perspective: "1000px" }}>
+                  <Card sx={{ maxWidth: { xs: 120, sm: 210 }, perspective: "1000px" }}>
                     <CardMedia
                       component="img"
-                      height="100%" // Responsive height
+                      height="100%"
                       image={`http://51.21.127.196:5000${
                         product.images[productImageState[product._id] || 0]
-                      }`} // Dynamic image index for each product
+                      }`}
                       alt={product.name}
                       id={`image-${product._id}`}
                       sx={{
-                        transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
+                        transition: "transform 1.2s ease",
                         transformStyle: "preserve-3d",
                         ":hover": {
-                          transform: "rotateY(180deg)", // Rotate right to left
+                          transform: { xs: "none", sm: "rotateY(180deg)" }, // No hover effect on mobile
                         },
                       }}
-                      onMouseEnter={() => handleImageHover(product._id, true)} // Hover image
-                      onMouseLeave={() => handleImageHover(product._id, false)} // Default image
+                      onMouseEnter={() => handleImageHover(product._id, true)}
+                      onMouseLeave={() => handleImageHover(product._id, false)}
                     />
                   </Card>
                 </Box>
+
+                {/* Content Section */}
                 <CardContent
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    padding: "10px",
-                    textAlign: "center",
+                    padding: { xs: "8px", sm: "10px" }, // Tighter padding on mobile
+                    textAlign: { xs: "left", sm: "center" }, // Left-align on mobile, center on larger screens
+                    width: { xs: "60%", sm: "100%" }, // 60% width on mobile next to image
                   }}
                 >
                   <Typography
                     variant="h6"
                     sx={{
                       fontFamily: "'Raleway', sans-serif",
-                      fontSize: { xs: "20px", sm: "25px", md: "35px" }, // Responsive font size
+                      fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
                       fontWeight: 500,
                       color: "#fdc200",
                     }}
@@ -176,39 +179,46 @@ const ProductList = () => {
                     {product.name}
                   </Typography>
                   <Typography
-                    variant="h7"
+                    variant="body2" // Smaller variant for mobile
                     color="#d0d0d0"
-                    sx={{ fontSize: { xs: "12px", sm: "14px", md: "16px" } }} // Responsive font size
+                    sx={{
+                      fontSize: { xs: "10px", sm: "14px", md: "16px" },
+                      mt: { xs: 0.5, sm: 0 }, // Small margin on mobile
+                    }}
                   >
                     {product.description}
                   </Typography>
                   <Typography
                     variant="h6"
-                    color="text.secondary"
-                    sx={{ mt: 1, color: "#fff", fontSize: { xs: "14px", sm: "16px", md: "18px" } }} // Responsive font size
+                    sx={{
+                      mt: { xs: 1, sm: 1 },
+                      color: "#fff",
+                      fontSize: { xs: "12px", sm: "16px", md: "18px" },
+                    }}
                   >
                     Rs: {product.price}
                   </Typography>
-  
+
+                  {/* Buttons */}
                   <Grid
                     container
                     spacing={1}
-                    sx={{ mt: 1, justifyContent: "center" }}
+                    sx={{
+                      mt: { xs: 1, sm: 1 },
+                      justifyContent: { xs: "flex-start", sm: "center" }, // Left-align on mobile
+                    }}
                   >
-                    {/* Order Now Button */}
-                    <Grid item xs={8}>
+                    <Grid item xs={8} sm={8}>
                       <Button
                         variant="contained"
-                        color="primary"
                         fullWidth
                         sx={{
                           bgcolor: product.inStock ? "black" : "gray",
                           color: "white",
                           fontWeight: "bold",
-                          border: !product.inStock ? "2px solid red" : "none", // Gray border when out of stock
-                          "&:hover": {
-                            bgcolor: product.inStock ? "gray" : "gray",
-                          },
+                          border: !product.inStock ? "2px solid red" : "none",
+                          "&:hover": { bgcolor: product.inStock ? "gray" : "gray" },
+                          padding: { xs: "4px", sm: "6px" }, // Smaller on mobile
                         }}
                         onClick={() => handleOrderNow(product._id)}
                         disabled={!product.inStock}
@@ -216,28 +226,24 @@ const ProductList = () => {
                         <Typography
                           sx={{
                             color: "white",
-                            "&:hover": { color: "white" },
-                            fontSize: { xs: "12px", sm: "14px", md: "16px" }, // Responsive font size
+                            fontSize: { xs: "10px", sm: "14px", md: "16px" },
                           }}
                         >
                           {product.inStock ? "Order Now" : "Out of Stock"}
                         </Typography>
                       </Button>
                     </Grid>
-  
-                    {/* Add to Cart Button */}
-                    <Grid item xs={2}>
+                    <Grid item xs={2} sm={1}>
                       <Button
                         sx={{
-                          borderRadius: 10,
                           bgcolor: "#00000000",
                           color: "gold",
-                          fontWeight: "bold",
                           "&:hover": { color: "lightgray" },
+                          minWidth: "auto",
                         }}
-                        onClick={() => handleAddToCart(product._id)} // Pass product ID
+                        onClick={() => handleAddToCart(product._id)}
                       >
-                        <ShoppingCartIcon />
+                        <ShoppingCartIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
                       </Button>
                     </Grid>
                   </Grid>
