@@ -156,7 +156,7 @@ const Profile = () => {
                     variant="h4"
                     sx={{
                       fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
-                      color: "#FFD700",
+                      color: "rgb(255, 255, 255);",
 
                       textAlign: "left",
                       fontFamily: "'Raleway', sans-serif",

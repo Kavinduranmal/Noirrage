@@ -194,7 +194,7 @@ const Cart = () => {
                           sx={{
                             fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
                             fontFamily: "'Raleway', sans-serif",
-                            color: "#f1c40f",
+                            color: "rgb(255, 255, 255);",
                           }}
                         >
                           {item.product?.name}

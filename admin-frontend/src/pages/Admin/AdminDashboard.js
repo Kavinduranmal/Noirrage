@@ -288,28 +288,7 @@ const AdminDashboard = () => {
         Pending Orders
       </Typography>
       {/* Search Bar */}
-      <Box sx={{ display: "flex", alignItems: "center", width: "100%", my: 3 }}>
-        <SearchIcon sx={{ color: "#1976d2", mr: 1 }} />
-        <TextField
-          fullWidth
-          label="Search by Email or Price"
-          variant="outlined"
-          size="small"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{
-            backgroundColor: "#333",
-            borderRadius: "8px",
-            color: "#fff",
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#1976d2" },
-              "&:hover fieldset": { borderColor: "#42a5f5" },
-              "&.Mui-focused fieldset": { borderColor: "#1976d2" },
-              color: "#fff",
-            },
-          }}
-        />
-      </Box>
-
+      
       <TableContainer
         component={Paper}
         sx={{ backgroundColor: "#1e1e1e", color: "#fff" }}
@@ -372,11 +351,11 @@ const AdminDashboard = () => {
                       >
                         <Card
                           key={item?.product?._id}
-                          sx={{ width: 100, perspective: "1000px" }}
+                          sx={{  height:150, width: 150, perspective: "1000px" }}
                         >
                           <CardMedia
                             component="img"
-                            height="100"
+                           
                             image={`http://51.21.127.196:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
@@ -518,11 +497,11 @@ const AdminDashboard = () => {
                       >
                         <Card
                           key={item?.product?._id}
-                          sx={{ width: 100, perspective: "1000px" }}
+                          sx={{height:150, width: 150,  perspective: "1000px" }}
                         >
                           <CardMedia
                             component="img"
-                            height="100"
+                            
                             image={`http://51.21.127.196:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
