@@ -17,6 +17,12 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Add, Remove } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
+import PaymentForm from "./PaymentForm";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Load your Stripe public key (ensure it's the same one)
+const stripePromise = loadStripe("pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11");
 
 const OrderForm = () => {
   const navigate = useNavigate();
@@ -36,9 +42,15 @@ const OrderForm = () => {
     contactNumber: "",
   });
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
   const token = localStorage.getItem("userToken"); // Get token from localStorage
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+  const handleSuccessfulPayment = (paymentMethod) => {
+    console.log("Payment successful:", paymentMethod);
+    setPaymentSuccess(true);
+  };
+
+  
   useEffect(() => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
@@ -507,34 +519,46 @@ const OrderForm = () => {
                   </>
                 )}
 
-                <Typography color="#d7d7d7" mt={3} variant="h5" gutterBottom>
-                  Shipping Details
-                </Typography>
-                {step === 2 && (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={{ mt: 2 }}
-                      onClick={handleBack}
-                      fullWidth
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        mt: 2,
-                        background:
-                          'linear-gradient(90deg, #FFD200, #F7971E, #FFD200)',
-                      }}
-                      type="submit"
-                      fullWidth
-                    >
-                      Order Now
-                    </Button>
-                  </>
-                )}
+<Typography color="#d7d7d7" mt={3} variant="h5" gutterBottom>
+        Shipping Details
+      </Typography>
+
+      {step === 2 && (
+        <>
+          {/* Wrap PaymentForm with Elements */}
+          <Elements stripe={stripePromise}>
+            <PaymentForm onSuccessfulPayment={handleSuccessfulPayment} />
+          </Elements>
+
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{ mt: 2 }}
+            onClick={() => setStep(step - 1)}
+            fullWidth
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              mt: 2,
+              background:
+                "linear-gradient(90deg, #FFD200, #F7971E, #FFD200)",
+            }}
+            type="submit"
+            fullWidth
+          >
+            Order Now
+          </Button>
+        </>
+      )}
+
+      {paymentSuccess && (
+        <Typography variant="body1" color="success.main" mt={2}>
+          Payment was successful!
+        </Typography>
+      )}
               </form>
             </Box>
           </Box>

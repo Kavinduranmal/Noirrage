@@ -1,14 +1,10 @@
+// App.js
 import React from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
 
-// Customer Imports
+// Customer Pages
 import UserSignup from "./pages/Customer/UserSignup";
 import UserLogin from "./pages/Customer/UserLogin";
 import CustProduct from "./pages/Customer/CustProductList";
@@ -17,17 +13,23 @@ import ViewAllcart from "./pages/Customer/ViewAllcart";
 import Profile from "./pages/Customer/Profile";
 import Orderstatus from "./pages/Customer/OrderStatus";
 
-
-// Other Imports
+// Other Components/Pages
 import NavBarforuser from "./components/Navbarforuser";
 import Home from "./components/Home";
 import AboutUs from "./components/AboutUs";
 import ContactUs from "./components/ContactUs";
-import { IoMdPower } from "react-icons/io";
 
+// Stripe Components
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutForm from "./pages/Customer/PaymentForm";
+
+// Replace with your actual publishable key
+const stripePromise = loadStripe("pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11");
+
+// Layout component for common routes and navbar logic
 const Layout = () => {
   const location = useLocation();
-
   // Hide navbar on login and signup pages
   const hideNavbar =
     location.pathname === "/user/Login" || location.pathname === "/user/signup";
@@ -44,8 +46,17 @@ const Layout = () => {
         <Route path="/CustomerOrder" element={<CustomerOrder />} />
         <Route path="/ViewAllcart" element={<ViewAllcart />} />
         <Route path="/Profile" element={<Profile />} />
-
         <Route path="/userorders" element={<Orderstatus />} />
+
+        {/* Stripe Checkout Route */}
+        <Route
+          path="/checkout"
+          element={
+            <Elements stripe={stripePromise}>
+              <CheckoutForm />
+            </Elements>
+          }
+        />
 
         {/* Other Routes */}
         <Route path="/" element={<Home />} />
