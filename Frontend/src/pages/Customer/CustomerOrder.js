@@ -295,7 +295,7 @@ const OrderForm = () => {
             <form onSubmit={handleOrderSubmit}>
               {step === 1 && (
                 <>
-                  <Typography variant="h5" color="#fdc200" sx={{ mb: 5 }}>
+                  <Typography variant="h4" color="#fdc200" sx={{ mb: 4, fontFamily: "'Raleway', sans-serif", }}>
                     Fill Order Details of {selectedProduct.name}
                   </Typography>
                   <Typography
@@ -441,10 +441,12 @@ const OrderForm = () => {
                       </ToggleButtonGroup>
                     </Box>
                   </Box>
-
+                  
+                  <br />
                   <Typography color="#d7d7d7" mt={3} variant="h5" gutterBottom>
                     Shipping Details
                   </Typography>
+                  <br />
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                   >
@@ -520,32 +522,39 @@ const OrderForm = () => {
                         />
                       ))}
                     </Box>
-
-                    {/* Email and Contact Number */}
-                    {[
-                      { id: "email", label: "Email" },
-                      { id: "contactNumber", label: "Contact Number" },
-                    ].map((field) => (
-                      <TextField
-                        key={field.id}
-                        label={field.label}
-                        fullWidth
-                        margin="normal"
-                        value={shippingDetails[field.id] || ""}
-                        onChange={(e) =>
-                          setShippingDetails({
-                            ...shippingDetails,
-                            [field.id]: e.target.value,
-                          })
-                        }
-                        required
-                        sx={{
-                          "& input": { color: "white" },
-                          "& label": { color: "gray" },
-                          "& label.Mui-focused": { color: "white" },
-                        }}
-                      />
-                    ))}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 2,
+                        flexDirection: { xs: "column", sm: "row" },
+                      }}
+                    >
+                      {/* Email and Contact Number */}
+                      {[
+                        { id: "email", label: "Email" },
+                        { id: "contactNumber", label: "Contact Number" },
+                      ].map((field) => (
+                        <TextField
+                          key={field.id}
+                          label={field.label}
+                          fullWidth
+                          margin="normal"
+                          value={shippingDetails[field.id] || ""}
+                          onChange={(e) =>
+                            setShippingDetails({
+                              ...shippingDetails,
+                              [field.id]: e.target.value,
+                            })
+                          }
+                          required
+                          sx={{
+                            "& input": { color: "white" },
+                            "& label": { color: "gray" },
+                            "& label.Mui-focused": { color: "white" },
+                          }}
+                        />
+                      ))}
+                    </Box>
                   </Box>
                   <Button
                     variant="contained"
@@ -561,74 +570,110 @@ const OrderForm = () => {
                 </>
               )}
 
-              {step === 2 && (
-                <>
-                  <Typography variant="h5" color="#fdc200" gutterBottom>
-                    Payment Details
+{step === 2 && (
+  <>
+   <Typography variant="h4" color="#fdc200" sx={{ mb: 2 , fontFamily: "'Raleway', sans-serif",}}>
+                    Fill Order Details of {selectedProduct.name}
                   </Typography>
-                  <Typography variant="body1" color="white" gutterBottom>
-                    Total Amount: Rs {selectedProduct.price * quantity}.00
-                  </Typography>
-                  <Box sx={{ mb: 3 }}>
-                    <Typography color="white">Order Summary:</Typography>
-                    <Typography color="lightgray">
-                      {selectedProduct.name} - {quantity} x Rs{" "}
-                      {selectedProduct.price} = Rs{" "}
-                      {selectedProduct.price * quantity}
-                    </Typography>
-                    <Typography color="lightgray">Size: {size}</Typography>
-                    <Typography color="lightgray">Color: {color}</Typography>
-                    <Typography color="lightgray">
-                      Shipping to: {shippingDetails.addressLine1}
-                      {shippingDetails.addressLine2 &&
-                        `, ${shippingDetails.addressLine2}`}
-                      {shippingDetails.addressLine3 &&
-                        `, ${shippingDetails.addressLine3}`}
-                      {shippingDetails.postalCode &&
-                        `, ${shippingDetails.postalCode}`}
-                    </Typography>
-                  </Box>
-                  <CardElement
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: "16px",
-                          color: "#ffffff",
-                          "::placeholder": { color: "#aab7c4" },
-                        },
-                        invalid: { color: "#ff4444" },
-                      },
-                    }}
-                  />
-                  {paymentError && (
-                    <Typography color="error" mt={2}>
-                      {paymentError}
-                    </Typography>
-                  )}
-                  <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
-                    <Button
-                      variant="contained"
-                      onClick={() => setStep(1)}
-                      sx={{
-                        bgcolor: "grey.700",
-                        "&:hover": { bgcolor: "grey.600" },
-                      }}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      disabled={processing || !stripe}
-                      sx={{
-                        background: "linear-gradient(90deg, #FFD200, #F7971E)",
-                      }}
-                    >
-                      {processing ? "Processing..." : "Pay and Order"}
-                    </Button>
-                  </Box>
-                </>
-              )}
+    {/* Section 1: Total Amount */}
+    <Box sx={{ mb: 3 }}>
+
+      <Typography
+        variant="h5"
+        color="white"
+        sx={{ fontWeight: 500 }}
+      >
+      Total Amount  Rs {selectedProduct.price * quantity}.00
+      </Typography>
+    </Box>
+
+    {/* Section 2: Payment Details (Order Summary) */}
+    <Box sx={{ mb: 3 }}>
+      <Typography
+        variant="h4"
+        color="#fdc200"
+        sx={{  mb: 2, fontFamily: "'Raleway', sans-serif", fontSize:"1.6rem"}}
+      >
+        Payment Details
+      </Typography>
+      <Box sx={{ color: "white" }}>
+        <Typography variant="body1"  sx={{ fontSize:"1.3rem" }}>
+          {selectedProduct.name} - {quantity} x Rs {selectedProduct.price} = Rs {selectedProduct.price * quantity}
+        </Typography>
+        <Typography  sx={{  mb: 1, fontSize:"1.3rem"}} variant="body1">Size: {size || "Not Selected"}</Typography>
+        <Typography sx={{  fontSize:"1.3rem"}} variant="body1">Color: {color || "Not Selected"}</Typography>
+        <Typography sx={{  fontSize:"1.3rem"}} variant="body1">
+          Shipping to:{" "}
+          {[
+            shippingDetails.addressLine1,
+            shippingDetails.addressLine2,
+            shippingDetails.addressLine3,
+            shippingDetails.postalCode,
+          ]
+            .filter(Boolean)
+            .join(", ") || "Not Specified"}
+        </Typography>
+      </Box>
+    </Box>
+
+    {/* Section 3: Card Entry */}
+    <Box sx={{ mb: 3 }}>
+      <Typography
+        variant="h5"
+        color="#fdc200"
+        sx={{  mb: 1, fontFamily: "'Raleway', sans-serif", }}
+        
+      >
+        Enter Your Visa Card Number
+      </Typography>
+      <br/>
+      <CardElement
+        options={{
+          style: {
+            base: {
+              fontSize: "16px",
+              color: "#ffffff",
+              "::placeholder": { color: "#aab7c4" },
+            },
+            invalid: { color: "#ff4444" },
+          },
+        }}
+      />
+      {paymentError && (
+        <Typography color="error" mt={2}>
+          {paymentError}
+        </Typography>
+      )}
+    </Box>
+    <br/>
+
+    {/* Buttons */}
+    <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
+      <Button
+        variant="contained"
+        onClick={() => setStep(1)}
+        sx={{
+          bgcolor: "grey.700",
+          "&:hover": { bgcolor: "grey.600" },
+        }}
+      >
+        Back
+      </Button>
+      <Button
+        variant="contained"
+        type="submit"
+        disabled={processing || !stripe}
+        sx={{
+          color: "black",
+          fontweight:"bold",
+          background: "linear-gradient(90deg, #FFD200, #F7971E)",
+        }}
+      >
+        {processing ? "Processing...." : "Pay and Order"}
+      </Button>
+    </Box>
+  </>
+)}
             </form>
           </Box>
         </Box>
