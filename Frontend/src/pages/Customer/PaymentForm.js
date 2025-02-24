@@ -3,6 +3,11 @@ import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Button, Typography, Box } from "@mui/material";
 import { toast } from "react-toastify";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Load your Stripe public key (ensure it's the same one)
+const stripePromise = loadStripe("pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11");
 
 const PaymentForm = ({ onSuccessfulPayment }) => {
   const stripe = useStripe();
@@ -11,6 +16,11 @@ const PaymentForm = ({ onSuccessfulPayment }) => {
   const [processing, setProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+
+  const handleSuccessfulPayment = (paymentMethod) => {
+    console.log("Payment successful:", paymentMethod);
+    setPaymentSuccess(true);
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -48,9 +58,9 @@ const PaymentForm = ({ onSuccessfulPayment }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, order_id, user_id }),
       });
-console.log(response);
-      const data = await response.json();
 
+      const data = await response.json();
+      console.log(data);
       if (data.error) {
         toast.error(data.error);
         setProcessing(false);
@@ -83,6 +93,7 @@ console.log(response);
       noValidate
       sx={{ maxWidth: 400, margin: "auto", mt: 3 }}
     >
+
       <Typography variant="h5" gutterBottom>
         Enter Payment Details
       </Typography>
@@ -103,6 +114,10 @@ console.log(response);
           {error}
         </Typography>
       )}
+      {/* Wrap PaymentForm with Elements */}
+      <Elements stripe={stripePromise}>
+            <PaymentForm onSuccessfulPayment={handleSuccessfulPayment} />
+          </Elements>
       <Button
         variant="contained"
         color="primary"

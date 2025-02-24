@@ -14,7 +14,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const createPaymentIntent = async (req, res) => {
   try {
     const { amount, order_id, user_id } = req.body;
-console.log("Create payment");
     if (!amount || !order_id || !user_id) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -33,7 +32,7 @@ console.log("Create payment");
       currency: "usd",
       status: "Pending",
     });
-    console.log("Create paymentsssssssssssssssssss");
+
     res.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     res.status(500).json({ error: error.message });
