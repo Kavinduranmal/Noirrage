@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Button, Typography, Box } from "@mui/material";
+import { toast } from "react-toastify";
 
-const CheckoutForm = () => {
+const PaymentForm = ({ onSuccessfulPayment }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
@@ -18,9 +19,11 @@ const CheckoutForm = () => {
     }
 
     setProcessing(true);
+    setError(null);
+
     const cardElement = elements.getElement(CardElement);
 
-    // Create a payment method with card details
+    // Create a payment method using card details
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: cardElement,
@@ -29,19 +32,55 @@ const CheckoutForm = () => {
     if (error) {
       setError(error.message);
       setProcessing(false);
-    } else {
-      setError(null);
-      // In a real-world scenario, send paymentMethod.id to your backend
-      console.log("PaymentMethod:", paymentMethod);
-      setPaymentSuccess(true);
-      setProcessing(false);
+      return;
     }
+
+    // In a real application, you may get these from your app's state or props.
+    // For demonstration, we use hard-coded values.
+    const order_id = "order123"; // This should be unique for each order.
+    const user_id = "6273b2a8c2a1f437f0f3eabc"; // Replace with the actual user id.
+    const amount = 50; // For example, $50
+
+    // Request backend to create a PaymentIntent
+    try {
+      const response = await fetch("http://51.21.127.196:5000/api/stripe/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, order_id, user_id }),
+      });
+console.log(response);
+      const data = await response.json();
+
+      if (data.error) {
+        toast.error(data.error);
+        setProcessing(false);
+        return;
+      }
+      // Use the client secret to confirm the card payment
+      const confirmResult = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: paymentMethod.id,
+      });
+
+      if (confirmResult.error) {
+        toast.error(confirmResult.error.message);
+      } else {
+        if (confirmResult.paymentIntent.status === "succeeded") {
+          toast.success("Payment successful!");
+          onSuccessfulPayment(paymentMethod);
+        }
+      }
+    } catch (err) {
+      setError("Server error. Please try again later.");
+    }
+
+    setProcessing(false);
   };
 
   return (
     <Box
       component="form"
       onSubmit={handleSubmit}
+      noValidate
       sx={{ maxWidth: 400, margin: "auto", mt: 3 }}
     >
       <Typography variant="h5" gutterBottom>
@@ -83,4 +122,4 @@ const CheckoutForm = () => {
   );
 };
 
-export default CheckoutForm;
+export default PaymentForm;
