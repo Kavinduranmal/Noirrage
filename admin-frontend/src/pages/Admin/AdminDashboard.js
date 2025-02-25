@@ -218,7 +218,7 @@ const AdminDashboard = () => {
                 Total Revenue
               </Typography>
               <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                ${totalRevenue.toFixed(2)}
+                Rs :{totalRevenue.toFixed(2)}
               </Typography>
             </CardContent>
           </Card>
@@ -402,7 +402,7 @@ const AdminDashboard = () => {
                     {order.products[0]?.quantity}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                    ${order.totalPrice}
+                    Rs :{order.totalPrice}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -553,7 +553,7 @@ const AdminDashboard = () => {
                     {order.products[0]?.quantity}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                    ${order.totalPrice.toFixed(2)}
+                    Rs :{order.totalPrice.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}

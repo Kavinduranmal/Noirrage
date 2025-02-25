@@ -76,7 +76,7 @@ const Profile = () => {
         `http://16.170.141.231:5000/api/orders/${orderId}/deleted`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success("Order deleted successfully!");
+      toast.success("Order canseled successfully!");
       window.location.reload();
     } catch (error) {
       console.error("Error deleting order:", error);
