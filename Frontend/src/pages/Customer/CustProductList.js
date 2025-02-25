@@ -36,7 +36,7 @@ const ProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://51.21.127.196:5000/api/products/"
+        "http://16.170.141.231:5000/api/products/"
       );
       setProducts(response.data);
     } catch (error) {
@@ -59,7 +59,7 @@ const ProductList = () => {
 
     try {
       await axios.post(
-        "http://51.21.127.196:5000/api/cart/add",
+        "http://16.170.141.231:5000/api/cart/add",
         { productId, qty: quantity, size, color }, // Use productId
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -140,7 +140,7 @@ const ProductList = () => {
                     <CardMedia
                       component="img"
                       height="100%"
-                      image={`http://51.21.127.196:5000${
+                      image={`http://16.170.141.231:5000${
                         product.images[productImageState[product._id] || 0]
                       }`}
                       alt={product.name}

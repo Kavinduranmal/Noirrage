@@ -41,7 +41,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(
-          "http://51.21.127.196:5000/api/auth/profileview",
+          "http://16.170.141.231:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log("Fetched data:", data); // Debug API response
@@ -73,7 +73,7 @@ const Profile = () => {
     }
     try {
       const { data } = await axios.put(
-        "http://51.21.127.196:5000/api/auth/profiledit",
+        "http://16.170.141.231:5000/api/auth/profiledit",
         { name, email },
         { headers: { Authorization: `Bearer ${token}` } }
       );

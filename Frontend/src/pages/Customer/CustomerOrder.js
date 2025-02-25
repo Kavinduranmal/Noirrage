@@ -69,7 +69,7 @@ const OrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "http://51.21.127.196:5000/api/auth/profileview",
+          "http://16.170.141.231:5000/api/auth/profileview",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -92,7 +92,7 @@ const OrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "http://51.21.127.196:5000/api/products"
+        "http://16.170.141.231:5000/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -122,7 +122,7 @@ const OrderForm = () => {
 
     try {
       const paymentResponse = await axios.post(
-        "http://51.21.127.196:5000/api/stripe/create-payment-intent",
+        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
         {
           amount,
           order_id: orderId,
@@ -212,7 +212,7 @@ const OrderForm = () => {
     };
 
     try {
-      await axios.post("http://51.21.127.196:5000/api/orders", orderData, {
+      await axios.post("http://16.170.141.231:5000/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order placed successfully!");
@@ -264,7 +264,7 @@ const OrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`http://51.21.127.196:5000${selectedProduct.images[selectedImageIndex]}`}
+                image={`http://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{ borderRadius: "10px", mb: 2 }}
               />
@@ -279,7 +279,7 @@ const OrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(http://51.21.127.196:5000${img})`,
+                    backgroundImage: `url(http://16.170.141.231:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index

@@ -32,7 +32,7 @@ const Profile = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http:///51.21.127.196:5000/api/orders/byid",
+          "http:///16.170.141.231:5000/api/orders/byid",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);
@@ -73,7 +73,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.delete(
-        `http://51.21.127.196:5000/api/orders/${orderId}/deleted`,
+        `http://16.170.141.231:5000/api/orders/${orderId}/deleted`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Order deleted successfully!");
@@ -194,7 +194,7 @@ const Profile = () => {
                         <CardMedia
                           component="img"
                           height="210"
-                          image={`http://51.21.127.196:5000${
+                          image={`http://16.170.141.231:5000${
                             item?.images[
                               productImageState[item?.product?._id] || 0
                             ]

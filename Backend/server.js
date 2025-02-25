@@ -37,7 +37,7 @@ if (!fs.existsSync(uploadPath)) {
 app.use(express.json({ limit: "50mb" })); // Handles JSON payloads (Large payloads)
 app.use(express.urlencoded({ extended: true })); // Handles form-urlencoded requests
 cors({
-  origin: ["http://13.49.246.175:3000", "http://51.21.127.196:3000", "http://localhost:3000"],
+  origin: ["http://13.49.246.175:3000", "http://16.170.141.231:3000", "http://localhost:3000"],
   credentials: true,
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type, Authorization",

@@ -67,7 +67,7 @@ const AdminDashboard = () => {
     }
     try {
       const { data } = await axios.get(
-        "http://51.21.127.196:5000/api/orders/all",
+        "http://16.170.141.231:5000/api/orders/all",
         {}
       );
       setOrders(data);
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
     }
     try {
       const response = await axios.put(
-        `http://51.21.127.196:5000/api/orders/${orderId}/ship`,
+        `http://16.170.141.231:5000/api/orders/${orderId}/ship`,
         {},
         {
           headers: {
@@ -356,7 +356,7 @@ const AdminDashboard = () => {
                           <CardMedia
                             component="img"
                            
-                            image={`http://51.21.127.196:5000${
+                            image={`http://16.170.141.231:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
                               ]
@@ -502,7 +502,7 @@ const AdminDashboard = () => {
                           <CardMedia
                             component="img"
                             
-                            image={`http://51.21.127.196:5000${
+                            image={`http://16.170.141.231:5000${
                               item?.images[
                                 productImageState[item?.product?._id] || 0
                               ]

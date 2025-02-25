@@ -32,7 +32,7 @@ const Cart = () => {
     const fetchCart = async () => {
       try {
         const response = await axios.get(
-          "http://51.21.127.196:5000/api/cart/view",
+          "http://16.170.141.231:5000/api/cart/view",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -59,7 +59,7 @@ const Cart = () => {
 
     try {
       await axios.delete(
-        `http://51.21.127.196:5000/api/cart/remove/${itemId}`,
+        `http://16.170.141.231:5000/api/cart/remove/${itemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -161,7 +161,7 @@ const Cart = () => {
                           component="img"
                           height="280"
                           width="250"
-                          image={`http://51.21.127.196:5000${
+                          image={`http://16.170.141.231:5000${
                             item.product?.images[
                               productImageState[item._id] || 0
                             ]

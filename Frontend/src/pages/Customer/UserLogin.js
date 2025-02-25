@@ -38,7 +38,7 @@ const UserLogin = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://51.21.127.196:5000/api/auth/user/login",
+        "http://16.170.141.231:5000/api/auth/user/login",
         admin
       );
 
