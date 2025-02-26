@@ -1,8 +1,10 @@
 import Order from '../models/order.js';
 import Product from '../models/product.js';
 import mongoose from "mongoose";
+import { sendOrderConfirmation } from "../utils/emailService.js";
 
 // @desc   Create a new order
+
 export const createOrder = async (req, res) => {
   try {
     const { products, totalPrice, shippingDetails } = req.body;
@@ -31,7 +33,6 @@ export const createOrder = async (req, res) => {
           .json({ message: "Size and color are required for each product" });
       }
 
-      // Ensure the product exists in the database
       const foundProduct = await Product.findById(product);
       if (!foundProduct) {
         return res
@@ -39,7 +40,6 @@ export const createOrder = async (req, res) => {
           .json({ message: `Product not found for ID: ${product}` });
       }
 
-      // Check if the selected size and color are valid for the product
       if (!foundProduct.sizes.includes(size)) {
         return res
           .status(400)
@@ -52,19 +52,20 @@ export const createOrder = async (req, res) => {
           .json({ message: `Invalid color selected for ${foundProduct.name}` });
       }
 
-      // Add the product details (including images) to the order
       orderProducts.push({
-        product: foundProduct._id,
+        product: {
+          _id: foundProduct._id,
+          name: foundProduct.name, // Include name for email
+        },
         quantity,
         size,
         color,
-        images: foundProduct.images, // Add all images of the product
       });
     }
 
     // Create the new order
     const newOrder = new Order({
-      user: req.user._id, // Assuming authentication middleware sets req.user
+      user: req.user._id,
       products: orderProducts,
       totalPrice,
       shippingDetails,
@@ -72,6 +73,10 @@ export const createOrder = async (req, res) => {
     });
 
     await newOrder.save();
+
+    // Send email confirmation
+    await sendOrderConfirmation(shippingDetails.email, newOrder);
+
     res
       .status(201)
       .json({ message: "Order placed successfully", order: newOrder });
@@ -79,6 +84,7 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // @desc   Get all orders (Admin only)
 export const getAllOrders = async (req, res) => {
