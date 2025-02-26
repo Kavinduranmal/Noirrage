@@ -15,6 +15,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
+
 // Function to send order confirmation email
 const sendOrderConfirmationEmail = async (order) => {
   const { shippingDetails, products, totalPrice } = order;
