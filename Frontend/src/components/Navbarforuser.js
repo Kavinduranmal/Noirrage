@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Divider,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -28,21 +29,15 @@ const Navbar = () => {
     let prevScrollPos = window.pageYOffset;
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
-      if (prevScrollPos > currentScrollPos) {
-        setShowNavBar(true);
-      } else {
-        setShowNavBar(false);
-      }
+      setShowNavBar(prevScrollPos > currentScrollPos || currentScrollPos < 10);
       prevScrollPos = currentScrollPos;
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = (userType) => {
-    if (userType === "user") {
-      localStorage.removeItem("userToken");
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
     navigate("/user/Login");
   };
 
@@ -56,56 +51,104 @@ const Navbar = () => {
     { path: "/ContactUs", label: "Contact Us" },
   ];
 
-  // Mobile drawer toggle
   const handleDrawerToggle = () => {
     setMobileOpen((prev) => !prev);
   };
 
-  // Drawer content for mobile with matching gradient and color
+  // Drawer content for mobile
   const drawerContent = (
     <Box
       sx={{
-        width: 210,
+        width: 280,
         height: "100%",
-        background: "linear-gradient(90deg, rgb(46,46,46), rgb(37,37,37))",
-        color: "#FFF",
+        background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: "2px 0 10px rgba(0, 0, 0, 0.5)",
       }}
-      role="presentation"
-      onClick={handleDrawerToggle}
-      onKeyDown={handleDrawerToggle}
     >
+      {/* Header with Logo and Close Button */}
       <Box
         sx={{
+          p: 2,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          p: 2,
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
         }}
       >
         <img src={logo} alt="Logo" style={{ height: "50px" }} />
-        <IconButton onClick={handleDrawerToggle} sx={{ color: "#FFF" }}>
+        <IconButton onClick={handleDrawerToggle} sx={{ color: "#fff" }}>
           <CloseIcon />
         </IconButton>
       </Box>
-      <List>
+
+      {/* Navigation Links */}
+      <List sx={{ flexGrow: 1, p: 2 }}>
         {navLinks.map((link) => (
           <ListItem
             button
             key={link.path}
             component={NavLink}
             to={link.path}
+            onClick={handleDrawerToggle}
             sx={{
-              color: "white",
-              "&.active > .MuiListItemText-root > span": { color: "#FFEB3B" },
+              py: 1.5,
+              borderRadius: "8px",
+              mb: 1,
+              "&:hover": {
+                backgroundColor: "rgba(255, 235, 59, 0.1)",
+                transform: "translateX(5px)",
+                transition: "all 0.3s ease",
+              },
+              "&.active": {
+                backgroundColor: "rgba(255, 235, 59, 0.2)",
+                "& .MuiListItemText-primary": { color: "#FFEB3B" },
+              },
+              transition: "all 0.3s ease",
             }}
           >
-            <ListItemText primary={link.label} />
+            <ListItemText
+              primary={link.label}
+              primaryTypographyProps={{
+                fontSize: "1.1rem",
+                fontFamily: "'Raleway', sans-serif",
+                fontWeight: 500,
+                color: "#fff",
+              }}
+            />
           </ListItem>
         ))}
-        <ListItem button onClick={() => handleLogout("user")}>
-          <ListItemText primary="Logout" />
-        </ListItem>
       </List>
+
+      {/* Logout Button */}
+      <Box sx={{ p: 2, borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
+        <Button
+          onClick={() => {
+            handleLogout();
+            handleDrawerToggle();
+          }}
+          fullWidth
+          variant="contained"
+          sx={{
+            bgcolor: "#FFEB3B",
+            color: "#1a1a1a",
+            fontWeight: "bold",
+            fontFamily: "'Raleway', sans-serif",
+            borderRadius: "8px",
+            py: 1.5,
+            "&:hover": {
+              bgcolor: "#FFD700",
+              transform: "scale(1.02)",
+              transition: "all 0.3s ease",
+            },
+            transition: "all 0.3s ease",
+          }}
+        >
+          Logout
+        </Button>
+      </Box>
     </Box>
   );
 
@@ -116,13 +159,14 @@ const Navbar = () => {
           position: "sticky",
           top: showNavBar ? 0 : "-100px",
           zIndex: 1100,
-          background: "linear-gradient(90deg, rgb(46,46,46), rgb(37,37,37))",
-          transition: "top 0.3s ease-in-out, background 0.5s ease-in-out",
-          px: 2,
+          background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+          transition: "top 0.3s ease-in-out",
+          px: { xs: 1, sm: 2 },
           py: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
         }}
       >
         {/* Logo */}
@@ -131,14 +175,20 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Logo"
-              style={{ height: "60px", marginLeft: "20px" }}
+              style={{ height: "60px", marginLeft: "10px" }}
             />
           </NavLink>
         </Box>
 
         {/* Desktop Nav Links */}
         {!isMobile && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { sm: 2, md: 4 },
+            }}
+          >
             {navLinks.map((link) => (
               <NavLink
                 key={link.path}
@@ -148,17 +198,19 @@ const Navbar = () => {
                 {({ isActive }) => (
                   <Typography
                     sx={{
-                      fontSize: "1.2rem",
-                   
+                      fontSize: "1.1rem",
                       fontFamily: "'Raleway', sans-serif",
-                      color: isActive ? "#FFEB3B" : "#FFF",
+                      fontWeight: 500,
+                      color: isActive ? "#FFEB3B" : "#fff",
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: "6px",
                       "&:hover": {
                         color: "#FFEB3B",
-                        transform: "scale(1.05)",
-                        transition: "transform 0.3s ease-in-out",
+                        backgroundColor: "rgba(255, 235, 59, 0.1)",
+                        transform: "translateY(-2px)",
                       },
-                      transition:
-                        "color 0.3s ease-in-out, transform 0.3s ease-in-out",
+                      transition: "all 0.3s ease",
                     }}
                   >
                     {link.label}
@@ -167,18 +219,21 @@ const Navbar = () => {
               </NavLink>
             ))}
             <Button
-              onClick={() => handleLogout("user")}
+              onClick={handleLogout}
               sx={{
                 fontSize: "1rem",
-                ml:30,
-                fontWeight: "500",
-                color: "white",
+                fontWeight: "bold",
+                fontFamily: "'Raleway', sans-serif",
+                color: "#fff",
+                ml: 25,
+                px: 2,
+                py: 1,
+                borderRadius: "8px",
                 "&:hover": {
                   color: "red",
-                  transform: "scale(1.1)",
-                  transition:
-                    "transform 0.2s ease-in-out, color 0.3s ease-in-out",
+                  transform: "translateY(-2px)",
                 },
+                transition: "all 0.3s ease",
               }}
             >
               Logout
@@ -190,7 +245,7 @@ const Navbar = () => {
         {isMobile && (
           <IconButton
             onClick={handleDrawerToggle}
-            sx={{ color: "white", ml: "auto" }}
+            sx={{ color: "#fff", ml: "auto" }}
           >
             <MenuIcon fontSize="large" />
           </IconButton>
@@ -203,6 +258,11 @@ const Navbar = () => {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{ keepMounted: true }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            transition: "transform 0.3s ease-in-out",
+          },
+        }}
       >
         {drawerContent}
       </Drawer>

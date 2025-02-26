@@ -111,14 +111,14 @@ const ProductList = () => {
             >
               <Card
                 sx={{
+                  height: {xs: "95%", sm: "90%" }, // Smaller on mobile
                   width: { xs: "100%", sm: "90%" }, // Full width on mobile, 80% on larger screens
-                  border: "1px solid rgba(109, 109, 109, 0.34)",
+                  border: "1px solid rgba(175, 175, 175, 0.34)",
                   display: "flex",
                   flexDirection: { xs: "row", sm: "column" }, // Row on mobile, column on larger screens
                   padding: "5px",
                   margin: { sm: "10px" }, // Reduced margin on mobile
-                  borderRadius: 2,
-                  background: "linear-gradient(45deg, #232526, #414345)",
+                                   background: "linear-gradient(45deg, #232526, #414345)",
                   boxShadow: "0 4px 10px rgb(39, 38, 38)",
                   transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 }}
@@ -130,13 +130,20 @@ const ProductList = () => {
                     width: { xs: "40%", sm: "100%" }, // 40% width on mobile, full on larger screens
                     overflow: "hidden",
                     display: "flex",
-                    
+
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: 1,
                   }}
                 >
-                  <Card sx={{ bgcolor:"white", height:"80%", maxWidth: { xs: 120, sm: 250 }, perspective: "1000px" }}>
+                  <Card
+                    sx={{
+                      bgcolor: "white",
+                      height: "80%",
+                      maxWidth: { xs: 120, sm: 250 },
+                      perspective: "1000px",
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       height="100%"
@@ -174,7 +181,7 @@ const ProductList = () => {
                     sx={{
                       fontFamily: "'Raleway', sans-serif",
                       fontSize: { xs: "16px", sm: "25px", md: "30px" }, // Smaller on mobile
-                    
+
                       color: "rgb(255, 255, 255);",
                     }}
                   >
@@ -220,7 +227,9 @@ const ProductList = () => {
                           color: "white",
                           fontWeight: "bold",
                           border: !product.inStock ? "2px solid red" : "none",
-                          "&:hover": { bgcolor: product.inStock ? "gray" : "gray" },
+                          "&:hover": {
+                            bgcolor: product.inStock ? "gray" : "gray",
+                          },
                           padding: { xs: "4px", sm: "6px" }, // Smaller on mobile
                         }}
                         onClick={() => handleOrderNow(product._id)}
@@ -246,7 +255,9 @@ const ProductList = () => {
                         }}
                         onClick={() => handleAddToCart(product._id)}
                       >
-                        <ShoppingCartIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
+                        <ShoppingCartIcon
+                          sx={{ fontSize: { xs: 20, sm: 24 } }}
+                        />
                       </Button>
                     </Grid>
                   </Grid>

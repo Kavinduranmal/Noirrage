@@ -44,18 +44,17 @@ const Cart = () => {
             : response.data.items || []
         );
       } catch (error) {
+        toast.error("Failed to fetch cart items.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchCart();
-  }, [token]);
+  }, [token, navigate]);
 
   const handleRemoveFromCart = async (itemId) => {
-    if (!token) {
-      return;
-    }
+    if (!token) return;
 
     try {
       await axios.delete(
@@ -70,7 +69,6 @@ const Cart = () => {
         prevItems.filter((item) => item._id !== itemId)
       );
     } catch (error) {
-      console.log(error);
       toast.error(error.response?.data?.message || "Failed to remove item.");
     }
   };
@@ -79,25 +77,28 @@ const Cart = () => {
     navigate("/CustomerOrder", { state: { productId } });
   };
 
-  const handleImageHover = (itemtId, hover) => {
+  const handleImageHover = (itemId, hover) => {
     setProductImageState((prevState) => ({
       ...prevState,
-      [itemtId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+      [itemId]: hover ? 1 : 0,
     }));
   };
 
   return (
-    <Box sx={{ padding: "40px", minHeight: "100vh" }}>
+    <Box sx={{ padding: { xs: "20px", md: "40px" }, minHeight: "100vh" }}>
       <Typography
         variant="h3"
         textAlign="center"
-        mb={4}
+        mb={{ xs: 3, md: 4 }}
         sx={{
           fontFamily: "'Raleway', sans-serif",
+          fontSize: { xs: "2rem", md: "3rem" },
+          color: "#fff",
         }}
       >
         My Cart
       </Typography>
+
       {loading ? (
         <Box sx={{ width: "100%", mb: 2 }}>
           <LinearProgress
@@ -112,7 +113,7 @@ const Cart = () => {
         <Typography
           sx={{
             textAlign: "center",
-            fontSize: "22px",
+            fontSize: { xs: "1.2rem", md: "1.5rem" },
             fontWeight: "bold",
             color: "#aaa",
           }}
@@ -120,30 +121,25 @@ const Cart = () => {
           Your cart is empty.
         </Typography>
       ) : (
-        <Grid container spacing={3} justifyContent="center">
+        <Grid container spacing={7} justifyContent="center">
           {cartItems.map((item) => (
-            <Grid item xs={12} key={item._id}>
+            <Grid item xs={12} sm={5} md={3.5} key={item._id}>
               <Card
                 sx={{
-                  boxShadow: "0px 12px 20px rgb(0, 0, 0)",
-                  borderRadius: 2,
-                  background: "linear-gradient(90deg, #232526, #414345)",
-                  transition: "all 0.2s ease",
-                  border: "0.5px solid rgba(100, 100, 100, 0.41)",
-                  "&:hover": {
-                    border: "1px solid rgba(171, 170, 170, 0.7)",
-                    transform: "scale(1)",
-                    boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.9)",
-                  },
+                  boxShadow: "0px 12px 20px rgba(0, 0, 0, 0.8)",
+
+                  background: "linear-gradient(135deg, #232526, #414345)",
+                  border: "1px solid rgba(100, 100, 100, 0.5)",
+                  transition: "all 0.3s ease",
                 }}
               >
                 <CardContent
                   sx={{
+                    height: 500,
                     display: "flex",
-                    flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
+                    flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "20px",
+                    padding: { xs: "15px", md: "20px" },
                   }}
                 >
                   {item.product ? (
@@ -151,16 +147,15 @@ const Cart = () => {
                       {/* Product Image */}
                       <Card
                         sx={{
-                          
-                          maxWidth: { xs: "100%", sm: 210 }, // Full width on mobile, fixed width on larger screens
-                          perspective: "1000px",
-                          mb: { xs: 2, sm: 0 }, // Margin bottom for mobile
+                          width: { xs: 250, md: 270 },
+                          height: { xs: 250, md: 270 },
+                          mb: 2,
+                          overflow: "hidden",
+                          borderRadius: "8px",
                         }}
                       >
                         <CardMedia
                           component="img"
-                          height="280"
-                          width="250"
                           image={`http://16.170.141.231:5000${
                             item.product?.images[
                               productImageState[item._id] || 0
@@ -181,121 +176,118 @@ const Cart = () => {
                       </Card>
 
                       {/* Product Details */}
-                      <Box
-                        sx={{
-                          flex: 1,
-                          ml: { xs: 0, sm: 3 }, // No margin on mobile, margin on larger screens
-                          textAlign: { xs: "center", sm: "left" }, // Center text on mobile
-                        }}
-                      >
+                      <Box sx={{ textAlign: "center", mb: 2 }}>
                         <Typography
-                          variant="h4"
-                          mb={2}
+                          variant="h5"
                           sx={{
-                            fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
+                            fontSize: { xs: "1.2rem", md: "1.5rem" },
                             fontFamily: "'Raleway', sans-serif",
-                            color: "rgb(255, 255, 255);",
+                            color: "#fff",
+                            fontWeight: 600,
                           }}
                         >
                           {item.product?.name}
                         </Typography>
                         <Typography
-                          variant="h7"
+                          variant="body2"
                           sx={{
-                            fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                            color: "white",
-                            opacity: 0.8,
+                            fontSize: { xs: "0.9rem", md: "1rem" },
+                            color: "rgba(255, 255, 255, 0.8)",
+                            mt: 1,
+                            maxWidth: "300px",
                           }}
                         >
                           {item.product?.description}
                         </Typography>
                         <Typography
-                          mt={2}
                           variant="h6"
                           sx={{
+                            fontSize: { xs: "1rem", md: "1.2rem" },
                             fontWeight: "700",
-                            fontSize: { xs: "12px", sm: "16px", md: "18px" },
                             color: "white",
+                            mt: 1,
                           }}
                         >
-                          Rs: {item.product?.price}
+                          Rs {item.product?.price}
                         </Typography>
                       </Box>
                     </>
                   ) : (
                     <Typography
                       sx={{
-                        fontSize: "20px",
+                        fontSize: "1.2rem",
                         color: "red",
                         textAlign: "center",
-                        width: "100%",
+                        py: 2,
                       }}
                     >
                       Product is no longer in production.
                     </Typography>
                   )}
-                </CardContent>
 
-                {/* Buttons */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 2, // Space between buttons
-                    mb: 3,
-                    flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
-                    alignItems: "center",
-                  }}
-                >
-                  {item.product ? (
+                  {/* Buttons */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
+                      gap: 2,
+                      width: "100%",
+                      
+                      justifyContent: "center",
+                    }}
+                  >
+                    {item.product ? (
+                      <Button
+                        variant="contained"
+                        sx={{
+                          bgcolor: "#1a1a1a",
+                          color: "#fff",
+                          fontWeight: "bold",
+                          fontFamily: "'Raleway', sans-serif",
+                          borderRadius: "8px",
+                          px: 3,
+                          py: 1,
+                          width: { xs: "100%", sm: "auto" },
+                          "&:hover": {
+                            bgcolor: "gray",
+                            transform: "scale(1.02)",
+                          },
+                          transition: "all 0.3s ease",
+                        }}
+                        onClick={() => handleOrderNow(item.product?._id)}
+                      >
+                        Order Now
+                      </Button>
+                    ) : null}
                     <Button
                       variant="contained"
-                      color="primary"
                       sx={{
-                        bgcolor: "black",
-                        color: "white",
+                        bgcolor: "#FFEB3B",
+                        color: "#1a1a1a",
                         fontWeight: "bold",
-                        "&:hover": { bgcolor: "gray" },
-                        width: { xs: "80%", sm: "auto" }, // Full width on mobile, auto on larger screens
+                        fontFamily: "'Raleway', sans-serif",
+                        borderRadius: "8px",
+                        px: 3,
+                        py: 1,
+                        width: { xs: "100%", sm: "auto" },
+                        "&:hover": {
+                          bgcolor: "red",
+                          transform: "scale(1.02)",
+                        },
+                        transition: "all 0.3s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
                       }}
-                      onClick={() => handleOrderNow(item.product?._id)}
+                      onClick={() => handleRemoveFromCart(item._id)}
                     >
-                      <Typography
-                                                sx={{
-                                                  color: "white",
-                                                  fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                                                }}
-                                              >
-                      Order Now</Typography>
+                      Remove
+                      <DeleteIcon
+                        sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
+                      />
                     </Button>
-                  ) : null}
-
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      bgcolor: "gold",
-                      color: "black",
-                      fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                      fontWeight: "bold",
-                      "&:hover": { bgcolor: "red" },
-                      width: { xs: "80%", sm: "auto" }, // Full width on mobile, auto on larger screens
-                    }}
-                    onClick={() => handleRemoveFromCart(item._id)}
-                  >
-                     <Typography
-                                                sx={{
-                                                 fontWeight:"bold",
-                                                  fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                                                }}
-                                              >
-                    Remove <DeleteIcon sx={{
-                                                mb:-0.5, 
-                                                 fontSize: { xs: "15px", sm: "14px", md: "20px" },
-                                               }}/>
-                    </Typography>
-                  </Button>
-                </Box>
+                  </Box>
+                </CardContent>
               </Card>
             </Grid>
           ))}

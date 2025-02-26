@@ -18,10 +18,9 @@ import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
-  const [pendingRequests, setPendingRequests] = useState(2); // Track API requests
+  const [pendingRequests, setPendingRequests] = useState(1); // Reduced to 1 since only one API call
   const navigate = useNavigate();
-
-  const token = localStorage.getItem("userToken"); // Get token once
+  const token = localStorage.getItem("userToken");
 
   useEffect(() => {
     if (!token) {
@@ -29,29 +28,25 @@ const Profile = () => {
       navigate("/user/Login");
       return;
     }
+
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http:///16.170.141.231:5000/api/orders/byid",
+          "http://16.170.141.231:5000/api/orders/byid", // Fixed typo in URL (removed extra slashes)
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
-        if (!orders) {
-          toast.error("Unauthorized! Please log in.");
-          return;
-        }
+        toast.error("Failed to fetch orders. Please try again.");
       } finally {
         setPendingRequests((prev) => prev - 1);
       }
     };
 
     getUserOrders();
-  }, [token]);
+  }, [token, navigate]);
 
-  // Set loading to false when all requests complete
   useEffect(() => {
     if (pendingRequests === 0) {
       setLoading(false);
@@ -59,48 +54,46 @@ const Profile = () => {
   }, [pendingRequests]);
 
   const handleCancelOrder = async (orderId, orderStatus, event) => {
-    event.preventDefault(); // Prevent default behavior
+    event.preventDefault();
 
-    // Prevent cancellation if order is already shipped
     if (orderStatus === "Shipped") {
       toast.error("Order has already been shipped and cannot be canceled.");
       return;
     }
 
-    if (!token) {
-      return;
-    }
+    if (!token) return;
 
     try {
-      const { data } = await axios.delete(
+      await axios.delete(
         `http://16.170.141.231:5000/api/orders/${orderId}/deleted`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success("Order canseled successfully!");
-      window.location.reload();
+      toast.success("Order canceled successfully!");
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order._id !== orderId)
+      );
     } catch (error) {
       console.error("Error deleting order:", error);
-      toast.error(error.response?.data?.message || "Failed to delete order.");
+      toast.error(error.response?.data?.message || "Failed to cancel order.");
     }
   };
 
   const FullWidthSection = styled(Box)({
-    width: "100%", // Ensures full width
-    padding: "40px 0", // Adds spacing on top and bottom
+    width: "100%",
+    padding: { xs: "20px 0", md: "40px 0" },
   });
 
-  // State to keep track of image index for each product (0: default, 1: hover)
   const [productImageState, setProductImageState] = useState({});
 
   const handleImageHover = (productId, hover) => {
     setProductImageState((prevState) => ({
       ...prevState,
-      [productId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+      [productId]: hover ? 1 : 0,
     }));
   };
 
   return (
-    <Container maxWidth={false} sx={{ width: "100%", p: 0 }}>
+    <Container maxWidth={false} sx={{ p: 0 }}>
       <FullWidthSection>
         {loading ? (
           <Box sx={{ width: "100%", mb: 2 }}>
@@ -119,19 +112,22 @@ const Profile = () => {
         <Typography
           variant="h3"
           textAlign="center"
-          mb={4}
+          mb={{ xs: 3, md: 4 }}
           sx={{
             fontFamily: "'Raleway', sans-serif",
+            fontSize: { xs: "2rem", md: "3rem" },
+            color: "#fff",
           }}
         >
           My Orders
         </Typography>
+
         <Box
           sx={{
             display: "flex",
-            flexWrap: "wrap", // Ensures cards move to the next row when needed
-            gap: 3, // Adds spacing between cards
-            justifyContent: "center", // Centers cards in the container
+            flexWrap: "wrap",
+            gap: 3,
+            justifyContent: "center",
           }}
         >
           {orders && orders.length > 0 ? (
@@ -139,137 +135,151 @@ const Profile = () => {
               <Card
                 key={order._id}
                 sx={{
-                  width: { xs: "100%", sm: "550px" }, // Full width on mobile, fixed width on larger screens
-                  border: "0.5px solid rgba(100, 100, 100, 0.41)",
+                  width: { xs: "80%", sm: "26%" },
+                  m:2.5,
+                  maxWidth: "600px",
+                  border: "1px solid rgba(100, 100, 100, 0.5)",
                   background: "linear-gradient(135deg, #232526, #414345)",
                   boxShadow: "0 6px 15px rgba(0, 0, 0, 0.7)",
-                  borderRadius: "15px",
-                  p: 1,
-                  m: { xs: 1, sm: 2 }, // Smaller margin on mobile
-                  textAlign: "center",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                
+                  transition: "all 0.3s ease",
+                 
                 }}
               >
-                <CardContent>
-                  {/* Product Name Centered */}
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    padding: { xs: "15px", md: "20px" },
+                  }}
+                >
                   <Typography
-                    variant="h4"
+                    variant="h5"
                     sx={{
-                      fontSize: { xs: "16px", sm: "25px", md: "35px" }, // Smaller on mobile
-                      color: "rgb(255, 255, 255);",
-
-                      textAlign: "left",
+                      fontSize: { xs: "1.2rem", md: "1.5rem" },
+                      color: "#fff",
                       fontFamily: "'Raleway', sans-serif",
+                      fontWeight: 600,
+                      mb: 2,
+                      textAlign: "center",
                     }}
                   >
-                    {order.products[0]?.product?.name}
+                    {order.products[0]?.product?.name || "Unknown Product"}
                   </Typography>
+
                   <Divider
                     sx={{
-                      mt: 3,
-                      backgroundColor: "gray",
-                      height: "0.2px",
+                      width: "100%",
+                      backgroundColor: "rgba(255, 255, 255, 0.2)",
+                      mb: 2,
                     }}
                   />
-                  {/* Image on Left, Details on Right */}
+
                   <Box
-                    mt={2}
                     sx={{
                       display: "flex",
-                      flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
-                      alignItems: { xs: "center", sm: "flex-start" }, // Center on mobile, align left on larger screens
-                      color: "#fff",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      width: "100%",
                       gap: 2,
                     }}
                   >
-                    {/* Image on Left */}
+                    {/* Product Image */}
                     {order?.products?.map((item) => (
                       <Card
                         key={item?.product?._id}
                         sx={{
-                          maxWidth: { xs: "100%", sm: 210 }, // Full width on mobile, fixed width on larger screens
-                          perspective: "1000px",
+                          maxWidth: { xs: 250, md: 250 },
+                          maxHeight: { xs: 250, md: 270 },
+                          borderRadius: "8px",
+                          overflow: "hidden",
                         }}
                       >
                         <CardMedia
                           component="img"
-                          height="210"
+                          
                           image={`http://16.170.141.231:5000${
                             item?.images[
                               productImageState[item?.product?._id] || 0
-                            ]
-                          }`} // Dynamic image index for each product
-                          alt={item?.product?.name}
-                          id={`image-${item?.product?._id}`}
+                            ] || "/default-image.jpg"
+                          }`}
+                          alt={item?.product?.name || "Product Image"}
                           sx={{
-                            transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
+                            transition: "transform 1.2s ease",
                             transformStyle: "preserve-3d",
                             ":hover": {
-                              transform: "rotateY(180deg)", // Rotate right to left
+                              transform: "rotateY(180deg)",
                             },
                           }}
                           onMouseEnter={() =>
                             handleImageHover(item?.product?._id, true)
-                          } // Hover image
+                          }
                           onMouseLeave={() =>
                             handleImageHover(item?.product?._id, false)
-                          } // Default image
+                          }
                         />
                       </Card>
                     ))}
 
-                    {/* Details in a Column */}
+                    {/* Order Details */}
                     <Box
                       sx={{
-                        ml: { xs: 0, sm: 5 }, // No margin on mobile, margin on larger screens
-                        mt: { xs: 0, sm: 4 }, 
                         display: "flex",
                         flexDirection: "column",
-                        gap: 3,
-                        textAlign: { xs: "center", sm: "left" }, // Center text on mobile
+                        gap: 1.5,
+                        textAlign: "center",
+                        color: "#fff",
                       }}
                     >
                       <Typography
                         variant="h6"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent={{ xs: "center", sm: "flex-start" }} // Center on mobile, align left on larger screens
+                        sx={{ fontSize: { xs: "1rem", md: "1.3rem" } }}
                       >
-                        Status:
+                        Status:{" "}
                         <Typography
-                          component="span" // Use span to keep it inline
+                          component="span"
                           sx={{
-                            fontSize: { xs: "12px", sm: "16px", md: "20px" },
-                            color: order.status === "Shipped" ? "green" : "red",
-                            ml: 1,
-                          }} // Apply color & spacing
+                            color:
+                              order.status === "Shipped"
+                                ? "#00cc00"
+                                : "#ff4444",
+                            fontWeight: 500,
+                            fontSize: "1.3rem",
+                          }}
                         >
                           {order.status}
                         </Typography>
                         <Box
+                          component="span"
                           sx={{
-                            width: 12,
-                            height: 12,
+                            display: "inline-block",
+                            width: 10,
+                            height: 10,
                             borderRadius: "50%",
                             backgroundColor:
-                              order.status === "Shipped" ? "green" : "red",
-                            ml: 1, // Adds spacing between text and dot
+                              order.status === "Shipped"
+                                ? "#00cc00"
+                                : "#ff4444",
+                            ml: 1,
+                            verticalAlign: "middle",
                           }}
                         />
                       </Typography>
-
                       <Typography
-                        variant="h5"
-                        sx={{
-                          fontSize: { xs: "12px", sm: "16px", md: "18px" },
-                        }}
+                        variant="h6"
+                        sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
                       >
-                        Price: ${order.totalPrice}
+                        Price:{" "}
+                        <span style={{ color: "white" }}>
+                          ${order.totalPrice}
+                        </span>
                       </Typography>
                       <Typography
                         variant="body2"
                         sx={{
-                          fontSize: { xs: "12px", sm: "16px", md: "18px" },
+                          fontSize: { xs: "0.9rem", md: "1rem" },
+                          color: "rgba(255, 255, 255, 0.8)",
                         }}
                       >
                         Ordered on:{" "}
@@ -281,24 +291,26 @@ const Profile = () => {
                   <Button
                     variant="contained"
                     sx={{
+                      bgcolor: "#FFEB3B",
+                      color: "#1a1a1a",
                       fontWeight: "bold",
-                      color: "black",
-                      background: "gold",
+                      fontFamily: "'Raleway', sans-serif",
+                      borderRadius: "8px",
+                      px: 3,
+                      py: 1,
                       mt: 2,
-                      "&:hover": { background: "red" },
+                      width: { xs: "100%", sm: "auto" },
+                      "&:hover": {
+                        bgcolor: "red",
+                        transform: "scale(1.02)",
+                      },
+                      transition: "all 0.3s ease",
                     }}
                     onClick={(event) =>
                       handleCancelOrder(order._id, order.status, event)
                     }
                   >
-                    <Typography
-                      sx={{
-                        fontWeight: 500,
-                        fontSize: { xs: "15px", sm: "14px", md: "18px" },
-                      }}
-                    >
-                      Cancel Order
-                    </Typography>
+                    Cancel Order
                   </Button>
                 </CardContent>
               </Card>
@@ -306,7 +318,7 @@ const Profile = () => {
           ) : (
             <Typography
               variant="h6"
-              sx={{ color: "#fff", textAlign: "center" }}
+              sx={{ color: "#fff", textAlign: "center", py: 2 }}
             >
               No orders found.
             </Typography>
