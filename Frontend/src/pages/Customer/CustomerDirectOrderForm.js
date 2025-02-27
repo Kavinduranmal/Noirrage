@@ -57,7 +57,7 @@ const CustomerDirectOrderForm = () => {
 
   const token = localStorage.getItem("userToken");
   const productId = location.state?.productId || null;
-  console.log("ssssssssssssssss!",productId)
+  
   useEffect(() => {
     if (!token) {
       toast.error("Please log in to continue");
@@ -81,8 +81,7 @@ const CustomerDirectOrderForm = () => {
     fetchUserId();
 
     if (productId) {
-      console.log(productId)
-      toast.info("Fetching product")
+     
       fetchProduct();
     }
   }, [productId, token, navigate]);

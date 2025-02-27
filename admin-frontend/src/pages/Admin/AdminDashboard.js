@@ -63,19 +63,21 @@ const AdminDashboard = () => {
   const fetchOrders = async () => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
+      navigate("/admin/login"); // Redirect to admin login if no token
       return;
     }
     try {
-      const { data } = await axios.get(
-        "http://16.170.141.231:5000/api/orders/all",
-        {}
-      );
-      setOrders(data);
+      const { data } = await axios.get("http://localhost:5000/api/orders/all", {
+        headers: { Authorization: `Bearer ${token}` }, // Add token here
+      });
+      setOrders(data || []); // Ensure empty array if no data
+      console.log("Fetched Orders:", data); // Debug log
     } catch (error) {
       console.error(
         "Error fetching orders:",
         error.response ? error.response.data : error.message
       );
+      toast.error("Failed to fetch orders");
     }
   };
 
@@ -87,7 +89,7 @@ const AdminDashboard = () => {
     }
     try {
       const response = await axios.put(
-        `http://16.170.141.231:5000/api/orders/${orderId}/ship`,
+        `http://localhost:5000/api/orders/${orderId}/ship`,
         {},
         {
           headers: {
@@ -110,7 +112,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const salesData = Array(12).fill(0);
     orders.forEach((order) => {
-      const month = new Date(order.date).getMonth();
+      const month = new Date(order.createdAt).getMonth();
       salesData[month] += order.totalPrice;
     });
     setMonthlySales(
@@ -288,7 +290,7 @@ const AdminDashboard = () => {
         Pending Orders
       </Typography>
       {/* Search Bar */}
-      
+
       <TableContainer
         component={Paper}
         sx={{ backgroundColor: "#1e1e1e", color: "#fff" }}
@@ -347,35 +349,34 @@ const AdminDashboard = () => {
                     {order.products.map((item) => (
                       <Box
                         key={item.product?._id}
-                        sx={{ display: "flex", alignItems: "center" }}
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
                         <Card
-                          key={item?.product?._id}
-                          sx={{  height:150, width: 150, perspective: "1000px" }}
+                          sx={{
+                            height: 150,
+                            width: 150,
+                            perspective: "1000px",
+                          }}
                         >
                           <CardMedia
                             component="img"
-                           
-                            image={`http://16.170.141.231:5000${
-                              item?.images[
-                                productImageState[item?.product?._id] || 0
+                            image={`http://localhost:5000${
+                              item.product.images[
+                                productImageState[item.product._id] || 0
                               ]
-                            }`} // Dynamic image index for each product
-                            alt={item?.product?.name}
-                            id={`image-${item?.product?._id}`}
+                            }`}
+                            alt={item.product?.name}
                             sx={{
-                              transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
+                              transition: "transform 1.2s ease",
                               transformStyle: "preserve-3d",
-                              ":hover": {
-                                transform: "rotateY(180deg)", // Rotate right to left
-                              },
+                              ":hover": { transform: "rotateY(180deg)" },
                             }}
                             onMouseEnter={() =>
-                              handleImageHover(item?.product?._id, true)
-                            } // Hover image
+                              handleImageHover(item.product._id, true)
+                            }
                             onMouseLeave={() =>
-                              handleImageHover(item?.product?._id, false)
-                            } // Default image
+                              handleImageHover(item.product._id, false)
+                            }
                           />
                         </Card>
                       </Box>
@@ -390,25 +391,28 @@ const AdminDashboard = () => {
                   <TableCell sx={{ color: "#fff" }}>
                     {order.shippingDetails.contactNumber}
                   </TableCell>
-
                   <TableCell sx={{ color: "#fff" }}>
                     {order.products.map((item) => (
-                      <Typography sx={{ color: "#fff" }}>
+                      <Typography key={item.product._id} sx={{ color: "#fff" }}>
                         {item.product?.name}
                       </Typography>
                     ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                    {order.products[0]?.quantity}
+                    {order.products.map((item) => (
+                      <Typography key={item.product._id} sx={{ color: "#fff" }}>
+                        {item.quantity}
+                      </Typography>
+                    ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                    Rs :{order.totalPrice}
+                    Rs: {order.totalPrice}
                   </TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       sx={{
-                        border: "1px sold rgba(254, 254, 254, 0.97)",
+                        border: "1px solid rgba(254, 254, 254, 0.97)",
                         bgcolor: "black",
                         color: "lightgreen",
                         fontWeight: "bold",
@@ -493,35 +497,34 @@ const AdminDashboard = () => {
                     {order.products.map((item) => (
                       <Box
                         key={item.product?._id}
-                        sx={{ display: "flex", alignItems: "center" }}
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
                         <Card
-                          key={item?.product?._id}
-                          sx={{height:150, width: 150,  perspective: "1000px" }}
+                          sx={{
+                            height: 150,
+                            width: 150,
+                            perspective: "1000px",
+                          }}
                         >
                           <CardMedia
                             component="img"
-                            
-                            image={`http://16.170.141.231:5000${
-                              item?.images[
-                                productImageState[item?.product?._id] || 0
+                            image={`http://localhost:5000${
+                              item.product.images[
+                                productImageState[item.product._id] || 0
                               ]
-                            }`} // Dynamic image index for each product
-                            alt={item?.product?.name}
-                            id={`image-${item?.product?._id}`}
+                            }`}
+                            alt={item.product?.name}
                             sx={{
-                              transition: "transform 1.2s ease", // Slow down the rotation effect (1 second)
+                              transition: "transform 1.2s ease",
                               transformStyle: "preserve-3d",
-                              ":hover": {
-                                transform: "rotateY(180deg)", // Rotate right to left
-                              },
+                              ":hover": { transform: "rotateY(180deg)" },
                             }}
                             onMouseEnter={() =>
-                              handleImageHover(item?.product?._id, true)
-                            } // Hover image
+                              handleImageHover(item.product._id, true)
+                            }
                             onMouseLeave={() =>
-                              handleImageHover(item?.product?._id, false)
-                            } // Default image
+                              handleImageHover(item.product._id, false)
+                            }
                           />
                         </Card>
                       </Box>
@@ -536,24 +539,28 @@ const AdminDashboard = () => {
                   <TableCell sx={{ color: "#fff" }}>
                     {order.shippingDetails.contactNumber}
                   </TableCell>
-
                   <TableCell>
                     {order.products.map((item) => (
-                      <Box
-                        key={item.product?._id}
-                        sx={{ display: "flex", flexDirection: "column" }}
+                      <Typography
+                        key={item.product._id}
+                        sx={{ color: "#fff", mb: 1 }}
                       >
-                        <Typography sx={{ color: "#fff" }}>
-                          {item.product?.name}
-                        </Typography>
-                      </Box>
+                        {item.product?.name}
+                      </Typography>
                     ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                    {order.products[0]?.quantity}
+                    {order.products.map((item) => (
+                      <Typography
+                        key={item.product._id}
+                        sx={{ color: "#fff", mb: 1 }}
+                      >
+                        {item.quantity}
+                      </Typography>
+                    ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
-                    Rs :{order.totalPrice.toFixed(2)}
+                    Rs: {order.totalPrice.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}

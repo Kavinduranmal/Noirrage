@@ -108,6 +108,7 @@ const AddToCartOrderForm = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item added to cart!");
+      navigate("/CustProductList");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to add to cart");
     }
