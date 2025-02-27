@@ -65,7 +65,7 @@ const AddToCartOrderForm = () => {
     const fetchUserDataAndCart = async () => {
       try {
         const userResponse = await axios.get(
-          "http://localhost:5000/api/auth/profileview",
+          "http://16.170.141.231:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const user = userResponse.data;
@@ -80,7 +80,7 @@ const AddToCartOrderForm = () => {
         }));
 
         const cartResponse = await axios.get(
-          "http://localhost:5000/api/cart/view",
+          "http://16.170.141.231:5000/api/cart/view",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
@@ -103,7 +103,7 @@ const AddToCartOrderForm = () => {
 
   const handleRemove = async (itemId, onItemRemoved) => {
     try {
-      await axios.delete(`http://localhost:5000/api/cart/remove/${itemId}`, {
+      await axios.delete(`http://16.170.141.231:5000/api/cart/remove/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item removed from cart!");
@@ -177,14 +177,14 @@ const AddToCartOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/orders/create",
+        "http://16.170.141.231:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const orderId = data.order._id;
 
       const paymentResponse = await axios.post(
-        "http://localhost:5000/api/stripe/create-payment-intent",
+        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -345,8 +345,8 @@ const AddToCartOrderForm = () => {
                   component="img"
                   image={
                     item.product?.images?.length > 0
-                      ? `http://localhost:5000${item.product.images[0]}`
-                      : "http://localhost:5000/default-image.jpg"
+                      ? `http://16.170.141.231:5000${item.product.images[0]}`
+                      : "http://16.170.141.231:5000/default-image.jpg"
                   }
                   alt={item.product?.name || "Product Image"}
                   sx={{

@@ -15,12 +15,10 @@ import {
   CardContent,
   Grid,
   Box,
-  TextField,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import SearchIcon from "@mui/icons-material/Search";
 import { ShoppingCart, AttachMoney, TrendingUp } from "@mui/icons-material";
 import {
   BarChart,
@@ -35,79 +33,60 @@ import {
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [monthlySales, setMonthlySales] = useState([]);
+  const [productImageState, setProductImageState] = useState({});
 
-  const token = localStorage.getItem("adminToken"); // Fetch token
-
-  // Filter orders based on search term
-  const filteredOrders = orders.filter((order) => {
-    const emailMatch = order.shippingDetails.email
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const priceMatch = order.totalPrice
-      .toString()
-      .includes(searchTerm.toLowerCase());
-
-    return order.status === "Shipped" && (emailMatch || priceMatch);
-  });
+  const token = localStorage.getItem("adminToken");
 
   useEffect(() => {
     if (!token) {
       toast.error("Unauthorized! Please log in.");
+      navigate("/admin/login");
       return;
     }
-
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
-    if (!token) {
-      toast.error("Unauthorized! Please log in.");
-      navigate("/admin/login"); // Redirect to admin login if no token
-      return;
-    }
     try {
-      const { data } = await axios.get("http://localhost:5000/api/orders/all", {
-        headers: { Authorization: `Bearer ${token}` }, // Add token here
-      });
-      setOrders(data || []); // Ensure empty array if no data
-      console.log("Fetched Orders:", data); // Debug log
+      const { data } = await axios.get(
+        "http://16.170.141.231:5000/api/orders/all",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setOrders(data || []);
+      console.log("Fetched Orders:", data);
     } catch (error) {
       console.error(
         "Error fetching orders:",
-        error.response ? error.response.data : error.message
+        error.response?.data || error.message
       );
       toast.error("Failed to fetch orders");
     }
   };
 
   const markAsShipped = async (orderId) => {
-    const token = localStorage.getItem("adminToken"); // Fetch token
     if (!token) {
       toast.error("Unauthorized! Please log in.");
       return;
     }
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/orders/${orderId}/ship`,
+      await axios.put(
+        `http://16.170.141.231:5000/api/orders/${orderId}/ship`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Ensure token is in Authorization header
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       fetchOrders();
-      toast.success("Marked");
+      toast.success("Marked as Shipped");
     } catch (error) {
       console.error(
         "Error updating order:",
-        error.response ? error.response.data : error.message
+        error.response?.data || error.message
       );
+      toast.error("Failed to mark as shipped");
     }
   };
-
-  const [monthlySales, setMonthlySales] = useState([]);
 
   useEffect(() => {
     const salesData = Array(12).fill(0);
@@ -131,26 +110,19 @@ const AdminDashboard = () => {
   ).length;
   const totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);
 
-  // State to keep track of image index for each product (0: default, 1: hover)
-  const [productImageState, setProductImageState] = useState({});
-
   const handleImageHover = (productId, hover) => {
     setProductImageState((prevState) => ({
       ...prevState,
-      [productId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+      [productId]: hover ? 1 : 0,
     }));
   };
 
   return (
     <Container
       maxWidth="xl"
-      sx={{
-        color: "#fff",
-        padding: 3,
-        borderRadius: 2,
-      }}
+      sx={{ color: "#fff", padding: 3, borderRadius: 2 }}
     >
-      {/* Summary Cards */}
+           {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={4}>
           <Card
@@ -225,10 +197,9 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
-
+      </Grid>{/* Summary Cards */}
+   
       {/* Monthly Sales Graph */}
-
       <Paper
         sx={{
           mx: 15,
@@ -236,10 +207,6 @@ const AdminDashboard = () => {
           width: "80%",
           padding: 2,
           backgroundColor: "#1e1e1e",
-          borderRadius: 2,
-          border: "1px solid rgba(255, 217, 0, 0.32)",
-          bgcolor: "rgba(51, 51, 51, 0.26)",
-          boxShadow: "0px 4px 20px rgb(0, 0, 0)",
         }}
       >
         <Typography variant="h4" sx={{ ml: "40%", mb: 5, color: "gold" }}>
@@ -258,9 +225,7 @@ const AdminDashboard = () => {
                 backgroundColor: "#333",
                 border: "none",
                 color: "#fff",
-                borderRadius: 5,
               }}
-              cursor={{ fill: "rgba(255,255,255,0.1)" }}
             />
             <Bar
               dataKey="total"
@@ -277,20 +242,11 @@ const AdminDashboard = () => {
           </BarChart>
         </ResponsiveContainer>
       </Paper>
-      {/* Orders Table */}
-      <Typography
-        variant="h4"
-        mt={6}
-        mb={4}
-        sx={{
-          color: "gold",
-          fontFamily: "'Raleway', sans-serif",
-        }}
-      >
+
+      {/* Pending Orders Table */}
+      <Typography variant="h4" mt={6} mb={4} sx={{ color: "gold" }}>
         Pending Orders
       </Typography>
-      {/* Search Bar */}
-
       <TableContainer
         component={Paper}
         sx={{ backgroundColor: "#1e1e1e", color: "#fff" }}
@@ -348,37 +304,45 @@ const AdminDashboard = () => {
                   <TableCell>
                     {order.products.map((item) => (
                       <Box
-                        key={item.product?._id}
+                        key={item.product?._id || item._id}
                         sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
-                        <Card
-                          sx={{
-                            height: 150,
-                            width: 150,
-                            perspective: "1000px",
-                          }}
-                        >
-                          <CardMedia
-                            component="img"
-                            image={`http://localhost:5000${
-                              item.product.images[
-                                productImageState[item.product._id] || 0
-                              ]
-                            }`}
-                            alt={item.product?.name}
+                        {item.product &&
+                        item.product.images &&
+                        item.product.images.length > 0 ? (
+                          <Card
                             sx={{
-                              transition: "transform 1.2s ease",
-                              transformStyle: "preserve-3d",
-                              ":hover": { transform: "rotateY(180deg)" },
+                              height: 150,
+                              width: 150,
+                              perspective: "1000px",
                             }}
-                            onMouseEnter={() =>
-                              handleImageHover(item.product._id, true)
-                            }
-                            onMouseLeave={() =>
-                              handleImageHover(item.product._id, false)
-                            }
-                          />
-                        </Card>
+                          >
+                            <CardMedia
+                              component="img"
+                              image={`http://16.170.141.231:5000${
+                                item.product.images[
+                                  productImageState[item.product._id] || 0
+                                ]
+                              }`}
+                              alt={item.product?.name || "Product"}
+                              sx={{
+                                transition: "transform 1.2s ease",
+                                transformStyle: "preserve-3d",
+                                ":hover": { transform: "rotateY(180deg)" },
+                              }}
+                              onMouseEnter={() =>
+                                handleImageHover(item.product._id, true)
+                              }
+                              onMouseLeave={() =>
+                                handleImageHover(item.product._id, false)
+                              }
+                            />
+                          </Card>
+                        ) : (
+                          <Typography sx={{ color: "#fff" }}>
+                            No Image Available
+                          </Typography>
+                        )}
                       </Box>
                     ))}
                   </TableCell>
@@ -393,14 +357,20 @@ const AdminDashboard = () => {
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
                     {order.products.map((item) => (
-                      <Typography key={item.product._id} sx={{ color: "#fff" }}>
-                        {item.product?.name}
+                      <Typography
+                        key={item.product?._id || item._id}
+                        sx={{ color: "#fff" }}
+                      >
+                        {item.product?.name || "Unknown Product"}
                       </Typography>
                     ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
                     {order.products.map((item) => (
-                      <Typography key={item.product._id} sx={{ color: "#fff" }}>
+                      <Typography
+                        key={item.product?._id || item._id}
+                        sx={{ color: "#fff" }}
+                      >
                         {item.quantity}
                       </Typography>
                     ))}
@@ -412,15 +382,9 @@ const AdminDashboard = () => {
                     <Button
                       variant="contained"
                       sx={{
-                        border: "1px solid rgba(254, 254, 254, 0.97)",
                         bgcolor: "black",
                         color: "lightgreen",
-                        fontWeight: "bold",
-                        ":hover": {
-                          bgcolor: "lightgreen",
-                          color: "green",
-                          fontWeight: "bold",
-                        },
+                        ":hover": { bgcolor: "lightgreen", color: "green" },
                       }}
                       onClick={() => markAsShipped(order._id)}
                     >
@@ -433,15 +397,8 @@ const AdminDashboard = () => {
         </Table>
       </TableContainer>
 
-      <Typography
-        variant="h4"
-        mt={6}
-        mb={4}
-        sx={{
-          color: "gold",
-          fontFamily: "'Raleway', sans-serif",
-        }}
-      >
+      {/* Completed Orders Table */}
+      <Typography variant="h4" mt={6} mb={4} sx={{ color: "gold" }}>
         Completed Orders
       </Typography>
       <TableContainer
@@ -496,37 +453,45 @@ const AdminDashboard = () => {
                   <TableCell>
                     {order.products.map((item) => (
                       <Box
-                        key={item.product?._id}
+                        key={item.product?._id || item._id}
                         sx={{ display: "flex", alignItems: "center", mb: 1 }}
                       >
-                        <Card
-                          sx={{
-                            height: 150,
-                            width: 150,
-                            perspective: "1000px",
-                          }}
-                        >
-                          <CardMedia
-                            component="img"
-                            image={`http://localhost:5000${
-                              item.product.images[
-                                productImageState[item.product._id] || 0
-                              ]
-                            }`}
-                            alt={item.product?.name}
+                        {item.product &&
+                        item.product.images &&
+                        item.product.images.length > 0 ? (
+                          <Card
                             sx={{
-                              transition: "transform 1.2s ease",
-                              transformStyle: "preserve-3d",
-                              ":hover": { transform: "rotateY(180deg)" },
+                              height: 150,
+                              width: 150,
+                              perspective: "1000px",
                             }}
-                            onMouseEnter={() =>
-                              handleImageHover(item.product._id, true)
-                            }
-                            onMouseLeave={() =>
-                              handleImageHover(item.product._id, false)
-                            }
-                          />
-                        </Card>
+                          >
+                            <CardMedia
+                              component="img"
+                              image={`http://16.170.141.231:5000${
+                                item.product.images[
+                                  productImageState[item.product._id] || 0
+                                ]
+                              }`}
+                              alt={item.product?.name || "Product"}
+                              sx={{
+                                transition: "transform 1.2s ease",
+                                transformStyle: "preserve-3d",
+                                ":hover": { transform: "rotateY(180deg)" },
+                              }}
+                              onMouseEnter={() =>
+                                handleImageHover(item.product._id, true)
+                              }
+                              onMouseLeave={() =>
+                                handleImageHover(item.product._id, false)
+                              }
+                            />
+                          </Card>
+                        ) : (
+                          <Typography sx={{ color: "#fff" }}>
+                            No Image Available
+                          </Typography>
+                        )}
                       </Box>
                     ))}
                   </TableCell>
@@ -542,17 +507,17 @@ const AdminDashboard = () => {
                   <TableCell>
                     {order.products.map((item) => (
                       <Typography
-                        key={item.product._id}
+                        key={item.product?._id || item._id}
                         sx={{ color: "#fff", mb: 1 }}
                       >
-                        {item.product?.name}
+                        {item.product?.name || "Unknown Product"}
                       </Typography>
                     ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
                     {order.products.map((item) => (
                       <Typography
-                        key={item.product._id}
+                        key={item.product?._id || item._id}
                         sx={{ color: "#fff", mb: 1 }}
                       >
                         {item.quantity}

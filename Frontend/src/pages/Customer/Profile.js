@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 // Use environment variable for API base URL (set in .env file or AWS config)
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5000";
+  process.env.REACT_APP_API_URL || "http://16.170.141.231:5000";
 
 const Profile = () => {
   const [user, setUser] = useState(null);

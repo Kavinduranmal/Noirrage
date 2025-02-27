@@ -68,7 +68,7 @@ const CustomerDirectOrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/auth/profileview",
+          "http://16.170.141.231:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -99,7 +99,7 @@ const CustomerDirectOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/products");
+      const { data } = await axios.get("http://16.170.141.231:5000/api/products");
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
@@ -177,7 +177,7 @@ const CustomerDirectOrderForm = () => {
     try {
       // Create the order
       const { data } = await axios.post(
-        "http://localhost:5000/api/orders/create",
+        "http://16.170.141.231:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -185,7 +185,7 @@ const CustomerDirectOrderForm = () => {
 
       // Create payment intent
       const paymentResponse = await axios.post(
-        "http://localhost:5000/api/stripe/create-payment-intent",
+        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -269,7 +269,7 @@ const CustomerDirectOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
+                image={`http://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -295,7 +295,7 @@ const CustomerDirectOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(http://localhost:5000${img})`,
+                    backgroundImage: `url(http://16.170.141.231:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index

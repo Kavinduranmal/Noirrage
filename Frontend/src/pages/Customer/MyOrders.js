@@ -31,7 +31,7 @@ const MyOrders = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/orders/byid",
+          "http://16.170.141.231:5000/api/orders/byid",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -56,7 +56,7 @@ const MyOrders = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+      await axios.delete(`http://16.170.141.231:5000/api/orders/${orderId}/cancel`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order canceled successfully!");
@@ -163,12 +163,12 @@ const MyOrders = () => {
                                 item.product &&
                                 item.product.images &&
                                 item.product.images.length > 0
-                                  ? `http://localhost:5000${
+                                  ? `http://16.170.141.231:5000${
                                       item.product.images[
                                         productImageState[item.product._id] || 0
                                       ]
                                     }`
-                                  : "http://localhost:5000/default-image.jpg"
+                                  : "http://16.170.141.231:5000/default-image.jpg"
                               }
                               alt={item.product?.name || "Product Image"}
                               sx={{

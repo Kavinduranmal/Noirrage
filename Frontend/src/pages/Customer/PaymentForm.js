@@ -53,7 +53,7 @@ const PaymentForm = ({ onSuccessfulPayment }) => {
 
     // Request backend to create a PaymentIntent
     try {
-      const response = await fetch("http://localhost:5000/api/stripe/create-payment-intent", {
+      const response = await fetch("http://16.170.141.231:5000/api/stripe/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, order_id, user_id }),
