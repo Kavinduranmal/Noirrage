@@ -217,7 +217,7 @@ const AddToCartOrderForm = () => {
         );
         setCartItems(updatedCart);
         setSelectedCartItems([]);
-        navigate("/ViewAllcart");
+        navigate("/userorders");
       }
     } catch (error) {
       setPaymentError(
