@@ -215,7 +215,7 @@ const CustomerDirectOrderForm = () => {
         toast.error(paymentResult.error.message);
       } else if (paymentResult.paymentIntent.status === "succeeded") {
         toast.success("Order placed successfully!");
-        navigate("/CustProductList");
+        navigate("/userorders");
       }
     } catch (error) {
       setPaymentError(

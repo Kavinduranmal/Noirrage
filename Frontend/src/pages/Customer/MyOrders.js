@@ -64,10 +64,9 @@ const MyOrders = () => {
     if (!token) return;
 
     try {
-      await axios.delete(
-        `http://localhost:5000/api/orders/${orderId}/cancel`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.delete(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Order canceled successfully!");
       setOrders((prevOrders) =>
         prevOrders.filter((order) => order._id !== orderId)
@@ -136,14 +135,13 @@ const MyOrders = () => {
                 key={order._id}
                 sx={{
                   width: { xs: "80%", sm: "26%" },
-                  m:2.5,
+                  m: 2.5,
                   maxWidth: "600px",
                   border: "1px solid rgba(100, 100, 100, 0.5)",
                   background: "linear-gradient(135deg, #232526, #414345)",
                   boxShadow: "0 6px 15px rgba(0, 0, 0, 0.7)",
-                
+
                   transition: "all 0.3s ease",
-                 
                 }}
               >
                 <CardContent
@@ -155,20 +153,20 @@ const MyOrders = () => {
                   }}
                 >
                   <Typography
-    variant="h5"
-    sx={{
-        fontSize: { xs: "1.2rem", md: "1.5rem" },
-        color: "#fff",
-        fontFamily: "'Raleway', sans-serif",
-        fontWeight: 600,
-        mb: 2,
-        textAlign: "center",
-    }}
->
-    {order.products && order.products.length > 0 ? order.products[0].product?.name || "Unknown Product" : "No Product"}
-</Typography>
-
-              
+                    variant="h5"
+                    sx={{
+                      fontSize: { xs: "1.2rem", md: "1.5rem" },
+                      color: "#fff",
+                      fontFamily: "'Raleway', sans-serif",
+                      fontWeight: 600,
+                      mb: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    {order.products && order.products.length > 0
+                      ? order.products[0].product?.name || "Unknown Product"
+                      : "No Product"}
+                  </Typography>
 
                   <Divider
                     sx={{
@@ -189,36 +187,41 @@ const MyOrders = () => {
                   >
                     {/* Product Image */}
                     {order?.products?.map((item) => (
-    <Card
-        key={item?.product?._id}
-        sx={{
-            maxWidth: { xs: 250, md: 250 },
-            maxHeight: { xs: 250, md: 270 },
-            borderRadius: "8px",
-            overflow: "hidden",
-        }}
-    >
-        <CardMedia
-            component="img"
-            image={`http://localhost:5000${
-                item?.images && item.images.length > 0
-                    ? item.images[productImageState[item?.product?._id] || 0]
-                    : "/default-image.jpg"
-            }`}
-            alt={item?.product?.name || "Product Image"}
-            sx={{
-                transition: "transform 1.2s ease",
-                transformStyle: "preserve-3d",
-                ":hover": {
-                    transform: "rotateY(180deg)",
-                },
-            }}
-            onMouseEnter={() => handleImageHover(item?.product?._id, true)}
-            onMouseLeave={() => handleImageHover(item?.product?._id, false)}
-        />
-    </Card>
-))}
-
+                      <Card
+                        key={item?.product?._id}
+                        sx={{
+                          maxWidth: { xs: 250, md: 250 },
+                          maxHeight: { xs: 250, md: 270 },
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <CardMedia
+                          component="img"
+                          image={`http://localhost:5000${
+                            item?.images && item.images.length > 0
+                              ? item.images[
+                                  productImageState[item?.product?._id] || 0
+                                ]
+                              : "/default-image.jpg"
+                          }`}
+                          alt={item?.product?.name || "Product Image"}
+                          sx={{
+                            transition: "transform 1.2s ease",
+                            transformStyle: "preserve-3d",
+                            ":hover": {
+                              transform: "rotateY(180deg)",
+                            },
+                          }}
+                          onMouseEnter={() =>
+                            handleImageHover(item?.product?._id, true)
+                          }
+                          onMouseLeave={() =>
+                            handleImageHover(item?.product?._id, false)
+                          }
+                        />
+                      </Card>
+                    ))}
 
                     {/* Order Details */}
                     <Box
@@ -318,7 +321,7 @@ const MyOrders = () => {
               variant="h6"
               sx={{ color: "#fff", textAlign: "center", py: 2 }}
             >
-              No orders found.
+              please wait...
             </Typography>
           )}
         </Box>

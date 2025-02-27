@@ -576,14 +576,16 @@ const AddToCartOrderForm = () => {
                     required={field.required}
                     sx={{
                       mb: 2,
-                      "& input": { color: "#fff" },
-                      "& label": { color: "#ccc" },
-                      "& label.Mui-focused": { color: "#ff9900" },
+                      "& input": { color: "white" },
+                      "& label": { color: "gray" },
+                      "& label.Mui-focused": { color: "white" },
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#2a2a2a",
-                        "& fieldset": { borderColor: "#666" },
-                        "&:hover fieldset": { borderColor: "#ff9900" },
-                        "&.Mui-focused fieldset": { borderColor: "#ff9900" },
+                        "& fieldset": { borderColor: "gray" },
+                        "&:hover fieldset": { borderColor: "white" },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#fdc200",
+                        },
                       },
                     }}
                   />
