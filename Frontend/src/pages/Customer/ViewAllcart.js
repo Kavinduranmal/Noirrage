@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Container,
   TextField,
@@ -28,16 +28,15 @@ const stripePromise = loadStripe(
   "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11"
 );
 
-
 const AddToCartOrderForm = () => {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
 
   const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState(1); // Step 1: Cart Selection, Step 2: Shipping & Payment
+  const [step, setStep] = useState(1);
   const [cartItems, setCartItems] = useState([]);
-  const [selectedCartItems, setSelectedCartItems] = useState([]); // IDs of selected items
+  const [selectedCartItems, setSelectedCartItems] = useState([]);
   const [shippingDetails, setShippingDetails] = useState({
     email: "",
     addressLine1: "",
@@ -51,6 +50,12 @@ const AddToCartOrderForm = () => {
 
   const token = localStorage.getItem("userToken");
 
+  // Debug multiple mounts
+  useEffect(() => {
+    console.log("AddToCartOrderForm mounted");
+    return () => console.log("AddToCartOrderForm unmounted");
+  }, []);
+
   useEffect(() => {
     if (!token) {
       toast.error("Please log in to continue");
@@ -60,7 +65,6 @@ const AddToCartOrderForm = () => {
 
     const fetchUserDataAndCart = async () => {
       try {
-        // Fetch user details
         const userResponse = await axios.get(
           "http://localhost:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
@@ -76,16 +80,13 @@ const AddToCartOrderForm = () => {
           contactNumber: user.contactNumber || "",
         }));
 
-        // Fetch cart items
         const cartResponse = await axios.get(
           "http://localhost:5000/api/cart/view",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log("Cart Response:", cartResponse.data);
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
           setCartItems(cartResponse.data.items);
-          // Initially select all items
           setSelectedCartItems(cartResponse.data.items.map((item) => item._id));
         } else {
           toast.error("Your cart is empty");
@@ -121,7 +122,7 @@ const AddToCartOrderForm = () => {
 
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (
       !shippingDetails.email ||
       !shippingDetails.addressLine1 ||
@@ -130,10 +131,10 @@ const AddToCartOrderForm = () => {
       toast.error("Please fill in all required shipping details");
       return;
     }
-  
+
     setProcessing(true);
     setPaymentError(null);
-  
+
     const fullAddress = [
       shippingDetails.addressLine1,
       shippingDetails.addressLine2,
@@ -142,13 +143,11 @@ const AddToCartOrderForm = () => {
     ]
       .filter(Boolean)
       .join(", ");
-  
-    // Filter selected cart items
+
     const selectedItems = cartItems.filter((item) =>
       selectedCartItems.includes(item._id)
     );
-  
-    // Change to products array instead of cartItemIds
+
     const orderData = {
       products: selectedItems.map((item) => ({
         product: item.product._id,
@@ -157,7 +156,7 @@ const AddToCartOrderForm = () => {
         color: item.color,
       })),
       totalPrice: selectedItems.reduce(
-        (total, item) => total + item.product.price * item.qty,
+        (total, item) => total + (item.product?.price || 0) * item.qty,
         0
       ),
       shippingDetails: {
@@ -166,25 +165,22 @@ const AddToCartOrderForm = () => {
         contactNumber: shippingDetails.contactNumber,
       },
     };
-  
+
     try {
-      // Create the order
       const { data } = await axios.post(
         "http://localhost:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const orderId = data.order._id;
-  
-      // Create payment intent
+
       const paymentResponse = await axios.post(
         "http://localhost:5000/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const { clientSecret } = paymentResponse.data;
-  
-      // Confirm payment
+
       const cardElement = elements.getElement(CardElement);
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -201,7 +197,7 @@ const AddToCartOrderForm = () => {
           },
         },
       });
-  
+
       if (paymentResult.error) {
         setPaymentError(paymentResult.error.message);
         toast.error(paymentResult.error.message);
@@ -215,12 +211,43 @@ const AddToCartOrderForm = () => {
         navigate("/CustProductList");
       }
     } catch (error) {
-      setPaymentError(error.response?.data?.message || "Failed to process order");
+      setPaymentError(
+        error.response?.data?.message || "Failed to process order"
+      );
       toast.error(error.response?.data?.message || "Failed to process order");
     } finally {
       setProcessing(false);
     }
   };
+
+  // Memoized CardElement to ensure single instance
+  const PaymentSection = useMemo(
+    () => (
+      <Box sx={{ mb: 4 }}>
+        <Typography sx={{ color: "#ff9900", fontWeight: 600, mb: 1 }}>
+          Payment Details
+        </Typography>
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#ffffff",
+                "::placeholder": { color: "#aab7c4" },
+              },
+              invalid: { color: "#ff4444" },
+            },
+          }}
+        />
+        {paymentError && (
+          <Typography sx={{ color: "#ff4d4d", mt: 2 }}>
+            {paymentError}
+          </Typography>
+        )}
+      </Box>
+    ),
+    [paymentError] // Only re-render if paymentError changes
+  );
 
   if (loading || cartItems.length === 0) {
     return (
@@ -259,7 +286,6 @@ const AddToCartOrderForm = () => {
           sx={{
             color: "gold",
             fontFamily: "'Poppins', sans-serif",
-            
             textAlign: "center",
             mb: 4,
           }}
@@ -298,19 +324,25 @@ const AddToCartOrderForm = () => {
                   />
                   <CardMedia
                     component="img"
-                    image={`http://localhost:5000${item.product.images[0]}`}
-                    alt={item.product.name}
+                    image={
+                      item.product &&
+                      item.product.images &&
+                      item.product.images.length > 0
+                        ? `http://localhost:5000${item.product.images[0]}`
+                        : "http://localhost:5000/default-image.jpg"
+                    }
+                    alt={item.product?.name || "Product Image"}
                     sx={{ width: 100, height: 100, borderRadius: 1, mr: 2 }}
                   />
                   <Box sx={{ color: "#ccc", flexGrow: 1 }}>
                     <Typography sx={{ fontWeight: 500 }}>
-                      {item.product.name}
+                      {item.product?.name || "Unknown Product"}
                     </Typography>
                     <Typography>Quantity: {item.qty}</Typography>
                     <Typography>Size: {item.size}</Typography>
                     <Typography>Color: {item.color}</Typography>
                     <Typography>
-                      Price: Rs {item.product.price * item.qty}.00
+                      Price: Rs {(item.product?.price || 0) * item.qty}.00
                     </Typography>
                   </Box>
                 </Card>
@@ -327,7 +359,8 @@ const AddToCartOrderForm = () => {
                 {cartItems
                   .filter((item) => selectedCartItems.includes(item._id))
                   .reduce(
-                    (total, item) => total + item.product.price * item.qty,
+                    (total, item) =>
+                      total + (item.product?.price || 0) * item.qty,
                     0
                   )}
                 .00
@@ -408,19 +441,25 @@ const AddToCartOrderForm = () => {
                     >
                       <CardMedia
                         component="img"
-                        image={`http://localhost:5000${item.product.images[0]}`}
-                        alt={item.product.name}
+                        image={
+                          item.product &&
+                          item.product.images &&
+                          item.product.images.length > 0
+                            ? `http://localhost:5000${item.product.images[0]}`
+                            : "http://localhost:5000/default-image.jpg"
+                        }
+                        alt={item.product?.name || "Product Image"}
                         sx={{ width: 80, height: 80, borderRadius: 1, mr: 2 }}
                       />
                       <Box sx={{ color: "#ccc" }}>
                         <Typography sx={{ fontWeight: 500 }}>
-                          {item.product.name}
+                          {item.product?.name || "Unknown Product"}
                         </Typography>
                         <Typography>Qty: {item.qty}</Typography>
                         <Typography>Size: {item.size}</Typography>
                         <Typography>Color: {item.color}</Typography>
                         <Typography>
-                          Rs {item.product.price * item.qty}.00
+                          Rs {(item.product?.price || 0) * item.qty}.00
                         </Typography>
                       </Box>
                     </Card>
@@ -432,7 +471,8 @@ const AddToCartOrderForm = () => {
                   {cartItems
                     .filter((item) => selectedCartItems.includes(item._id))
                     .reduce(
-                      (total, item) => total + item.product.price * item.qty,
+                      (total, item) =>
+                        total + (item.product?.price || 0) * item.qty,
                       0
                     )}
                   .00
@@ -487,28 +527,7 @@ const AddToCartOrderForm = () => {
                 ))}
               </Box>
 
-              <Box sx={{ mb: 4 }}>
-                <Typography sx={{ color: "#ff9900", fontWeight: 600, mb: 1 }}>
-                  Payment Details
-                </Typography>
-                <CardElement
-                  options={{
-                    style: {
-                      base: {
-                        fontSize: "16px",
-                        color: "#ffffff",
-                        "::placeholder": { color: "#aab7c4" },
-                      },
-                      invalid: { color: "#ff4444" },
-                    },
-                  }}
-                />
-                {paymentError && (
-                  <Typography sx={{ color: "#ff4d4d", mt: 2 }}>
-                    {paymentError}
-                  </Typography>
-                )}
-              </Box>
+              {PaymentSection}
 
               <Box
                 sx={{
@@ -535,7 +554,7 @@ const AddToCartOrderForm = () => {
                 <Button
                   variant="contained"
                   type="submit"
-                  disabled={processing || !stripe}
+                  disabled={processing || !stripe || !elements}
                   sx={{
                     bgcolor: "#ff9900",
                     color: "#fff",
