@@ -18,7 +18,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const ProductList = () => {
+const CustProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -36,7 +36,7 @@ const ProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://16.170.141.231:5000/api/products/"
+        "http://localhost:5000/api/products/"
       );
       setProducts(response.data);
     } catch (error) {
@@ -56,18 +56,8 @@ const ProductList = () => {
       navigate("/user/Login");
       return;
     }
-
-    try {
-      await axios.post(
-        "http://16.170.141.231:5000/api/cart/add",
-        { productId, qty: quantity, size, color }, // Use productId
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success("Added to Cart Successfully!");
-      fetchProducts();
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to add to cart.");
-    }
+    navigate("/AddToCartOrderForm", { state: { productId } });
+  
   };
 
   const handleImageHover = (productId, hover) => {
@@ -147,7 +137,7 @@ const ProductList = () => {
                     <CardMedia
                       component="img"
                       height="100%"
-                      image={`http://16.170.141.231:5000${
+                      image={`http://localhost:5000${
                         product.images[productImageState[product._id] || 0]
                       }`}
                       alt={product.name}
@@ -271,4 +261,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default CustProductList;

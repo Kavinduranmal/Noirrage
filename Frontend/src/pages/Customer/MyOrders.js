@@ -15,7 +15,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
+const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [pendingRequests, setPendingRequests] = useState(1); // Reduced to 1 since only one API call
@@ -32,7 +32,7 @@ const Profile = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http://16.170.141.231:5000/api/orders/byid", // Fixed typo in URL (removed extra slashes)
+          "http://localhost:5000/api/orders/byid", // Fixed typo in URL (removed extra slashes)
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setOrders(data);
@@ -65,7 +65,7 @@ const Profile = () => {
 
     try {
       await axios.delete(
-        `http://16.170.141.231:5000/api/orders/${orderId}/deleted`,
+        `http://localhost:5000/api/orders/${orderId}/cancel`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Order canceled successfully!");
@@ -155,18 +155,20 @@ const Profile = () => {
                   }}
                 >
                   <Typography
-                    variant="h5"
-                    sx={{
-                      fontSize: { xs: "1.2rem", md: "1.5rem" },
-                      color: "#fff",
-                      fontFamily: "'Raleway', sans-serif",
-                      fontWeight: 600,
-                      mb: 2,
-                      textAlign: "center",
-                    }}
-                  >
-                    {order.products[0]?.product?.name || "Unknown Product"}
-                  </Typography>
+    variant="h5"
+    sx={{
+        fontSize: { xs: "1.2rem", md: "1.5rem" },
+        color: "#fff",
+        fontFamily: "'Raleway', sans-serif",
+        fontWeight: 600,
+        mb: 2,
+        textAlign: "center",
+    }}
+>
+    {order.products && order.products.length > 0 ? order.products[0].product?.name || "Unknown Product" : "No Product"}
+</Typography>
+
+              
 
                   <Divider
                     sx={{
@@ -187,40 +189,36 @@ const Profile = () => {
                   >
                     {/* Product Image */}
                     {order?.products?.map((item) => (
-                      <Card
-                        key={item?.product?._id}
-                        sx={{
-                          maxWidth: { xs: 250, md: 250 },
-                          maxHeight: { xs: 250, md: 270 },
-                          borderRadius: "8px",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <CardMedia
-                          component="img"
-                          
-                          image={`http://16.170.141.231:5000${
-                            item?.images[
-                              productImageState[item?.product?._id] || 0
-                            ] || "/default-image.jpg"
-                          }`}
-                          alt={item?.product?.name || "Product Image"}
-                          sx={{
-                            transition: "transform 1.2s ease",
-                            transformStyle: "preserve-3d",
-                            ":hover": {
-                              transform: "rotateY(180deg)",
-                            },
-                          }}
-                          onMouseEnter={() =>
-                            handleImageHover(item?.product?._id, true)
-                          }
-                          onMouseLeave={() =>
-                            handleImageHover(item?.product?._id, false)
-                          }
-                        />
-                      </Card>
-                    ))}
+    <Card
+        key={item?.product?._id}
+        sx={{
+            maxWidth: { xs: 250, md: 250 },
+            maxHeight: { xs: 250, md: 270 },
+            borderRadius: "8px",
+            overflow: "hidden",
+        }}
+    >
+        <CardMedia
+            component="img"
+            image={`http://localhost:5000${
+                item?.images && item.images.length > 0
+                    ? item.images[productImageState[item?.product?._id] || 0]
+                    : "/default-image.jpg"
+            }`}
+            alt={item?.product?.name || "Product Image"}
+            sx={{
+                transition: "transform 1.2s ease",
+                transformStyle: "preserve-3d",
+                ":hover": {
+                    transform: "rotateY(180deg)",
+                },
+            }}
+            onMouseEnter={() => handleImageHover(item?.product?._id, true)}
+            onMouseLeave={() => handleImageHover(item?.product?._id, false)}
+        />
+    </Card>
+))}
+
 
                     {/* Order Details */}
                     <Box
@@ -329,4 +327,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyOrders;

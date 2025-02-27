@@ -11,14 +11,14 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import ViewAllcart from "./ViewAllcart";
-import Orderstatus from "./OrderStatus";
+import Orderstatus from "./MyOrders";
 import { styled } from "@mui/system";
 import { Person, Email } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 // Use environment variable for API base URL (set in .env file or AWS config)
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://16.170.141.231:5000";
+  process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const Profile = () => {
   const [user, setUser] = useState(null);

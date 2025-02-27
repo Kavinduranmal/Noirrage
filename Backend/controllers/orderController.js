@@ -1,27 +1,20 @@
-import Order from '../models/order.js';
-import Product from '../models/product.js';
+import Order from "../models/order.js";
+import Product from "../models/product.js";
+import Cart from "../models/cart.js"; // Added to clear cart after order
 import mongoose from "mongoose";
-
-// @desc   Create a new order
 import nodemailer from "nodemailer";
 
-
-// Configure Nodemailer transporter (Use a real email service)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "noirrage.lk@gmail.com", // Replace with your email
-    pass: "Nisansala@123", // Use an App Password if using Gmail
+    user: "noirrage.lk@gmail.com",
+    pass: "Nisansala@123",
   },
 });
 
-
-
-// Function to send order confirmation email
 const sendOrderConfirmationEmail = async (order) => {
   const { shippingDetails, products, totalPrice } = order;
 
-  // Format the product details
   const productDetails = products
     .map(
       (item) =>
@@ -29,12 +22,11 @@ const sendOrderConfirmationEmail = async (order) => {
     )
     .join("\n");
 
-  // Email content
   const mailOptions = {
-    from: "your-email@gmail.com",
-    to: shippingDetails.email, // Send to user’s email
+    from: "noirrage.lk@gmail.com",
+    to: shippingDetails.email,
     subject: "Order Confirmation - Your Order is Placed!",
-    text: `Dear Customer,\n\nThank you for your order!\n\nOrder Details:\n${productDetails}\nTotal Price: $${totalPrice}\n\nWe will update you once the order is shipped.\n\nBest regards,\nYour Store Team`,
+    text: `Dear Customer,\n\nThank you for your order!\n\nOrder Details:\n${productDetails}\nTotal Price: Rs ${totalPrice}\n\nWe will update you once the order is shipped.\n\nBest regards,\nNoirRage Team`,
   };
 
   try {
@@ -45,46 +37,112 @@ const sendOrderConfirmationEmail = async (order) => {
   }
 };
 
-// Modified createOrder function
+
 export const createOrder = async (req, res) => {
   try {
-    const { products, totalPrice, shippingDetails } = req.body;
+    const { shippingDetails, cartItemIds, products } = req.body;
 
-    if (!products || products.length === 0) {
-      return res.status(400).json({ message: "No products selected" });
-    }
-
-    if (!shippingDetails || !shippingDetails.email || !shippingDetails.address || !shippingDetails.contactNumber) {
+    if (
+      !shippingDetails ||
+      !shippingDetails.email ||
+      !shippingDetails.address ||
+      !shippingDetails.contactNumber
+    ) {
       return res.status(400).json({ message: "Shipping details are required" });
     }
 
-    const orderProducts = [];
-    for (let item of products) {
-      const { product, size, color, quantity } = item;
+    let orderProducts = [];
+    let totalPrice = 0;
+    let productDetails = []; // To store product details for email confirmation
 
-      if (!size || !color) {
-        return res.status(400).json({ message: "Size and color are required for each product" });
+    // Case 1: Order from cart items
+    if (cartItemIds && cartItemIds.length > 0) {
+      const cart = await Cart.findOne({ user: req.user._id }).populate(
+        "items.product"
+      );
+      if (!cart || !cart.items.length) {
+        return res.status(400).json({ message: "Cart is empty" });
       }
 
-      const foundProduct = await Product.findById(product);
-      if (!foundProduct) {
-        return res.status(400).json({ message: `Product not found for ID: ${product}` });
+      // Filter cart items based on selected IDs
+      const selectedItems = cart.items.filter((item) =>
+        cartItemIds.includes(item._id.toString())
+      );
+
+      if (selectedItems.length === 0) {
+        return res.status(400).json({ message: "No valid cart items selected" });
       }
 
-      if (!foundProduct.sizes.includes(size)) {
-        return res.status(400).json({ message: `Invalid size selected for ${foundProduct.name}` });
+      for (let item of selectedItems) {
+        const { product, qty, size, color } = item;
+
+        if (!product.sizes.includes(size)) {
+          return res
+            .status(400)
+            .json({ message: `Invalid size selected for ${product.name}` });
+        }
+
+        if (!product.colors.includes(color)) {
+          return res
+            .status(400)
+            .json({ message: `Invalid color selected for ${product.name}` });
+        }
+
+        orderProducts.push({
+          product: product._id,
+          quantity: qty,
+          size,
+          color,
+        });
+
+        totalPrice += product.price * qty;
+        productDetails.push(product); // Store product details for email
       }
 
-      if (!foundProduct.colors.includes(color)) {
-        return res.status(400).json({ message: `Invalid color selected for ${foundProduct.name}` });
-      }
+      // Clear the selected items from the cart
+      cart.items = cart.items.filter(
+        (item) => !cartItemIds.includes(item._id.toString())
+      );
+      await cart.save();
+    }
+    // Case 2: Direct order from products array
+    else if (products && products.length > 0) {
+      const productIds = products.map((p) => p.product);
+      const productDocs = await Product.find({ _id: { $in: productIds } });
 
-      orderProducts.push({
-        product: foundProduct._id,
-        quantity,
-        size,
-        color,
-      });
+      for (let item of products) {
+        const product = productDocs.find((p) => p._id.equals(item.product));
+
+        if (!product) {
+          return res
+            .status(400)
+            .json({ message: `Product not found: ${item.product}` });
+        }
+
+        if (!product.sizes.includes(item.size)) {
+          return res
+            .status(400)
+            .json({ message: `Invalid size selected for ${product.name}` });
+        }
+
+        if (!product.colors.includes(item.color)) {
+          return res
+            .status(400)
+            .json({ message: `Invalid color selected for ${product.name}` });
+        }
+
+        orderProducts.push({
+          product: product._id,
+          quantity: item.quantity,
+          size: item.size,
+          color: item.color,
+        });
+
+        totalPrice += product.price * item.quantity;
+        productDetails.push(product); // Store product details for email
+      }
+    } else {
+      return res.status(400).json({ message: "No cart items or products provided" });
     }
 
     const newOrder = new Order({
@@ -98,54 +156,57 @@ export const createOrder = async (req, res) => {
     await newOrder.save();
 
     // Send email confirmation
-    await sendOrderConfirmationEmail(newOrder);
+    await sendOrderConfirmationEmail({
+      ...newOrder.toObject(),
+      products: orderProducts.map((item) => ({
+        product: productDetails.find((p) => p._id.equals(item.product)),
+        quantity: item.quantity,
+        size: item.size,
+        color: item.color,
+      })),
+    });
 
-    res.status(201).json({ message: "Order placed successfully", order: newOrder });
+    res
+      .status(201)
+      .json({ message: "Order placed successfully", order: newOrder });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
-// @desc   Get all orders (Admin only)
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("user", "name email")
-      .populate("products.product", "name price sizes colors images"); // Include images in the response
+      .populate("products.product", "name price sizes colors images");
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// @desc   Get user orders
 export const getUserOrders = async (req, res) => {
   try {
-    // Check if req.user is present
     if (!req.user || !req.user._id) {
       return res.status(400).json({ message: "User not authenticated" });
     }
 
     const orders = await Order.find({ user: req.user._id }).populate(
       "products.product",
-      "name price sizes colors images" // Include images in the response
+      "name price sizes colors images"
     );
 
-    // Check if no orders are found
     if (orders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
 
     res.status(200).json(orders);
   } catch (error) {
-    // Log the error and return a more detailed message
     console.log(error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Mark order as Shipped
 export const markOrderShipped = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -154,12 +215,11 @@ export const markOrderShipped = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Update order status to "Shipped"
     order.status = "Shipped";
-    order.shippedAt = new Date(); // Set shipped date
+    order.shippedAt = new Date();
 
     const updatedOrder = await order.save();
-    res.json(updatedOrder); // Respond with the updated order details
+    res.json(updatedOrder);
   } catch (error) {
     res
       .status(500)
@@ -171,17 +231,16 @@ export const cancelOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
 
-    // Check if it's a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
       return res.status(400).json({ message: "Invalid order ID" });
     }
 
-    const order = await Order.findById(orderId); // Use the ID to find the order
+    const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    await Order.findByIdAndDelete(orderId); // Delete the order
+    await Order.findByIdAndDelete(orderId);
     res.json({ message: "Order deleted successfully" });
   } catch (error) {
     console.error("Error deleting order:", error);

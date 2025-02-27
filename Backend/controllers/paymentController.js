@@ -1,35 +1,37 @@
-// controllers/stripePaymentController.js
 import Stripe from "stripe";
 import dotenv from "dotenv";
-import Payment from '../models/payment.js';
+import Payment from "../models/payment.js";
+import Order from "../models/order.js";
 
 dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-/**
- * Create a Stripe Payment Intent and return the client secret.
- * Expects the request body to include "amount", "order_id", and "user_id".
- */
 export const createPaymentIntent = async (req, res) => {
   try {
-    const { amount, order_id, user_id } = req.body;
-    if (!amount || !order_id || !user_id) {
-      return res.status(400).json({ error: "Missing required fields" });
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: "Order ID is required" });
     }
 
-    // Create a PaymentIntent (Stripe requires the amount in cents)
+    const order = await Order.findById(orderId).populate("products.product");
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    const totalAmount = order.totalPrice;
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100, // Convert dollars to cents
-      currency: "usd",
+      amount: totalAmount * 100, // Convert to cents (assuming LKR)
+      currency: "lkr",
     });
 
-    // Create a Payment record in your database
     await Payment.create({
-      order_id,
-      user_id,
-      amount,
-      currency: "usd",
+      order_id: orderId,
+      user_id: req.user._id,
+      amount: totalAmount,
+      currency: "lkr",
       status: "Pending",
     });
 
@@ -38,4 +40,3 @@ export const createPaymentIntent = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-

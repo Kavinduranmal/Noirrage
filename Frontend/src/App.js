@@ -8,11 +8,11 @@ import "react-toastify/dist/ReactToastify.css";
 import UserSignup from "./pages/Customer/UserSignup";
 import UserLogin from "./pages/Customer/UserLogin";
 import CustProduct from "./pages/Customer/CustProductList";
-import CustomerOrder from "./pages/Customer/CustomerOrder";
+import CustomerOrder from "./pages/Customer/CustomerDirectOrderForm";
 import ViewAllcart from "./pages/Customer/ViewAllcart";
 import Profile from "./pages/Customer/Profile";
-import Orderstatus from "./pages/Customer/OrderStatus";
-
+import Orderstatus from "./pages/Customer/MyOrders";
+import AddToCartOrderForm from "./pages/Customer/AddToCartOrderForm"
 // Other Components/Pages
 import NavBarforuser from "./components/Navbarforuser";
 import Home from "./components/Home";
@@ -47,7 +47,7 @@ const Layout = () => {
         <Route path="/ViewAllcart" element={<ViewAllcart />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/userorders" element={<Orderstatus />} />
-
+        <Route path="/AddToCartOrderForm" element={<AddToCartOrderForm />} />
         {/* Stripe Checkout Route */}
         <Route
           path="/checkout"

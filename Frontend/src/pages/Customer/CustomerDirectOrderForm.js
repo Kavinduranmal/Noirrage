@@ -5,7 +5,6 @@ import {
   Button,
   Typography,
   Box,
-  FormHelperText,
   Card,
   LinearProgress,
   IconButton,
@@ -29,7 +28,7 @@ const stripePromise = loadStripe(
   "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11"
 );
 
-const OrderForm = () => {
+const CustomerDirectOrderForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const stripe = useStripe();
@@ -58,7 +57,7 @@ const OrderForm = () => {
 
   const token = localStorage.getItem("userToken");
   const productId = location.state?.productId || null;
-
+  console.log("ssssssssssssssss!",productId)
   useEffect(() => {
     if (!token) {
       toast.error("Please log in to continue");
@@ -69,7 +68,7 @@ const OrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "http://16.170.141.231:5000/api/auth/profileview",
+          "http://localhost:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -82,72 +81,120 @@ const OrderForm = () => {
     fetchUserId();
 
     if (productId) {
+      console.log(productId)
+      toast.info("Fetching product")
       fetchProduct();
     }
   }, [productId, token, navigate]);
 
   useEffect(() => {
     if (availableColors.length > 0) {
-      setColor(availableColors[0]); // Set the first color as default
+      setColor(availableColors[0]);
     }
-  }, [availableColors]); // Runs when availableColors updates
-
-  const handleColorChange = (event, newColor) => {
-    if (newColor) {
-      setColor(newColor);
-    }
-  };
+  }, [availableColors]);
 
   useEffect(() => {
     if (availableSizes.length > 0) {
-      setSize(availableSizes[0]); // Set first size as default when available
+      setSize(availableSizes[0]);
     }
-  }, [availableSizes]); // Run when availableSizes changes
+  }, [availableSizes]);
 
-  const handleSizeChange = (event, newSize) => {
-    if (newSize) {
-      setSize(newSize);
-    }
-  };
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get(
-        "http://16.170.141.231:5000/api/products"
-      );
+      const { data } = await axios.get("http://localhost:5000/api/products");
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
         setAvailableColors(product.colors || []);
         setAvailableSizes(product.sizes || []);
+      } else {
+        toast.error("Product not found");
+        navigate("/CustProductList");
       }
     } catch (error) {
       toast.error("Failed to load product details");
+      navigate("/CustProductList");
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePayment = async () => {
-    if (!stripe || !elements || !userId) return;
+  const handleColorChange = (event, newColor) => {
+    if (newColor) setColor(newColor);
+  };
+
+  const handleSizeChange = (event, newSize) => {
+    if (newSize) setSize(newSize);
+  };
+
+  const handleOrderSubmit = async (e) => {
+    e.preventDefault();
+
+    if (step === 1) {
+      if (!size || !color) {
+        toast.error("Please select a size and color");
+        return;
+      }
+      if (
+        !shippingDetails.email ||
+        !shippingDetails.addressLine1 ||
+        !shippingDetails.contactNumber
+      ) {
+        toast.error("Please fill in all required shipping details");
+        return;
+      }
+      setStep(2);
+      return;
+    }
 
     setProcessing(true);
     setPaymentError(null);
 
-    const cardElement = elements.getElement(CardElement);
-    const amount = selectedProduct.price * quantity * 100;
-    const orderId = `order_${Date.now()}_${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
+    const fullAddress = [
+      shippingDetails.addressLine1,
+      shippingDetails.addressLine2,
+      shippingDetails.addressLine3,
+      shippingDetails.postalCode,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const orderData = {
+      products: [
+        {
+          product: selectedProduct._id,
+          quantity,
+          size,
+          color,
+        },
+      ],
+      totalPrice: selectedProduct.price * quantity,
+      shippingDetails: {
+        email: shippingDetails.email,
+        address: fullAddress,
+        contactNumber: shippingDetails.contactNumber,
+      },
+    };
 
     try {
-      const paymentResponse = await axios.post(
-        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
-        { amount, order_id: orderId, user_id: userId, currency: "usd" },
+      // Create the order
+      const { data } = await axios.post(
+        "http://localhost:5000/api/orders/create",
+        orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      const orderId = data.order._id;
 
+      // Create payment intent
+      const paymentResponse = await axios.post(
+        "http://localhost:5000/api/stripe/create-payment-intent",
+        { orderId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       const { clientSecret } = paymentResponse.data;
 
+      // Confirm payment
+      const cardElement = elements.getElement(CardElement);
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -167,71 +214,17 @@ const OrderForm = () => {
       if (paymentResult.error) {
         setPaymentError(paymentResult.error.message);
         toast.error(paymentResult.error.message);
-        setProcessing(false);
-        return false;
+      } else if (paymentResult.paymentIntent.status === "succeeded") {
+        toast.success("Order placed successfully!");
+        navigate("/CustProductList");
       }
-
-      if (paymentResult.paymentIntent.status === "succeeded") {
-        return true;
-      }
-      return false;
     } catch (error) {
-      setPaymentError("Payment processing failed. Please try again.");
-      toast.error("Payment processing failed");
-      return false;
+      setPaymentError(
+        error.response?.data?.message || "Failed to process order"
+      );
+      toast.error(error.response?.data?.message || "Failed to process order");
     } finally {
       setProcessing(false);
-    }
-  };
-
-  const handleOrderSubmit = async (e) => {
-    e.preventDefault();
-
-    if (step === 1) {
-      setStep(2);
-      return;
-    }
-
-    const paymentSuccessful = await handlePayment();
-    if (!paymentSuccessful) return;
-
-    const fullAddress = [
-      shippingDetails.addressLine1,
-      shippingDetails.addressLine2,
-      shippingDetails.addressLine3,
-      shippingDetails.postalCode,
-    ]
-      .filter(Boolean)
-      .join(", ");
-
-    const orderData = {
-      user: userId,
-      products: [
-        {
-          product: selectedProduct?._id,
-          quantity,
-          size,
-          color,
-          images: selectedProduct?.images || [],
-        },
-      ],
-      totalPrice: selectedProduct?.price * quantity,
-      shippingDetails: {
-        email: shippingDetails.email,
-        address: fullAddress,
-        contactNumber: shippingDetails.contactNumber,
-      },
-      paymentStatus: "completed",
-    };
-
-    try {
-      await axios.post("http://16.170.141.231:5000/api/orders", orderData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      toast.success("Order placed successfully!");
-      navigate("/CustProductList");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to place order");
     }
   };
 
@@ -274,12 +267,11 @@ const OrderForm = () => {
             alignItems: { xs: "center", md: "flex-start" },
           }}
         >
-          {/* Image Preview */}
           <Box sx={{ width: { xs: "100%", md: "35%" }, textAlign: "center" }}>
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`http://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
+                image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -305,7 +297,7 @@ const OrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(http://16.170.141.231:5000${img})`,
+                    backgroundImage: `url(http://localhost:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index
@@ -317,7 +309,6 @@ const OrderForm = () => {
             </Box>
           </Box>
 
-          {/* Form Section */}
           <Box
             sx={{
               width: { xs: "100%", md: "60%" },
@@ -469,7 +460,6 @@ const OrderForm = () => {
                         value={size}
                         exclusive
                         onChange={handleSizeChange}
-                        aria-label="size selection"
                         sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
                       >
                         {availableSizes.map((sizeOption, index) => (
@@ -606,8 +596,8 @@ const OrderForm = () => {
                         {selectedProduct.name} - {quantity} x Rs{" "}
                         {selectedProduct.price}
                       </Typography>
-                      <Typography>Size: {size || "Not Selected"}</Typography>
-                      <Typography>Color: {color || "Not Selected"}</Typography>
+                      <Typography>Size: {size}</Typography>
+                      <Typography>Color: {color}</Typography>
                       <Typography>
                         Shipping to:{" "}
                         {[
@@ -617,7 +607,11 @@ const OrderForm = () => {
                           shippingDetails.postalCode,
                         ]
                           .filter(Boolean)
-                          .join(", ") || "Not Specified"}
+                          .join(", ")}
+                      </Typography>
+                      <Typography>Email: {shippingDetails.email}</Typography>
+                      <Typography>
+                        Contact: {shippingDetails.contactNumber}
                       </Typography>
                     </Box>
                   </Box>
@@ -687,7 +681,7 @@ const OrderForm = () => {
 
 const WrappedOrderForm = () => (
   <Elements stripe={stripePromise}>
-    <OrderForm />
+    <CustomerDirectOrderForm />
   </Elements>
 );
 

@@ -11,9 +11,8 @@ const orderSchema = new mongoose.Schema(
           required: true,
         },
         quantity: { type: Number, required: true },
-        size: { type: String, required: true }, // Store the selected size
-        color: { type: String, required: true }, // Store the selected color
-        images: { type: [String], default: [] }, // Store multiple images for the product
+        size: { type: String, required: true },
+        color: { type: String, required: true },
       },
     ],
     totalPrice: { type: Number, required: true },
@@ -23,7 +22,7 @@ const orderSchema = new mongoose.Schema(
       address: { type: String, required: true },
       contactNumber: { type: String, required: true },
     },
-    shippedAt: { type: Date }, // Date when the order was shipped
+    shippedAt: { type: Date },
   },
   { timestamps: true }
 );
