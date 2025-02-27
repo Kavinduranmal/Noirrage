@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Close } from "@mui/icons-material";
+import { Delete, Close } from "@mui/icons-material";
 import {
   Elements,
   CardElement,
@@ -50,7 +50,6 @@ const AddToCartOrderForm = () => {
 
   const token = localStorage.getItem("userToken");
 
-  // Debug multiple mounts
   useEffect(() => {
     console.log("AddToCartOrderForm mounted");
     return () => console.log("AddToCartOrderForm unmounted");
@@ -84,7 +83,6 @@ const AddToCartOrderForm = () => {
           "http://localhost:5000/api/cart/view",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        console.log("Cart Response:", cartResponse.data);
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
           setCartItems(cartResponse.data.items);
           setSelectedCartItems(cartResponse.data.items.map((item) => item._id));
@@ -104,21 +102,14 @@ const AddToCartOrderForm = () => {
   }, [token, navigate]);
 
   const handleRemove = async (itemId, onItemRemoved) => {
-    const token = localStorage.getItem("userToken");
     try {
       await axios.delete(`http://localhost:5000/api/cart/remove/${itemId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item removed from cart!");
       onItemRemoved(itemId);
     } catch (error) {
       toast.error("Error removing item from cart");
-      console.error(
-        "Error removing item:",
-        error.response?.data || error.message
-      );
     }
   };
 
@@ -141,7 +132,6 @@ const AddToCartOrderForm = () => {
 
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
-
     if (
       !shippingDetails.email ||
       !shippingDetails.addressLine1 ||
@@ -227,7 +217,7 @@ const AddToCartOrderForm = () => {
         );
         setCartItems(updatedCart);
         setSelectedCartItems([]);
-        navigate("/CustProductList");
+        navigate("/ViewAllcart");
       }
     } catch (error) {
       setPaymentError(
@@ -239,11 +229,17 @@ const AddToCartOrderForm = () => {
     }
   };
 
-  // Memoized CardElement to ensure single instance
   const PaymentSection = useMemo(
     () => (
       <Box sx={{ mb: 4 }}>
-        <Typography sx={{ color: "#ff9900", fontWeight: 600, mb: 1 }}>
+        <Typography
+          sx={{
+            color: "gold",
+            fontSize: { xs: "1.2rem", md: "1.5rem" },
+            fontWeight: 600,
+            mb: 1,
+          }}
+        >
           Payment Details
         </Typography>
         <CardElement
@@ -254,7 +250,7 @@ const AddToCartOrderForm = () => {
                 color: "#ffffff",
                 "::placeholder": { color: "#aab7c4" },
               },
-              invalid: { color: "#ff4444" },
+              invalid: { color: "#ffvolution444" },
             },
           }}
         />
@@ -265,7 +261,7 @@ const AddToCartOrderForm = () => {
         )}
       </Box>
     ),
-    [paymentError] // Only re-render if paymentError changes
+    [paymentError]
   );
 
   if (loading || cartItems.length === 0) {
@@ -273,8 +269,8 @@ const AddToCartOrderForm = () => {
       <Box sx={{ width: "100%", m: 2 }}>
         <LinearProgress
           sx={{
-            backgroundColor: "#1a1a1a",
-            "& .MuiLinearProgress-bar": { backgroundColor: "#ff9900" },
+            backgroundColor: "black",
+            "& .MuiLinearProgress-bar": { backgroundColor: "gold" },
           }}
         />
       </Box>
@@ -282,20 +278,11 @@ const AddToCartOrderForm = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ my: 4 }}>
-      <Box
-        sx={{
-          p: { xs: 2, md: 4 },
-          position: "relative",
-          boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.9)",
-          borderRadius: 3,
-          background: "linear-gradient(135deg, #1a1a1a 0%, #333333 100%)",
-          border: "1px solid gold",
-        }}
-      >
+    <Container maxWidth={false} sx={{ my: 2 }}>
+      <Box sx={{ position: "relative", p: { xs: 1, md: 4 } }}>
         <IconButton
           onClick={() => navigate("/CustProductList")}
-          sx={{ position: "absolute", top: 12, right: 12, color: "#ff4d4d" }}
+          sx={{ position: "absolute", top: 8, right: 8, color: "#ff4d4d" }}
         >
           <Close />
         </IconButton>
@@ -306,336 +293,322 @@ const AddToCartOrderForm = () => {
             color: "gold",
             fontFamily: "'Poppins', sans-serif",
             textAlign: "center",
-            mb: 4,
+            mb: { xs: 2, md: 4 },
+            fontSize: { xs: "1.8rem", md: "3rem" },
           }}
         >
-          {step === 1 ? "Your Cart" : "Checkout"}
+          {step === 1 ? "My Cart" : "Checkout"}
         </Typography>
 
-        {step === 1 && (
-          <form onSubmit={handleProceedToCheckout}>
-            <Box sx={{ maxWidth: 800, mx: "auto" }}>
-              {cartItems.map((item) => (
-                <Card
-                  key={item._id}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    p: 2,
-                    mb: 2,
-                    backgroundColor: "#2a2a2a",
-                    borderRadius: 2,
-                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.7)",
-                  }}
-                >
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={selectedCartItems.includes(item._id)}
-                        onChange={() => handleCheckboxChange(item._id)}
-                        sx={{
-                          color: "#ff9900",
-                          "&.Mui-checked": { color: "#ff9900" },
-                        }}
-                      />
-                    }
-                    label=""
-                  />
-                  <CardMedia
-                    component="img"
-                    image={
-                      item.product &&
-                      item.product.images &&
-                      item.product.images.length > 0
-                        ? `http://localhost:5000${item.product.images[0]}`
-                        : "http://localhost:5000/default-image.jpg"
-                    }
-                    alt={item.product?.name || "Product Image"}
-                    sx={{ width: 100, height: 100, borderRadius: 1, mr: 2 }}
-                  />
-                  <Box sx={{ color: "#ccc", flexGrow: 1 }}>
-                    <Typography sx={{ fontWeight: 500 }}>
-                      {item.product?.name || "Unknown Product"}
-                    </Typography>
-                    <Typography>Quantity: {item.qty}</Typography>
-                    <Typography>Size: {item.size}</Typography>
-                    <Typography>Color: {item.color}</Typography>
-                    <Typography>
-                      Price: Rs {(item.product?.price || 0) * item.qty}.00
-                    </Typography>
-                  </Box>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    size="medium"
-                    onClick={() =>
-                      handleRemove(item._id, (removedId) => {
-                        setCartItems((prev) =>
-                          prev.filter((i) => i._id !== removedId)
-                        );
-                        setSelectedCartItems((prev) =>
-                          prev.filter((id) => id !== removedId)
-                        );
-                      })
-                    }
-                    sx={{ ml: 2 }}
-                  >
-                    Remove
-                  </Button>
-                </Card>
-              ))}
-              <Typography
-                sx={{
-                  color: "#ff9900",
-                  fontWeight: 600,
-                  textAlign: "right",
-                  mt: 2,
-                }}
-              >
-                Subtotal: Rs{" "}
-                {cartItems
-                  .filter((item) => selectedCartItems.includes(item._id))
-                  .reduce(
-                    (total, item) =>
-                      total + (item.product?.price || 0) * item.qty,
-                    0
-                  )}
-                .00
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                mt: 4,
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{
-                  bgcolor: "black",
-                  color: "#fff",
-                  fontWeight: 600,
-                  "&:hover": { bgcolor: "gray" },
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 2,
-                }}
-              >
-                Proceed to Checkout
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/CustProductList")}
-                sx={{
-                  color: "#ff9900",
-                  borderColor: "#ff9900",
-                  "&:hover": { borderColor: "#ffcc00", color: "#ffcc00" },
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 2,
-                }}
-              >
-                Keep Shopping
-              </Button>
-            </Box>
-          </form>
-        )}
-
-        {step === 2 && (
-          <form onSubmit={handleOrderSubmit}>
-            <Box sx={{ maxWidth: 800, mx: "auto" }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  color: "#fff",
-                  fontWeight: 600,
-                  mb: 3,
-                  textAlign: "center",
-                }}
-              >
-                Order Summary
-              </Typography>
-              <Box sx={{ mb: 4 }}>
-                {cartItems
-                  .filter((item) => selectedCartItems.includes(item._id))
-                  .map((item) => (
-                    <Card
-                      key={item._id}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        p: 2,
-                        mb: 2,
-                        backgroundColor: "#2a2a2a",
-                        borderRadius: 2,
-                        boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.7)",
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        image={
-                          item.product &&
-                          item.product.images &&
-                          item.product.images.length > 0
-                            ? `http://localhost:5000${item.product.images[0]}`
-                            : "http://localhost:5000/default-image.jpg"
-                        }
-                        alt={item.product?.name || "Product Image"}
-                        sx={{ width: 80, height: 80, borderRadius: 1, mr: 2 }}
-                      />
-                      <Box sx={{ color: "#ccc" }}>
-                        <Typography sx={{ fontWeight: 500 }}>
-                          {item.product?.name || "Unknown Product"}
-                        </Typography>
-                        <Typography>Qty: {item.qty}</Typography>
-                        <Typography>Size: {item.size}</Typography>
-                        <Typography>Color: {item.color}</Typography>
-                        <Typography>
-                          Rs {(item.product?.price || 0) * item.qty}.00
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          width: "75%",
-                        }}
-                      >
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          size="medium"
-                          onClick={() =>
-                            handleRemove(item._id, (removedId) => {
-                              setCartItems((prev) =>
-                                prev.filter((i) => i._id !== removedId)
-                              );
-                              setSelectedCartItems((prev) =>
-                                prev.filter((id) => id !== removedId)
-                              );
-                            })
-                          }
-                          sx={{ ml: 2 }}
-                        >
-                          Remove
-                        </Button>
-                      </Box>
-                    </Card>
-                  ))}
-                <Typography
-                  sx={{ color: "#ff9900", fontWeight: 600, textAlign: "right" }}
-                >
-                  Total: Rs{" "}
-                  {cartItems
-                    .filter((item) => selectedCartItems.includes(item._id))
-                    .reduce(
-                      (total, item) =>
-                        total + (item.product?.price || 0) * item.qty,
-                      0
-                    )}
-                  .00
-                </Typography>
-              </Box>
-
-              <Box sx={{ mb: 4 }}>
-                <Typography sx={{ color: "#ff9900", fontWeight: 600, mb: 2 }}>
-                  Shipping Details
-                </Typography>
-                {[
-                  {
-                    id: "addressLine1",
-                    label: "Address Line 1",
-                    required: true,
-                  },
-                  { id: "addressLine2", label: "Address Line 2 (Optional)" },
-                  { id: "addressLine3", label: "City" },
-                  { id: "postalCode", label: "Postal Code" },
-                  { id: "email", label: "Email", required: true },
-                  {
-                    id: "contactNumber",
-                    label: "Contact Number",
-                    required: true,
-                  },
-                ].map((field) => (
-                  <TextField
-                    key={field.id}
-                    label={field.label}
-                    fullWidth
-                    value={shippingDetails[field.id] || ""}
-                    onChange={(e) =>
-                      setShippingDetails({
-                        ...shippingDetails,
-                        [field.id]: e.target.value,
-                      })
-                    }
-                    required={field.required}
-                    sx={{
-                      mb: 2,
-                      "& input": { color: "white" },
-                      "& label": { color: "gray" },
-                      "& label.Mui-focused": { color: "white" },
-                      "& .MuiOutlinedInput-root": {
-                        backgroundColor: "#2a2a2a",
-                        "& fieldset": { borderColor: "gray" },
-                        "&:hover fieldset": { borderColor: "white" },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#fdc200",
-                        },
-                      },
-                    }}
-                  />
-                ))}
-              </Box>
-
-              {PaymentSection}
-
-              <Box
+        <Box
+          sx={{
+            display: { xs: "block", md: "flex" },
+            gap: 4,
+            flexDirection: { xs: "column", md: "row" },
+          }}
+        >
+          {/* Left Side - Item List */}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            {cartItems.map((item) => (
+              <Card
+                key={item._id}
                 sx={{
                   display: "flex",
-                  gap: 2,
-                  justifyContent: "center",
-                  flexWrap: "wrap",
+                  alignItems: "center",
+                  p: 1,
+                  mb: 2,
+                  background:
+                    "linear-gradient(135deg, #2a2a2a 0%, #333333 100%)",
+                  borderRadius: 2,
+                  border: "1px solid rgba(142, 142, 142, 0.2)",
+                  boxShadow: "0 6px 18px rgba(0, 0, 0, 0.8)",
+                  flexDirection: { xs: "column", sm: "row" },
+                  textAlign: { xs: "center", sm: "left" },
                 }}
               >
-                <Button
-                  variant="outlined"
-                  onClick={() => setStep(1)}
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedCartItems.includes(item._id)}
+                      onChange={() => handleCheckboxChange(item._id)}
+                      sx={{
+                        color: "#ff9900",
+                        "&.Mui-checked": { color: "#ff9900" },
+                        mr: { sm: 1 },
+                        mb: { xs: 1, sm: 0 },
+                      }}
+                    />
+                  }
+                  label=""
+                />
+                <CardMedia
+                  component="img"
+                  image={
+                    item.product?.images?.length > 0
+                      ? `http://localhost:5000${item.product.images[0]}`
+                      : "http://localhost:5000/default-image.jpg"
+                  }
+                  alt={item.product?.name || "Product Image"}
                   sx={{
-                    color: "#ff9900",
-                    borderColor: "#ff9900",
-                    "&:hover": { borderColor: "#ffcc00", color: "#ffcc00" },
-                    px: 4,
-                    py: 1.5,
+                    width: { xs: 100, sm: 150 },
+                    height: { xs: 100, sm: 150 },
                     borderRadius: 2,
+                    objectFit: "cover",
+                    mr: { sm: 3 },
+                    mb: { xs: 1, sm: 0 },
                   }}
-                >
-                  Back
-                </Button>
+                />
+                <Box sx={{ flexGrow: 1, color: "#fff", px: 1 }}>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: { xs: "14px", sm: "18px", md: "24px" },
+                      fontWeight: 600,
+                      color: "gold",
+                      mb: 0.5,
+                    }}
+                  >
+                    {item.product?.name || "Unknown Product"}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: { xs: "12px", sm: "14px", md: "18px" },
+                      color: "rgba(255, 255, 255, 0.9)",
+                      mb: 0.3,
+                    }}
+                  >
+                    Qty: {item.qty}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: { xs: "12px", sm: "14px", md: "18px" },
+                      color: "rgba(255, 255, 255, 0.9)",
+                      mb: 0.3,
+                    }}
+                  >
+                    Size: {item.size}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: { xs: "12px", sm: "14px", md: "18px" },
+                      color: "rgba(255, 255, 255, 0.9)",
+                      mb: 0.3,
+                    }}
+                  >
+                    Color: {item.color}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: { xs: "14px", sm: "16px", md: "20px" },
+                      fontWeight: 500,
+                      color: "white",
+                    }}
+                  >
+                    Rs {(item.product?.price || 0) * item.qty}.00
+                  </Typography>
+                </Box>
                 <Button
                   variant="contained"
-                  type="submit"
-                  disabled={processing || !stripe || !elements}
+                  color="error"
+                  size="small"
+                  onClick={() =>
+                    handleRemove(item._id, (removedId) => {
+                      setCartItems((prev) =>
+                        prev.filter((i) => i._id !== removedId)
+                      );
+                      setSelectedCartItems((prev) =>
+                        prev.filter((id) => id !== removedId)
+                      );
+                    })
+                  }
                   sx={{
-                    bgcolor: "#ff9900",
-                    color: "#fff",
+                    mt: { xs: 1, sm: 0 },
+                    ml: { sm: 2 },
+                    bgcolor: "gold",
+                    color: "black",
+                    fontFamily: "'Poppins', sans-serif",
                     fontWeight: 600,
-                    "&:hover": { bgcolor: "#ffcc00" },
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
+                    px: { xs: 2, sm: 3 },
+                    py: 0.5,
+                    "&:hover": { bgcolor: "red", color: "black" },
                   }}
                 >
-                  {processing ? "Processing..." : "Pay & Order"}
+                  Remove <Delete fontSize="small" />
                 </Button>
-              </Box>
-            </Box>
-          </form>
-        )}
+              </Card>
+            ))}
+            <Typography
+              sx={{
+                color: "gold",
+                textAlign: "right",
+                mt: 2,
+                fontSize: { xs: "1.2rem", md: "1.7rem" },
+              }}
+            >
+              Subtotal: Rs{" "}
+              {cartItems
+                .filter((item) => selectedCartItems.includes(item._id))
+                .reduce(
+                  (total, item) =>
+                    total + (item.product?.price || 0) * item.qty,
+                  0
+                )}
+              .00
+            </Typography>
+          </Box>
+
+          {/* Right Side - Buttons/Form */}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            {step === 1 && (
+              <form onSubmit={handleProceedToCheckout}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 2,
+                    mt: { xs: 2, md: 4 },
+                    justifyContent: "center",
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    sx={{
+                      bgcolor: "black",
+                      color: "#fff",
+                      fontWeight: 600,
+                      "&:hover": { bgcolor: "gray" },
+                      px: 4,
+                      py: 1,
+                      fontSize: { xs: "0.9rem", md: "1rem" },
+                    }}
+                  >
+                    Proceed to Checkout
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => navigate("/CustProductList")}
+                    sx={{
+                      color: "gray",
+                      borderColor: "gray",
+                      "&:hover": { borderColor: "#ffcc00", color: "#ffcc00" },
+                      px: 4,
+                      py: 1,
+                      fontSize: { xs: "0.9rem", md: "1rem" },
+                    }}
+                  >
+                    Keep Shopping
+                  </Button>
+                </Box>
+              </form>
+            )}
+
+            {step === 2 && (
+              <form onSubmit={handleOrderSubmit}>
+                <Box sx={{ py: 2 }}>
+                  <Typography
+                    sx={{
+                      color: "gold",
+                      textAlign: "left",
+                      mb: 2,
+                      fontSize: { xs: "1.5rem", md: "2rem" },
+                    }}
+                  >
+                    Shipping Details
+                  </Typography>
+                  {[
+                    {
+                      id: "addressLine1",
+                      label: "Address Line 1",
+                      required: true,
+                    },
+                    { id: "addressLine2", label: "Address Line 2 (Optional)" },
+                    { id: "addressLine3", label: "City" },
+                    { id: "postalCode", label: "Postal Code" },
+                    { id: "email", label: "Email", required: true },
+                    {
+                      id: "contactNumber",
+                      label: "Contact Number",
+                      required: true,
+                    },
+                  ].map((field) => (
+                    <TextField
+                      key={field.id}
+                      label={field.label}
+                      fullWidth
+                      value={shippingDetails[field.id] || ""}
+                      onChange={(e) =>
+                        setShippingDetails({
+                          ...shippingDetails,
+                          [field.id]: e.target.value,
+                        })
+                      }
+                      required={field.required}
+                      sx={{
+                        mb: 3,
+                        "& input": { color: "white" },
+                        "& label": { color: "gray" },
+                        "& label.Mui-focused": { color: "white" },
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: "gray" },
+                          "&:hover fieldset": { borderColor: "white" },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#fdc200",
+                          },
+                        },
+                      }}
+                     
+                    />
+                  ))}
+                  {PaymentSection}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      justifyContent: "center",
+                      flexDirection: { xs: "column", sm: "row" },
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      onClick={() => setStep(1)}
+                      sx={{
+                        color: "gray",
+                        borderColor: "gray",
+                        "&:hover": { borderColor: "#ffcc00", color: "#ffcc00" },
+                        px: 4,
+                        py: 1,
+                        fontSize: { xs: "0.9rem", md: "1rem" },
+                      }}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      disabled={processing || !stripe || !elements}
+                      sx={{
+                        bgcolor: "black",
+                        color: "white",
+                        fontWeight: 600,
+                        "&:hover": { color: "black", bgcolor: "gold" },
+                        px: 4,
+                        py: 1,
+                        fontSize: { xs: "0.9rem", md: "1rem" },
+                      }}
+                    >
+                      {processing ? "Processing..." : "Pay & Order"}
+                    </Button>
+                  </Box>
+                </Box>
+              </form>
+            )}
+          </Box>
+        </Box>
       </Box>
     </Container>
   );
