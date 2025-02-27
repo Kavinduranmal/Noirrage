@@ -40,18 +40,14 @@ export const getCart = async (req, res) => {
 // Remove item from cart
 export const removeCartItem = async (req, res) => {
   try {
-    const { itemId } = req.params;
-    let cart = await Cart.findOne({ user: req.user._id });
-
-    if (!cart) return res.status(400).json({ message: "Cart not found" });
-
-    cart.items = cart.items.filter((item) => item._id.toString() !== itemId);
-    await cart.save();
-
-    res.json(cart);
+    const userId = req.user._id; // From protect middleware
+    const itemId = req.params.itemId;
+    await Cart.updateOne(
+      { user: userId },
+      { $pull: { items: { _id: itemId } } }
+    );
+    res.status(200).json({ message: "Item removed from cart" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error removing item", error: error.message });
+    res.status(500).json({ message: "Error removing item", error: error.message });
   }
 };

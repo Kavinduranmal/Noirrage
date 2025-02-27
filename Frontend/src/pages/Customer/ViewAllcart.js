@@ -103,6 +103,25 @@ const AddToCartOrderForm = () => {
     fetchUserDataAndCart();
   }, [token, navigate]);
 
+  const handleRemove = async (itemId, onItemRemoved) => {
+    const token = localStorage.getItem("userToken");
+    try {
+      await axios.delete(`http://localhost:5000/api/cart/remove/${itemId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Item removed from cart!");
+      onItemRemoved(itemId);
+    } catch (error) {
+      toast.error("Error removing item from cart");
+      console.error(
+        "Error removing item:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const handleCheckboxChange = (itemId) => {
     setSelectedCartItems((prev) =>
       prev.includes(itemId)
@@ -345,6 +364,24 @@ const AddToCartOrderForm = () => {
                       Price: Rs {(item.product?.price || 0) * item.qty}.00
                     </Typography>
                   </Box>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="medium"
+                    onClick={() =>
+                      handleRemove(item._id, (removedId) => {
+                        setCartItems((prev) =>
+                          prev.filter((i) => i._id !== removedId)
+                        );
+                        setSelectedCartItems((prev) =>
+                          prev.filter((id) => id !== removedId)
+                        );
+                      })
+                    }
+                    sx={{ ml: 2 }}
+                  >
+                    Remove
+                  </Button>
                 </Card>
               ))}
               <Typography
@@ -461,6 +498,32 @@ const AddToCartOrderForm = () => {
                         <Typography>
                           Rs {(item.product?.price || 0) * item.qty}.00
                         </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          width: "75%",
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="medium"
+                          onClick={() =>
+                            handleRemove(item._id, (removedId) => {
+                              setCartItems((prev) =>
+                                prev.filter((i) => i._id !== removedId)
+                              );
+                              setSelectedCartItems((prev) =>
+                                prev.filter((id) => id !== removedId)
+                              );
+                            })
+                          }
+                          sx={{ ml: 2 }}
+                        >
+                          Remove
+                        </Button>
                       </Box>
                     </Card>
                   ))}
