@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Typography,
-  Button,
+  BottomNavigation,
+  BottomNavigationAction,
   IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
+import HomeIcon from "@mui/icons-material/Home";
+import RssFeedIcon from "@mui/icons-material/RssFeed";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+import Typography from "@mui/material/Typography"; // For desktop text
 import logo from "../images/logo.png"; // Adjust import path
-
+import { Store } from "@mui/icons-material";
 const Navbar = () => {
   const [showNavBar, setShowNavBar] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileNavValue, setMobileNavValue] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
 
-  // Scroll-based Navbar logic
+  // Scroll-based Navbar logic for desktop
   useEffect(() => {
     let prevScrollPos = window.pageYOffset;
     const handleScroll = () => {
@@ -41,9 +42,10 @@ const Navbar = () => {
     navigate("/user/Login");
   };
 
-  const navLinks = [
+  // Navigation links for desktop and mobile
+  const desktopNavLinks = [
     { path: "/", label: "Home" },
-    { path: "/CustProductList", label: "Feed" },
+    { path: "/CustProductList", label: "Store" },
     { path: "/ViewAllcart", label: "My Cart" },
     { path: "/userorders", label: "My Orders" },
     { path: "/Profile", label: "My Profile" },
@@ -51,109 +53,18 @@ const Navbar = () => {
     { path: "/ContactUs", label: "Contact Us" },
   ];
 
-  const handleDrawerToggle = () => {
-    setMobileOpen((prev) => !prev);
-  };
-
-  // Drawer content for mobile
-  const drawerContent = (
-    <Box
-      sx={{
-        width: 280,
-        height: "100%",
-        background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        boxShadow: "2px 0 10px rgba(0, 0, 0, 0.5)",
-      }}
-    >
-      {/* Header with Logo and Close Button */}
-      <Box
-        sx={{
-          p: 2,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-        }}
-      >
-        <img src={logo} alt="Logo" style={{ height: "50px" }} />
-        <IconButton onClick={handleDrawerToggle} sx={{ color: "#fff" }}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-
-      {/* Navigation Links */}
-      <List sx={{ flexGrow: 1, p: 2 }}>
-        {navLinks.map((link) => (
-          <ListItem
-            button
-            key={link.path}
-            component={NavLink}
-            to={link.path}
-            onClick={handleDrawerToggle}
-            sx={{
-              py: 1.5,
-              borderRadius: "8px",
-              mb: 1,
-              "&:hover": {
-                backgroundColor: "rgba(255, 235, 59, 0.1)",
-                transform: "translateX(5px)",
-                transition: "all 0.3s ease",
-              },
-              "&.active": {
-                backgroundColor: "rgba(255, 235, 59, 0.2)",
-                "& .MuiListItemText-primary": { color: "#FFEB3B" },
-              },
-              transition: "all 0.3s ease",
-            }}
-          >
-            <ListItemText
-              primary={link.label}
-              primaryTypographyProps={{
-                fontSize: "1.1rem",
-                fontFamily: "'Raleway', sans-serif",
-                fontWeight: 500,
-                color: "#fff",
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
-
-      {/* Logout Button */}
-      <Box sx={{ p: 2, borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
-        <Button
-          onClick={() => {
-            handleLogout();
-            handleDrawerToggle();
-          }}
-          fullWidth
-          variant="contained"
-          sx={{
-            bgcolor: "#FFEB3B",
-            color: "#1a1a1a",
-            fontWeight: "bold",
-            fontFamily: "'Raleway', sans-serif",
-            borderRadius: "8px",
-            py: 1.5,
-            "&:hover": {
-              bgcolor: "#FFD700",
-              transform: "scale(1.02)",
-              transition: "all 0.3s ease",
-            },
-            transition: "all 0.3s ease",
-          }}
-        >
-          Logout
-        </Button>
-      </Box>
-    </Box>
-  );
+  const mobileNavLinks = [
+    { path: "/", label: <span style={{ fontSize: "10px" }}>Home</span>, icon: <HomeIcon /> },
+    { path: "/CustProductList", label: <span style={{ fontSize: "10px" }}>Store</span>, icon: <Store /> },
+    { path: "/ViewAllcart", label: <span style={{ fontSize: "10px" }}>My Cart</span>, icon: <ShoppingCartIcon /> },
+    { path: "/userorders", label: <span style={{ fontSize: "10px" }}>My Orders</span>, icon: <ListAltIcon /> },
+    { path: "/Profile", label: <span style={{ fontSize: "10px" }}>My Profile</span>, icon: <PersonIcon /> },
+  ];
+  
 
   return (
     <>
+      {/* Top Navbar (Desktop and Mobile) */}
       <Box
         sx={{
           position: "sticky",
@@ -189,7 +100,7 @@ const Navbar = () => {
               gap: { sm: 2, md: 4 },
             }}
           >
-            {navLinks.map((link) => (
+            {desktopNavLinks.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}
@@ -218,54 +129,109 @@ const Navbar = () => {
                 )}
               </NavLink>
             ))}
-            <Button
+            <IconButton
               onClick={handleLogout}
               sx={{
-                fontSize: "1rem",
-                fontWeight: "bold",
-                fontFamily: "'Raleway', sans-serif",
                 color: "#fff",
-                ml: 25,
-                px: 2,
-                py: 1,
-                borderRadius: "8px",
+                ml: 30,
                 "&:hover": {
                   color: "red",
-                  transform: "translateY(-2px)",
+                  backgroundColor: "rgba(255, 0, 0, 0.1)",
                 },
                 transition: "all 0.3s ease",
               }}
             >
-              Logout
-            </Button>
+              <LogoutIcon />
+            </IconButton>
           </Box>
         )}
 
-        {/* Mobile Hamburger Icon */}
+        {/* Mobile Top Actions (Contact Us and Logout) */}
         {isMobile && (
-          <IconButton
-            onClick={handleDrawerToggle}
-            sx={{ color: "#fff", ml: "auto" }}
-          >
-            <MenuIcon fontSize="large" />
-          </IconButton>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton
+              component={NavLink}
+              to="/ContactUs"
+              sx={{
+                color: "#fff",
+                "&:hover": {
+                  color: "#FFEB3B",
+                  backgroundColor: "rgba(255, 235, 59, 0.1)",
+                },
+                transition: "all 0.3s ease",
+              }}
+            >
+              <ContactMailIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleLogout}
+              sx={{
+                color: "#fff",
+                "&:hover": {
+                  color: "red",
+                  backgroundColor: "rgba(255, 0, 0, 0.1)",
+                },
+                transition: "all 0.3s ease",
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Box>
         )}
       </Box>
 
-      {/* Mobile Drawer */}
-      <Drawer
-        anchor="left"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          "& .MuiDrawer-paper": {
-            transition: "transform 0.3s ease-in-out",
-          },
-        }}
-      >
-        {drawerContent}
-      </Drawer>
+      {/* Mobile Bottom Navigation */}
+      {isMobile && (
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1100,
+            boxShadow: "0 -2px 12px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <BottomNavigation
+            value={mobileNavValue}
+            onChange={(event, newValue) => {
+              setMobileNavValue(newValue);
+              navigate(mobileNavLinks[newValue].path); // Navigate to selected path
+            }}
+            showLabels
+            sx={{
+              background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+              height: "60px",
+              
+            }}
+          >
+            {mobileNavLinks.map((link) => (
+              <BottomNavigationAction
+                key={link.path}
+                label={link.label}
+                icon={link.icon}
+                sx={{
+                  color: "#fff",
+                  "&.Mui-selected": {
+                    color: "#FFEB3B",
+                  },
+                  "&:hover": {
+                    color: "#FFEB3B",
+                    backgroundColor: "rgba(255, 235, 59, 0.1)",
+                  },
+                  transition: "all 0.3s ease",
+                  "& .MuiBottomNavigationAction-label": {
+                    fontSize: "0.9rem",
+                    fontFamily: "'Raleway', sans-serif",
+                    fontWeight: 500,
+                    mt: 0.5,
+                  },
+                }}
+              />
+            ))}
+          </BottomNavigation>
+        </Box>
+      )}
     </>
   );
 };
