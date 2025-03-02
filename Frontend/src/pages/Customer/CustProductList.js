@@ -201,56 +201,57 @@ const CustProductList = () => {
 
                   {/* Buttons */}
                   <Grid
-                    container
-                    spacing={1}
-                    sx={{
-                      mt: { xs: 1, sm: 1 },
-                      justifyContent: { xs: "flex-start", sm: "center" }, // Left-align on mobile
-                    }}
-                  >
-                    <Grid item xs={8} sm={8}>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        sx={{
-                          bgcolor: product.inStock ? "black" : "gray",
-                          color: "white",
-                          fontWeight: "bold",
-                          border: !product.inStock ? "2px solid red" : "none",
-                          "&:hover": {
-                            bgcolor: product.inStock ? "gray" : "gray",
-                          },
-                          padding: { xs: "4px", sm: "6px" }, // Smaller on mobile
-                        }}
-                        onClick={() => handleOrderNow(product._id)}
-                        disabled={!product.inStock}
-                      >
-                        <Typography
-                          sx={{
-                            color: "white",
-                            fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                          }}
-                        >
-                          {product.inStock ? "Order Now" : "Out of Stock"}
-                        </Typography>
-                      </Button>
-                    </Grid>
-                    <Grid item xs={2} sm={2}>
-                      <Button
-                        sx={{
-                          bgcolor: "#00000000",
-                          color: "gold",
-                          "&:hover": { color: "lightgray" },
-                          minWidth: "auto",
-                        }}
-                        onClick={() => handleAddToCart(product._id)}
-                      >
-                        <ShoppingCartIcon
-                          sx={{ fontSize: { xs: 20, sm: 24 } }}
-                        />
-                      </Button>
-                    </Grid>
-                  </Grid>
+  container
+  spacing={1}
+  sx={{
+    mt: { xs: 1, sm: 1 },
+    justifyContent: { xs: "flex-start", sm: "center" }, // Left-align on mobile
+  }}
+>
+  <Grid item xs={8} sm={8}>
+    <Button
+      variant="contained"
+      fullWidth
+      sx={{
+        bgcolor: product.inStock ? "black" : "gray",
+        color: "white",
+        fontWeight: "bold",
+        border: !product.inStock ? "2px solid red" : "none",
+        "&:hover": {
+          bgcolor: product.inStock ? "gray" : "gray",
+        },
+        padding: { xs: "4px", sm: "6px" }, // Smaller on mobile
+      }}
+      onClick={() => handleOrderNow(product._id)}
+      disabled={!product.inStock}
+    >
+      <Typography
+        sx={{
+          color: "white",
+          fontSize: { xs: "10px", sm: "14px", md: "16px" },
+        }}
+      >
+        {product.inStock ? "Order Now" : "Out of Stock"}
+      </Typography>
+    </Button>
+  </Grid>
+  <Grid item xs={2} sm={2}>
+    <Button
+      sx={{
+        bgcolor: "#00000000",
+        color: "gold",
+        "&:hover": { color: "lightgray" },
+        minWidth: "auto",
+      }}
+      onClick={() => handleAddToCart(product._id)}
+      disabled={!product.inStock}  // Add this line to disable when out of stock
+    >
+      <ShoppingCartIcon
+        sx={{ fontSize: { xs: 20, sm: 24 } }}
+      />
+    </Button>
+  </Grid>
+</Grid>
                 </CardContent>
               </Card>
             </Grid>
