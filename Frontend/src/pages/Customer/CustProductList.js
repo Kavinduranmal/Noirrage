@@ -24,13 +24,18 @@ const CustProductList = () => {
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
+  const [animate, setAnimate] = useState(false); // For animation
   const navigate = useNavigate();
   const [productImageState, setProductImageState] = useState({});
 
-  const token = localStorage.getItem("userToken"); // Get token from localStorage
+  const token = localStorage.getItem("userToken");
 
   useEffect(() => {
     fetchProducts();
+    // Trigger animation after a slight delay
+    setTimeout(() => {
+      setAnimate(true);
+    }, 500); // Delay animation for 500ms
   }, []);
 
   const fetchProducts = async () => {
@@ -42,7 +47,10 @@ const CustProductList = () => {
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products");
     } finally {
-      setLoading(false);
+      // Simulate a longer loading time for the animation (2 seconds)
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   };
 
@@ -57,18 +65,17 @@ const CustProductList = () => {
       return;
     }
     navigate("/AddToCartOrderForm", { state: { productId } });
-  
   };
 
   const handleImageHover = (productId, hover) => {
     setProductImageState((prevState) => ({
       ...prevState,
-      [productId]: hover ? 1 : 0, // 1 for hover image, 0 for default image
+      [productId]: hover ? 1 : 0,
     }));
   };
 
   return (
-    <Box>
+    <Box sx={{ mb: 8 }}>
       {loading && (
         <Box sx={{ width: "100%", mb: 2 }}>
           <LinearProgress
@@ -94,65 +101,59 @@ const CustProductList = () => {
           products.map((product) => (
             <Grid
               item
-              xs={10.5} // Full width on mobile for single-column rows
-              sm={5} // Original 2 cards per row on small screens
-              md={3} // Original 4 cards per row on medium screens
+              xs={6} // 2 items per row on mobile
+              sm={5} // Unchanged for laptop
+              md={3} // Unchanged for laptop
               key={product._id}
             >
               <Card
                 sx={{
-                  height: {xs: "95%", sm: "90%" }, // Smaller on mobile
-                  width: { xs: "100%", sm: "90%" }, // Full width on mobile, 80% on larger screens
+                  height: { xs: "auto", sm: "90%" }, // Auto height on mobile for flexibility
+                  width: { xs: "88%", sm: "90%" },
                   border: "1px solid rgba(175, 175, 175, 0.34)",
                   display: "flex",
-                  flexDirection: { xs: "row", sm: "column" }, // Row on mobile, column on larger screens
-                  padding: "5px",
-                  margin: { sm: "10px" }, // Reduced margin on mobile
-                                   background: "linear-gradient(45deg, #232526, #414345)",
+                  flexDirection: { xs: "column", sm: "column" }, // Always column for consistency
+                  padding: "4px",
+                  margin: { xs: "5px", sm: "10px" },
+                  background: "linear-gradient(45deg, #232526, #414345)", // Keep your existing theme
                   boxShadow: "0 4px 10px rgb(39, 38, 38)",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  transition:
+                    "transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease", // Added opacity for animation
+                  opacity: animate ? 1 : 0, // Fade-in animation
+                  transform: animate ? "translateY(0)" : "translateY(20px)", // Slight slide-up animation
                 }}
               >
                 {/* Image Section */}
                 <Box
                   sx={{
-                    height: { xs: 200, sm: 250, md: 350 }, // Smaller on mobile
-                    width: { xs: "40%", sm: "100%" }, // 40% width on mobile, full on larger screens
+                    height: { xs: 200, sm: 250, md: 350 },
+                    width: "85%", // Full width on all screens
+                    margin: { xs: 1.6, sm: 3 },
                     overflow: "hidden",
                     display: "flex",
-
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: 1,
+                    bgcolor: "white", // White background for the image container
                   }}
                 >
-                  <Card
+                  <CardMedia
+                    component="img"
+                    height="100%"
+                    image={`http://16.170.141.231:5000${
+                      product.images[productImageState[product._id] || 0]
+                    }`}
+                    alt={product.name}
                     sx={{
-                      bgcolor: "white",
-                      height: "80%",
-                      maxWidth: { xs: 120, sm: 250 },
-                      perspective: "1000px",
+                      transition: "transform 1.2s ease",
+                      transformStyle: "preserve-3d",
+                      ":hover": {
+                        transform: { xs: "none", sm: "rotateY(180deg)" },
+                      },
                     }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="100%"
-                      image={`http://16.170.141.231:5000${
-                        product.images[productImageState[product._id] || 0]
-                      }`}
-                      alt={product.name}
-                      id={`image-${product._id}`}
-                      sx={{
-                        transition: "transform 1.2s ease",
-                        transformStyle: "preserve-3d",
-                        ":hover": {
-                          transform: { xs: "none", sm: "rotateY(180deg)" }, // No hover effect on mobile
-                        },
-                      }}
-                      onMouseEnter={() => handleImageHover(product._id, true)}
-                      onMouseLeave={() => handleImageHover(product._id, false)}
-                    />
-                  </Card>
+                    onMouseEnter={() => handleImageHover(product._id, true)}
+                    onMouseLeave={() => handleImageHover(product._id, false)}
+                  />
                 </Box>
 
                 {/* Content Section */}
@@ -161,97 +162,99 @@ const CustProductList = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    padding: { xs: "8px", sm: "10px" }, // Tighter padding on mobile
-                    textAlign: { xs: "left", sm: "center" }, // Left-align on mobile, center on larger screens
-                    width: { xs: "60%", sm: "100%" }, // 60% width on mobile next to image
+                    padding: { xs: "8px", sm: "10px" },
+                    textAlign: "center", // Center-align on all screens
+                    width: "100%",
                   }}
                 >
                   <Typography
                     variant="h6"
                     sx={{
                       fontFamily: "'Raleway', sans-serif",
-                      fontSize: { xs: "16px", sm: "25px", md: "30px" }, // Smaller on mobile
-
-                      color: "rgb(255, 255, 255);",
+                      fontSize: { xs: "14px", sm: "25px", md: "30px" },
+                      color: "rgb(255, 255, 255)", // Keep your theme
+                      fontWeight: "bold",
                     }}
                   >
                     {product.name}
                   </Typography>
 
                   <Typography
-                    variant="body2" // Smaller variant for mobile
-                    color="#d0d0d0"
+                    variant="body2"
+                    color="#d0d0d0" // Keep your theme
                     sx={{
                       fontSize: { xs: "10px", sm: "14px", md: "16px" },
-                      mt: { xs: 0.5, sm: 0 }, // Small margin on mobile
+                      mt: { xs: 0.5, sm: 0 },
                     }}
                   >
                     {product.description}
                   </Typography>
+
                   <Typography
                     variant="h6"
                     sx={{
                       mt: { xs: 1, sm: 1 },
-                      color: "#fff",
+                      color: "#fff", // Keep your theme
                       fontSize: { xs: "12px", sm: "16px", md: "18px" },
+                      fontWeight: "bold",
                     }}
                   >
-                    Rs: {product.price}
+                    Rs. {product.price.toLocaleString()}
                   </Typography>
 
                   {/* Buttons */}
                   <Grid
-  container
-  spacing={1}
-  sx={{
-    mt: { xs: 1, sm: 1 },
-    justifyContent: { xs: "flex-start", sm: "center" }, // Left-align on mobile
-  }}
->
-  <Grid item xs={8} sm={8}>
-    <Button
-      variant="contained"
-      fullWidth
-      sx={{
-        bgcolor: product.inStock ? "black" : "gray",
-        color: "white",
-        fontWeight: "bold",
-        border: !product.inStock ? "2px solid red" : "none",
-        "&:hover": {
-          bgcolor: product.inStock ? "gray" : "gray",
-        },
-        padding: { xs: "4px", sm: "6px" }, // Smaller on mobile
-      }}
-      onClick={() => handleOrderNow(product._id)}
-      disabled={!product.inStock}
-    >
-      <Typography
-        sx={{
-          color: "white",
-          fontSize: { xs: "10px", sm: "14px", md: "16px" },
-        }}
-      >
-        {product.inStock ? "Order Now" : "Out of Stock"}
-      </Typography>
-    </Button>
-  </Grid>
-  <Grid item xs={2} sm={2}>
-    <Button
-      sx={{
-        bgcolor: "#00000000",
-        color: "gold",
-        "&:hover": { color: "lightgray" },
-        minWidth: "auto",
-      }}
-      onClick={() => handleAddToCart(product._id)}
-      disabled={!product.inStock}  // Add this line to disable when out of stock
-    >
-      <ShoppingCartIcon
-        sx={{ fontSize: { xs: 20, sm: 24 } }}
-      />
-    </Button>
-  </Grid>
-</Grid>
+                    container
+                    spacing={1}
+                    sx={{
+                      mt: { xs: 1, sm: 1 },
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Grid item xs={8} sm={8}>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                          bgcolor: product.inStock ? "black" : "gray",
+                          color: "white",
+                          fontWeight: "bold",
+                          border: !product.inStock ? "2px solid red" : "none",
+                          "&:hover": {
+                            bgcolor: product.inStock ? "gray" : "gray",
+                          },
+                          padding: { xs: "4px", sm: "6px" },
+                        }}
+                        onClick={() => handleOrderNow(product._id)}
+                        disabled={!product.inStock}
+                      >
+                        <Typography
+                          sx={{
+                            color: "white",
+                            fontSize: { xs: "10px", sm: "14px", md: "16px" },
+                          }}
+                        >
+                          {product.inStock ? "Order Now" : "Out of Stock"}
+                        </Typography>
+                      </Button>
+                    </Grid>
+                    <Grid item xs={2} sm={2}>
+                      <Button
+                        sx={{
+                          bgcolor: "#00000000",
+                          color: "gold", // Keep your theme
+                          "&:hover": { color: "lightgray" },
+                          minWidth: "auto",
+                        }}
+                        onClick={() => handleAddToCart(product._id)}
+                        disabled={!product.inStock}
+                      >
+                        <ShoppingCartIcon
+                          sx={{ fontSize: { xs: 20, sm: 24 } }}
+                        />
+                      </Button>
+                    </Grid>
+                  </Grid>
                 </CardContent>
               </Card>
             </Grid>

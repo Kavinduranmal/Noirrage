@@ -58,6 +58,45 @@ const CustomerDirectOrderForm = () => {
   const token = localStorage.getItem("userToken");
   const productId = location.state?.productId || null;
 
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://www.payhere.lk/lib/payhere.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script); // Cleanup when component unmounts
+    };
+  }, []);
+
+  const handlePayHerePayment = () => {
+    if (window.payhere) {
+      const payment = {
+        sandbox: true,
+        merchant_id: "YOUR_MERCHANT_ID",
+        return_url: "http://localhost:3000/payment-success",
+        cancel_url: "http://localhost:3000/payment-cancel",
+        notify_url: "http://your-backend-url.com/payhere-notify",
+        order_id: "ORDER_001",
+        items: "Clothing Order",
+        amount: "2500.00",
+        currency: "LKR",
+        first_name: "John",
+        last_name: "Doe",
+        email: "johndoe@example.com",
+        phone: "0771234567",
+        address: "123, Colombo, Sri Lanka",
+        city: "Colombo",
+        country: "Sri Lanka",
+      };
+
+      window.payhere.startPayment(payment);
+    } else {
+      alert("PayHere script not loaded. Please try again.");
+    }
+  };
+
   useEffect(() => {
     if (!token) {
       toast.error("Please log in to continue");
@@ -480,6 +519,7 @@ const CustomerDirectOrderForm = () => {
                       </ToggleButtonGroup>
                     </Box>
                   </Box>
+                  
 
                   <Typography
                     color="#d7d7d7"
@@ -489,6 +529,8 @@ const CustomerDirectOrderForm = () => {
                   >
                     Shipping Details
                   </Typography>
+                  
+
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                   >
@@ -666,6 +708,7 @@ const CustomerDirectOrderForm = () => {
                     >
                       {processing ? "Processing..." : "Pay & Order"}
                     </Button>
+                    <Button onClick={handlePayHerePayment}>Pay Now</Button>
                   </Box>
                 </>
               )}
