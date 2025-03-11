@@ -62,7 +62,9 @@ const AddToCartOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("http://16.170.141.231:5000/api/products");
+      const { data } = await axios.get(
+        "http://16.170.141.231:5000/api/products"
+      );
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);

@@ -145,16 +145,7 @@ const Home = () => {
 
       {/* Featured Products Section */}
       <FullWidthSection>
-        <Typography
-          variant="h4"
-          textAlign="center"
-          mb={4}
-          sx={{
-            fontFamily: "'Raleway', sans-serif",
-          }}
-        >
-          Our Products
-        </Typography>
+
 
         <CustProductList />
       </FullWidthSection>

@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { motion } from "framer-motion";
 const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
@@ -56,9 +56,12 @@ const MyOrders = () => {
       return;
     }
     try {
-      await axios.delete(`http://16.170.141.231:5000/api/orders/${orderId}/cancel`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `http://16.170.141.231:5000/api/orders/${orderId}/cancel`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       toast.success("Order canceled successfully!");
       setOrders((prevOrders) =>
         prevOrders.filter((order) => order._id !== orderId)
@@ -87,6 +90,7 @@ const MyOrders = () => {
 
   return (
     <Container maxWidth={false} sx={{ p: 0 }}>
+    
       <FullWidthSection>
         {loading ? (
           <Box sx={{ width: "100%", mb: 2 }}>
@@ -100,20 +104,38 @@ const MyOrders = () => {
           </Box>
         ) : (
           <Box sx={{ mt: 4 }}>
-            <Typography
-              variant="h3"
-              textAlign="center"
-              mb={{ xs: 3, md: 4 }}
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: { xs: "2rem", md: "3rem" },
-                color: "gold",
+             <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 100 }}
+      >
+        <Typography
+          variant="h3"
+          sx={{
+            color: "gold",
+            fontFamily: "'Poppins', sans-serif",
+            textAlign: "center",
+            mt: { xs: 3, md: 3 },
+            mb: { xs: 3, md: 3 },
+            fontSize: { xs: "1.8rem", md: "3rem" },
 
-                letterSpacing: "1px",
-              }}
-            >
-              My Orders
-            </Typography>
+            textShadow: "0 2px 10px rgba(255, 215, 0, 0.3)",
+            letterSpacing: "1px",
+            position: "relative",
+            "&::after": {
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "80px",
+              height: "3px",
+              background:
+                "linear-gradient(90deg, transparent, gold, transparent)",
+              borderRadius: "2px",
+            },
+          }}
+        >
+          My Orders
+        </Typography>
+      </motion.div>
 
             <Box
               sx={{
