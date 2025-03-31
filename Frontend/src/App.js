@@ -37,7 +37,7 @@ const Layout = () => {
   return (
     <>
       {!hideNavbar && <NavBarforuser />}
-      <ToastContainer position="bottom-right" autoClose={1100} />
+      <ToastContainer position="top-right" autoClose={1100} />
       <Routes>
         {/* Customer Routes */}
         <Route path="/user/Login" element={<UserLogin />} />
