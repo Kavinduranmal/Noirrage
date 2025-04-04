@@ -67,6 +67,7 @@ const CustProductList = () => {
         "http://13.49.246.175:3000/api/products/"
       );
       setProducts(response.data);
+      console.log("this are the products that have in store",response.data)
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products", {
         position: "top-center",
