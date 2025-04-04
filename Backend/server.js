@@ -37,7 +37,7 @@ if (!fs.existsSync(uploadPath)) {
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: ["http://16.170.141.231:3000", "http://localhost:3000", "http://13.49.246.175:3000"],
+  origin: ["http://16.170.141.231:3000", "http://localhost:3000", "https://noirrage.com"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
