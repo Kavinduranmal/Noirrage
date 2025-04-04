@@ -107,7 +107,7 @@ const CustomerDirectOrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "/api/auth/profileview",
+          "http://13.49.246.175:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -138,7 +138,7 @@ const CustomerDirectOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get("http://13.49.246.175:5000/api/products");
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
@@ -216,7 +216,7 @@ const CustomerDirectOrderForm = () => {
     try {
       // Create the order
       const { data } = await axios.post(
-        "/api/orders/create",
+        "http://13.49.246.175:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -224,7 +224,7 @@ const CustomerDirectOrderForm = () => {
 
       // Create payment intent
       const paymentResponse = await axios.post(
-        "/api/stripe/create-payment-intent",
+        "http://13.49.246.175:5000/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -308,7 +308,7 @@ const CustomerDirectOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`https://noirrage.com${selectedProduct.images[selectedImageIndex]}`}
+                image={`http://13.49.246.175:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -334,7 +334,7 @@ const CustomerDirectOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(https://noirrage.com${img})`,
+                    backgroundImage: `url(http://13.49.246.175:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index

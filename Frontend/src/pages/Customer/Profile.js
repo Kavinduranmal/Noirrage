@@ -36,7 +36,7 @@ import { loadStripe } from "@stripe/stripe-js";
 const STRIPE_PUBLIC_KEY =
   "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11";
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "https://noirrage.com";
+  process.env.REACT_APP_API_URL || "http://13.49.246.175:5000";
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
