@@ -69,7 +69,7 @@ const AddToCartOrderForm = () => {
     const fetchUserDataAndCart = async () => {
       try {
         const userResponse = await axios.get(
-          "https://noirrage.com/api/auth/profileview",
+          "/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const user = userResponse.data;
@@ -84,7 +84,7 @@ const AddToCartOrderForm = () => {
         }));
 
         const cartResponse = await axios.get(
-          "https://noirrage.com/api/cart/view",
+          "/api/cart/view",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
@@ -108,7 +108,7 @@ const AddToCartOrderForm = () => {
   const handleRemove = async (itemId, onItemRemoved) => {
     try {
       await axios.delete(
-        `https://noirrage.com/api/cart/remove/${itemId}`,
+        `/api/cart/remove/${itemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -184,14 +184,14 @@ const AddToCartOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "https://noirrage.com/api/orders/create",
+        "/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const orderId = data.order._id;
 
       const paymentResponse = await axios.post(
-        "https://noirrage.com/api/stripe/create-payment-intent",
+        "/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -441,7 +441,7 @@ const AddToCartOrderForm = () => {
                               image={
                                 item.product?.images?.length > 0
                                   ? `https://noirrage.com${item.product.images[0]}`
-                                  : "https://noirrage.com/default-image.jpg"
+                                  : "/default-image.jpg"
                               }
                               alt={item.product?.name || "Product Image"}
                               sx={{

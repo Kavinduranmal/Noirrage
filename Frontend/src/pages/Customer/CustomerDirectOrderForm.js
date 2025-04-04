@@ -107,7 +107,7 @@ const CustomerDirectOrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "https://noirrage.com/api/auth/profileview",
+          "/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -138,7 +138,7 @@ const CustomerDirectOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("https://noirrage.com/api/products");
+      const { data } = await axios.get("/api/products");
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
@@ -216,7 +216,7 @@ const CustomerDirectOrderForm = () => {
     try {
       // Create the order
       const { data } = await axios.post(
-        "https://noirrage.com/api/orders/create",
+        "/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -224,7 +224,7 @@ const CustomerDirectOrderForm = () => {
 
       // Create payment intent
       const paymentResponse = await axios.post(
-        "https://noirrage.com/api/stripe/create-payment-intent",
+        "/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

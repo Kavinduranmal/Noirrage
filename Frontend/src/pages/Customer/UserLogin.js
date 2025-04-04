@@ -29,7 +29,7 @@ const UserLogin = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "https://noirrage.com/api/auth/user/login",
+        "/api/auth/user/login",
         admin
       );      
       localStorage.setItem("userToken", data.token);

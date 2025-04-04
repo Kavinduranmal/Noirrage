@@ -63,7 +63,7 @@ const AddToCartOrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "https://noirrage.com/api/products"
+        "/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -106,7 +106,7 @@ const AddToCartOrderForm = () => {
     };
 
     try {
-      await axios.post("https://noirrage.com/api/cart/add", cartData, {
+      await axios.post("/api/cart/add", cartData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item added to cart!");

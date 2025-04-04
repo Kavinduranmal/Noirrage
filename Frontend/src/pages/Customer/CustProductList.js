@@ -64,7 +64,7 @@ const CustProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "https://noirrage.com/api/products/"
+        "/api/products/"
       );
       setProducts(response.data);
     } catch (error) {

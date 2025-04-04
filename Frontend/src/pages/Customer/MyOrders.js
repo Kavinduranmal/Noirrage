@@ -31,7 +31,7 @@ const MyOrders = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "https://noirrage.com/api/orders/byid",
+          "/api/orders/byid",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -57,7 +57,7 @@ const MyOrders = () => {
     }
     try {
       await axios.delete(
-        `https://noirrage.com/api/orders/${orderId}/cancel`,
+        `/api/orders/${orderId}/cancel`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -190,7 +190,7 @@ const MyOrders = () => {
                                         productImageState[item.product._id] || 0
                                       ]
                                     }`
-                                  : "https://noirrage.com/default-image.jpg"
+                                  : "/default-image.jpg"
                               }
                               alt={item.product?.name || "Product Image"}
                               sx={{

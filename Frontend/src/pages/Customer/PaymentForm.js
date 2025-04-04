@@ -53,7 +53,7 @@ const PaymentForm = ({ onSuccessfulPayment }) => {
 
     // Request backend to create a PaymentIntent
     try {
-      const response = await fetch("https://noirrage.com/api/stripe/create-payment-intent", {
+      const response = await fetch("/api/stripe/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, order_id, user_id }),
