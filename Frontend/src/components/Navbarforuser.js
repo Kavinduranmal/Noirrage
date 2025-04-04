@@ -118,7 +118,7 @@ const Navbar = () => {
                       borderRadius: "6px",
                       "&:hover": {
                         color: "#FFEB3B",
-                        backgroundColor: "rgba(255, 235, 59, 0.1)",
+                        
                         transform: "translateY(-2px)",
                       },
                       transition: "all 0.3s ease",

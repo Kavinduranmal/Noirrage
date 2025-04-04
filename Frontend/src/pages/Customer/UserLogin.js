@@ -29,9 +29,9 @@ const UserLogin = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://16.170.141.231:5000/api/auth/user/login",
+        "https://noirrage.com/api/auth/user/login",
         admin
-      );
+      );      
       localStorage.setItem("userToken", data.token);
       if (data.admin && data.admin.email) {
         localStorage.setItem("userEmail", data.admin.email);

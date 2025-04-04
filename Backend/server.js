@@ -33,15 +33,15 @@ if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
 
-// ✅ Middleware (Proper Order)
-app.use(express.json({ limit: "50mb" })); // Handles JSON payloads (Large payloads)
-app.use(express.urlencoded({ extended: true })); // Handles form-urlencoded requests
-cors({
-  origin: ["http://13.49.246.175:3000", "http://16.170.141.231:3000", "http://localhost:3000"],
+// ✅ Middleware
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: ["http://16.170.141.231:3000", "http://localhost:3000", "https://noirrage.com"],
   credentials: true,
-  methods: "GET,POST,PUT,DELETE",
-  allowedHeaders: "Content-Type, Authorization",
-})
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 
 

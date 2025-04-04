@@ -100,10 +100,11 @@ const ContactUs = () => {
                 secondary={
                   <>
                     <Typography variant="body1" sx={{ color: "#fff", mt: 1 }}>
-                      +1 (123) 456-7890
+                    0777854037
                     </Typography>
                     <Typography variant="body1" sx={{ color: "#fff" }}>
-                      +1 (987) 654-3210
+                    0743327138
+
                     </Typography>
                   </>
                 }
@@ -128,7 +129,7 @@ const ContactUs = () => {
                       },
                     }}
                   >
-                    info@noirrage.com
+                    Noirrage.lk@gmail.com
                   </Link>
                 }
               />
@@ -136,9 +137,7 @@ const ContactUs = () => {
 
             {/* Social Media Links */}
             <ListItem>
-              <ListItemIcon sx={{ color: "#e0b252" }}>
-                <Phone /> {/* Placeholder for TikTok icon */}
-              </ListItemIcon>
+              
               <ListItemText
                 primary="Follow Us:"
                 secondary={
@@ -152,7 +151,7 @@ const ContactUs = () => {
                   >
                     {/* Instagram */}
                     <Link
-                      href="https://www.instagram.com/noirrage"
+                      href="https://www.instagram.com/n_o_i_r_r_a_g_e/"
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{
@@ -170,7 +169,7 @@ const ContactUs = () => {
 
                     {/* Facebook */}
                     <Link
-                      href="https://www.facebook.com/noirrage"
+                      href="https://www.facebook.com/share/1DPLDBX3H8/?mibextid=wwXIfr"
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{
@@ -188,7 +187,7 @@ const ContactUs = () => {
 
                     {/* TikTok */}
                     <Link
-                      href="https://www.tiktok.com/@noirrage"
+                      href="https://www.tiktok.com/@noirrage.lk?_t=ZS-8vEJhMKirvI&_r=1"
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{
