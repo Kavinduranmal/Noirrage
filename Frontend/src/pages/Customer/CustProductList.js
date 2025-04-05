@@ -64,7 +64,7 @@ const CustProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://16.170.141.231:3000/api/products/"
+        "http://16.170.141.231:5000/api/products/"
       );
       setProducts(response.data);
       console.log("this are the products that have in store",response.data)
