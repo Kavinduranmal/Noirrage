@@ -64,7 +64,7 @@ const CustProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://13.49.246.175:3000/api/products/"
+        "http://16.170.141.231:3000/api/products/"
       );
       setProducts(response.data);
       console.log("this are the products that have in store",response.data)
@@ -334,7 +334,7 @@ const CustProductList = () => {
                     <CardMedia
                       component="img"
                       height="100%"
-                      image={`http://13.49.246.175:5000${
+                      image={`http://16.170.141.231:5000${
                         product.images[productImageState[product._id] || 0]
                       }`}
                       alt={product.name}

@@ -69,7 +69,7 @@ const AddToCartOrderForm = () => {
     const fetchUserDataAndCart = async () => {
       try {
         const userResponse = await axios.get(
-          "http://13.49.246.175:5000/api/auth/profileview",
+          "http://16.170.141.231:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const user = userResponse.data;
@@ -84,7 +84,7 @@ const AddToCartOrderForm = () => {
         }));
 
         const cartResponse = await axios.get(
-          "http://13.49.246.175:5000/api/cart/view",
+          "http://16.170.141.231:5000/api/cart/view",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
@@ -108,7 +108,7 @@ const AddToCartOrderForm = () => {
   const handleRemove = async (itemId, onItemRemoved) => {
     try {
       await axios.delete(
-        `http://13.49.246.175:5000/api/cart/remove/${itemId}`,
+        `http://16.170.141.231:5000/api/cart/remove/${itemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -184,14 +184,14 @@ const AddToCartOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "http://13.49.246.175:5000/api/orders/create",
+        "http://16.170.141.231:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const orderId = data.order._id;
 
       const paymentResponse = await axios.post(
-        "http://13.49.246.175:5000/api/stripe/create-payment-intent",
+        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
         { orderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
