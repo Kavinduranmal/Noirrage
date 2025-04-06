@@ -32,7 +32,7 @@ const AddProduct = () => {
     name: "",
     price: "",
     description: "",
-    category: "",
+    category: "Men",
     images: [], // Ensure this is always an array
     imagePreview: null,
     sizes: [],
@@ -218,28 +218,7 @@ const AddProduct = () => {
                   },
                 }}
               />
-              <FormControl fullWidth sx={{ marginBottom: 2 }}>
-                <InputLabel sx={{ color: "gray" }}>Category</InputLabel>
-                <Select
-                  name="category"
-                  value={productData.category}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    color: "white", // Selected text color
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#ffd9008f",
-                    }, // Border color
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "white",
-                    }, // Focused border color
-                  }}
-                >
-                  <MenuItem value="Men">Men</MenuItem>
-                  <MenuItem value="Women">Women</MenuItem>
-                  <MenuItem value="Kids">Kids</MenuItem>
-                </Select>
-              </FormControl>
+              
 
               {/* Sizes Input */}
               <TextField
