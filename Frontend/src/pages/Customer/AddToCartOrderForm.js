@@ -293,40 +293,45 @@ const AddToCartOrderForm = () => {
                   </Box>
                 </Box>
                 <Box sx={{ flex: 1 }}>
-                  <Typography
-                    color="white"
-                    variant="subtitle1"
-                    fontWeight="bold"
-                  >
-                    Pick a Color
-                  </Typography>
-                  <ToggleButtonGroup
-                    value={color}
-                    exclusive
-                    onChange={handleColorChange}
-                    sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}
-                  >
-                    {availableColors.map((colorOption, index) => (
-                      <ToggleButton
-                        key={index}
-                        value={colorOption}
+                      <Typography
+                        color="white"
+                        variant="subtitle1"
+                        fontWeight="bold"
+                      >
+                        Pick a Color
+                      </Typography>
+                      <ToggleButtonGroup
+                        value={color}
+                        exclusive
+                        onChange={handleColorChange}
                         sx={{
-                          backgroundColor: colorOption.toLowerCase(),
-                          color: "white",
-                          border: "1px solid black",
-                          "&.Mui-selected": {
-                            border: "2px solid gold",
-                            color: "white",
-                          },
-                          minWidth: "40px",
-                          height: "40px",
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 1,
+                          mt: 1,
                         }}
                       >
-                        {colorOption}
-                      </ToggleButton>
-                    ))}
-                  </ToggleButtonGroup>
-                </Box>
+                        {availableColors.map((colorOption, index) => (
+                          <ToggleButton
+                            key={index}
+                            value={colorOption}
+                            sx={{
+                              backgroundColor: colorOption.toLowerCase(),
+                              color: "white",
+                              border: "1px solid black",
+                              "&.Mui-selected": {
+                                border: "2px solid gold",
+                              },
+                              minWidth: "50px",
+                              height: "40px",
+                              padding: 0,
+                            }}
+                          >
+                            {/* No text, just the color box */}
+                          </ToggleButton>
+                        ))}
+                      </ToggleButtonGroup>
+                    </Box>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                   <Typography
                     color="white"

@@ -3,17 +3,14 @@ import {
   Card,
   CardContent,
   Typography,
+  Slider,
   Grid,
   CardMedia,
   Box,
   Button,
-  IconButton,
-  Divider,
   LinearProgress,
   Chip,
   Skeleton,
-  Fade,
-  Zoom,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -30,16 +27,28 @@ import { motion } from "framer-motion";
 const CustProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
   const [animate, setAnimate] = useState(false);
   const navigate = useNavigate();
   const [productImageState, setProductImageState] = useState({});
-  const [favorites, setFavorites] = useState({});
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
 
   const token = localStorage.getItem("userToken");
+
+  const handlePriceRangeChange = (event, newValue) => {
+    setPriceRange(newValue);
+  };
+
+  const applyFilters = () => {
+    const filteredProducts = products.filter((product) => {
+      const priceCondition =
+        product.price >= priceRange[0] && product.price <= priceRange[1];
+      const sizeCondition = size ? product.size === size : true;
+      return priceCondition && sizeCondition;
+    });
+    setProducts(filteredProducts);
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -159,6 +168,72 @@ const CustProductList = () => {
         },
       }}
     >
+      {/* Filter Section (Price Range & Size) */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 20,
+          left: 20,
+          zIndex: 10,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          padding: 2,
+          borderRadius: 2,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            color: "gold",
+            fontFamily: "'Poppins', sans-serif",
+            fontWeight: "bold",
+            mb: 2,
+          }}
+        >
+          Filter Products
+        </Typography>
+
+        {/* Price Range Filter */}
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            variant="body1"
+            sx={{ color: "white", fontWeight: "bold", mb: 1 }}
+          >
+            Price Range
+          </Typography>
+          <Slider
+            value={priceRange}
+            onChange={handlePriceRangeChange}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => `Rs. ${value}`}
+            min={0}
+            max={5000}
+            step={100}
+            sx={{
+              color: "gold",
+              "& .MuiSlider-thumb": {
+                backgroundColor: "gold",
+              },
+            }}
+          />
+        </Box>
+
+        {/* Apply Filters Button */}
+        <Button
+          variant="contained"
+          sx={{
+            bgcolor: "gold",
+            color: "black",
+            fontWeight: "bold",
+            "&:hover": {
+              bgcolor: "#fff",
+              color: "gold",
+            },
+          }}
+          onClick={applyFilters}
+        >
+          Apply Filters
+        </Button>
+      </Box>
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -431,29 +506,31 @@ const CustProductList = () => {
                       <Grid container spacing={1} justifyContent="center">
                         <Grid item xs={8}>
                           <Button
-                            fullWidth
                             variant="contained"
                             sx={{
                               bgcolor: product.inStock
                                 ? "black"
                                 : "rgba(128,128,128,0.7)",
                               color: "white",
-                              fontWeight: "bold",
+                              fontSize: { xs: "0.7rem", sm: "1rem" }, // Responsive font size
+
                               border: product.inStock
-                                ? "2px solid rgba(255,215,0,0.5)"
-                                : "2px solid rgba(255,0,0,0.5)",
+                                ? "1px solid rgba(255,215,0,0.5)"
+                                : "1px solid rgba(255,0,0,0.5)",
                               ":hover": {
                                 bgcolor: product.inStock
                                   ? "#111"
                                   : "rgba(128,128,128,0.7)",
                                 transform: product.inStock
-                                  ? "translateY(-2px)"
+                                  ? "translateY(-2px) scale(1.02)" // Added scale effect with translation
                                   : "none",
                                 boxShadow: product.inStock
                                   ? "0 4px 8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,215,0,0.5)"
                                   : "none",
+                                transition:
+                                  "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
                               },
-                              px: 2,
+                              px: { xs: 2, sm: 7 },
                               py: 1,
                               borderRadius: "6px",
                               textTransform: "none",
@@ -477,15 +554,20 @@ const CustProductList = () => {
                               ":hover": {
                                 color: "white",
                                 bgcolor: "rgba(0,0,0,0.8)",
-                                border: "1px solid rgba(255,255,255,0.5)",
-                                transform: "translateY(-2px)",
+                              
                               },
                             }}
                             onClick={() => handleAddToCart(product._id)}
                             disabled={!product.inStock}
                           >
                             <ShoppingCartIcon
-                              sx={{ fontSize: { xs: 18, sm: 24 } }}
+                              sx={{
+                                fontSize: { xs: 18, sm: 24 },
+                                transition: "transform 0.3s ease",
+                                ":hover": {
+                                  transform: "translateY(-2px) rotate(15deg)", // Adding rotation effect
+                                },
+                              }}
                             />
                           </Button>
                         </Grid>

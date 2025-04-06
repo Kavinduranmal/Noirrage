@@ -440,10 +440,10 @@ const AddToCartOrderForm = () => {
                               component="img"
                               image={
                                 item.product?.images?.length > 0
-                                  ? `https://noirrage.com${item.product.images[0]}`
+                                  ? `http://16.170.141.231:5000${item.product.images[0]}`
                                   : "/default-image.jpg"
                               }
-                              alt={item.product?.name || "Product Image"}
+                              alt={item.product?.sname || "Product Image"}
                               sx={{
                                 width: "100%",
                                 height: "100%",
