@@ -58,7 +58,6 @@ const CustomerDirectOrderForm = () => {
   const token = localStorage.getItem("userToken");
   const productId = location.state?.productId || null;
 
-
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://www.payhere.lk/lib/payhere.js";
@@ -138,7 +137,9 @@ const CustomerDirectOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get("http://16.170.141.231:5000/api/products");
+      const { data } = await axios.get(
+        "http://16.170.141.231:5000/api/products"
+      );
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
@@ -472,17 +473,18 @@ const CustomerDirectOrderForm = () => {
                               border: "1px solid black",
                               "&.Mui-selected": {
                                 border: "2px solid gold",
-                                color: "white",
                               },
-                              minWidth: "40px",
+                              minWidth: "50px",
                               height: "40px",
+                              padding: 0,
                             }}
                           >
-                            {colorOption}
+                            {/* No text, just the color box */}
                           </ToggleButton>
                         ))}
                       </ToggleButtonGroup>
                     </Box>
+
                     <Box
                       sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                     >
@@ -519,7 +521,6 @@ const CustomerDirectOrderForm = () => {
                       </ToggleButtonGroup>
                     </Box>
                   </Box>
-                  
 
                   <Typography
                     color="#d7d7d7"
@@ -529,7 +530,6 @@ const CustomerDirectOrderForm = () => {
                   >
                     Shipping Details
                   </Typography>
-                  
 
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 2 }}
