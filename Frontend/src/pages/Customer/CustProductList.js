@@ -16,12 +16,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import StarIcon from "@mui/icons-material/Star";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { motion } from "framer-motion";
 
 const CustProductList = () => {
@@ -52,22 +46,13 @@ const CustProductList = () => {
 
   useEffect(() => {
     fetchProducts();
-    // Loading animation progress
     const timer = setInterval(() => {
-      setLoadingProgress((prevProgress) => {
-        const newProgress = prevProgress + 10;
-        return newProgress >= 100 ? 100 : newProgress;
-      });
+      setLoadingProgress((prevProgress) =>
+        prevProgress + 10 >= 100 ? 100 : prevProgress + 10
+      );
     }, 200);
-
-    // Staggered animation for cards
-    setTimeout(() => {
-      setAnimate(true);
-    }, 500);
-
-    return () => {
-      clearInterval(timer);
-    };
+    setTimeout(() => setAnimate(true), 500);
+    return () => clearInterval(timer);
   }, []);
 
   const fetchProducts = async () => {
@@ -76,20 +61,13 @@ const CustProductList = () => {
         "http://16.170.141.231:5000/api/products/"
       );
       setProducts(response.data);
-      console.log("this are the products that have in store", response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products", {
         position: "top-center",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+      setTimeout(() => setLoading(false), 2000);
     }
   };
 
@@ -99,19 +77,11 @@ const CustProductList = () => {
 
   const handleAddToCart = async (productId) => {
     if (!token) {
-      toast.error("Unauthorized! Please log in.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.error("Unauthorized! Please log in.");
       navigate("/user/Login");
       return;
     }
 
-    // Add cart animation
     const cartIcon = document.getElementById(`cart-icon-${productId}`);
     if (cartIcon) {
       cartIcon.classList.add("cart-animation");
@@ -131,53 +101,25 @@ const CustProductList = () => {
     }));
   };
 
-  // Render skeleton loaders while loading
-  const renderSkeletons = () => {
-    return Array.from(new Array(8)).map((_, index) => (
-      <Grid item xs={6} sm={5} md={3} key={`skeleton-${index}`}>
-        <Skeleton
-          variant="rectangular"
-          width="90%"
-          height={350}
-          animation="wave"
-          sx={{
-            margin: "10px",
-            bgcolor: "rgba(70, 70, 70, 0.3)",
-            borderRadius: 2,
-          }}
-        />
-      </Grid>
-    ));
-  };
-
   return (
-    <Box
-      sx={{
-        mb: 8,
-        position: "relative",
-        overflow: "hidden",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "200px",
-          zIndex: 0,
-          pointerEvents: "none",
-        },
-      }}
-    >
-      {/* Filter Section (Price Range & Size) */}
-      <Box
+    <Box sx={{ mb: 8, mt: 3 }}>
+      {/* Horizontal Filter Bar */}
+      {/* <Box
         sx={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          zIndex: 10,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          padding: 2,
-          borderRadius: 2,
+          width: { xs: "80%", sm: "80%" }, // Make it 90% on mobile, 80% on larger screens
+          borderRadius: { xs: 10, sm: 50 },
+          bgcolor: "rgba(244, 203, 0, 0.19)",
+          px: { xs: 2, sm: 4, md: 6 },
+          py: 2,
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack vertically on mobile, row on larger screens
+          alignItems: "center",
+          justifyContent: "space-between",
+          fontFamily: "'Raleway', sans-serif",
+          borderBottom: "1px solid rgba(255, 215, 0, 0.2)",
+          mb: 3,
+          border: "1px solid rgb(246, 193, 0)",
+          margin: "0 auto", // Center the bar horizontally
         }}
       >
         <Typography
@@ -186,54 +128,114 @@ const CustProductList = () => {
             color: "gold",
             fontFamily: "'Poppins', sans-serif",
             fontWeight: "bold",
-            mb: 2,
+            mb: { xs: 2, sm: 0 },
+            minWidth: "150px",
           }}
         >
-          Filter Products
+          Filter Products By Price
         </Typography>
 
-        {/* Price Range Filter */}
-        <Box sx={{ mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" }, // Stack vertically on mobile
+            alignItems: "center",
+            flex: 1,
+            maxWidth: 500,
+            mx: { xs: 0, sm: 3 },
+          }}
+        >
           <Typography
-            variant="body1"
-            sx={{ color: "white", fontWeight: "bold", mb: 1 }}
+            sx={{
+              mr: 2,
+              fontWeight: "bold",
+              color: "gold",
+              fontStyle: "italic", // Makes the text italic
+              mb: { xs: 1, sm: 0 }, // Margin bottom on mobile for spacing
+            }}
           >
-            Price Range
+            From
           </Typography>
+
           <Slider
             value={priceRange}
             onChange={handlePriceRangeChange}
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => `Rs. ${value}`}
             min={0}
-            max={5000}
-            step={100}
+            max={6000}
+            step={50}
             sx={{
-              color: "gold",
+              color: "gold", // Track color
+              height: 2, // Track height
               "& .MuiSlider-thumb": {
-                backgroundColor: "gold",
+                backgroundColor: "gold", // Thumb color
+                width: 15, // Thumb size
+                height: 15, // Thumb size
+                borderRadius: "50%", // Circular thumb
+              },
+              "& .MuiSlider-track": {
+                borderRadius: 5, // Rounded track corners
+                height: 2, // Track height
+                background:
+                  "linear-gradient(90deg, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0.9) 100%)", // Custom track gradient
+              },
+              "& .MuiSlider-rail": {
+                backgroundColor: "rgba(255, 215, 0, 0.2)", // Subtle color for the rail
+                height: 2, // Rail height
+              },
+              "& .MuiSlider-valueLabel": {
+                fontSize: 14, // Value label font size
+                backgroundColor: "black", // Background color for value label
+                color: "gold", // Text color for the label
+                borderRadius: 1, // Rounded corners for value label
+                padding: "4px 6px", // Padding inside value label
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", // Shadow effect
+                "& .MuiSlider-valueLabelLabel": {
+                  fontSize: "12px", // Smaller label text size
+                },
+              },
+              "&:hover .MuiSlider-thumb": {
+                backgroundColor: "rgb(255, 215, 0)", // Thumb color on hover
               },
             }}
           />
+
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              ml: { xs: 0, sm: 2 },
+              color: "gold",
+              fontStyle: "italic", // Makes the text italic
+              mb: { xs: 1, sm: 0 }, // Margin bottom on mobile for spacing
+            }}
+          >
+            To
+          </Typography>
         </Box>
 
-        {/* Apply Filters Button */}
         <Button
           variant="contained"
+          onClick={applyFilters}
           sx={{
+            borderRadius: 50,
             bgcolor: "gold",
             color: "black",
-            fontWeight: "bold",
+            py: 1,
+            mt: { xs: 2, sm: 0 },
+            width: "100%", // Full width on mobile
+            maxWidth: 150, // Limit the button width on larger screens
             "&:hover": {
-              bgcolor: "#fff",
-              color: "gold",
+              bgcolor: "black",
+              color: "white",
             },
           }}
-          onClick={applyFilters}
         >
           Apply Filters
         </Button>
-      </Box>
+      </Box> */}
+
+      {/* Title */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -245,31 +247,20 @@ const CustProductList = () => {
             color: "gold",
             fontFamily: "'Poppins', sans-serif",
             textAlign: "center",
-            mt: { xs: 3, md: 3 },
-            mb: { xs: 3, md: 3 },
+            mt: 2,
+            mb: 3,
             fontSize: { xs: "1.8rem", md: "3rem" },
             textShadow: "0 2px 10px rgba(255, 215, 0, 0.3)",
             letterSpacing: "1px",
-            position: "relative",
-            "&::after": {
-              content: '""',
-              position: "absolute",
-              bottom: -8,
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "80px",
-              height: "3px",
-
-              borderRadius: "2px",
-            },
           }}
         >
           Our Products
         </Typography>
       </motion.div>
 
+      {/* Loading Bar */}
       {loading && (
-        <Box sx={{ width: "100%", mb: 4, mt: 2 }}>
+        <Box sx={{ width: "100%", mb: 4 }}>
           <LinearProgress
             sx={{
               backgroundColor: "black",
@@ -279,6 +270,7 @@ const CustProductList = () => {
         </Box>
       )}
 
+      {/* Product Grid */}
       {loading ? (
         <Grid container spacing={2} justifyContent="center">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -288,11 +280,7 @@ const CustProductList = () => {
           ))}
         </Grid>
       ) : (
-        <Grid
-          container
-          spacing={{ xs: 1, sm: 2, md: 3 }}
-          justifyContent="center"
-        >
+        <Grid container spacing={2} justifyContent="center">
           {products.length === 0 ? (
             <Box
               sx={{
@@ -306,12 +294,7 @@ const CustProductList = () => {
             >
               <Typography
                 variant="h5"
-                sx={{
-                  color: "white",
-                  textAlign: "center",
-                  fontFamily: "'Raleway', sans-serif",
-                  mb: 2,
-                }}
+                sx={{ color: "white", textAlign: "center", mb: 2 }}
               >
                 No products available at the moment
               </Typography>
@@ -331,250 +314,220 @@ const CustProductList = () => {
               </Button>
             </Box>
           ) : (
-            products.map((product, index) => (
+            products.map((product) => (
               <Grid
                 item
                 xs={6}
                 sm={6}
                 md={3}
-                sx={{ px: 1, mb: 3 }}
                 key={product._id}
                 component={motion.div}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
-                <motion.div>
-                  <Card
+                <Card
+                  sx={{
+                    pt: "10px",
+                    border: "1px solid rgba(175, 175, 175, 0.34)",
+                    background: "linear-gradient(45deg, #232526, #414345)",
+                    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.6)",
+                    borderRadius: 2,
+                  }}
+                >
+                  {!product.inStock && (
+                    <Chip
+                      label="Out of Stock"
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        left: 8,
+                        zIndex: 10,
+                        bgcolor: "rgba(255,0,0,0.7)",
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: 12,
+                      }}
+                    />
+                  )}
+
+                  {/* Flip Image */}
+                  <Box
                     sx={{
-                      pt: "10px",
+                      perspective: "1000px",
                       width: "100%",
-                      border: "1px solid rgba(175, 175, 175, 0.34)",
-                      display: "flex",
-                      flexDirection: "column",
-                      background: "linear-gradient(45deg, #232526, #414345)",
-                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.6)",
-                      transition: "all 0.4s ease",
-                      position: "relative",
-                      overflow: "hidden",
-                      borderRadius: 2,
+                      height: { xs: 250, sm: 350, md: 500 }, // responsive height!
                     }}
                   >
-                    {!product.inStock && (
-                      <Chip
-                        label="Out of Stock"
-                        size="small"
-                        sx={{
-                          position: "absolute",
-                          top: 8,
-                          left: 8,
-                          zIndex: 10,
-                          bgcolor: "rgba(255,0,0,0.7)",
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: 12,
-                          border: "1px solid rgba(255,255,255,0.3)",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-                        }}
-                      />
-                    )}
-
-                    {/* Flip Image Section */}
                     <Box
                       sx={{
-                        perspective: "1000px",
                         width: "100%",
-                        height: { xs: 250, sm: 350, md: 500 }, // responsive height!
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                          position: "relative",
-                          transformStyle: "preserve-3d",
-                          transition: "transform 1s",
-                          "&:hover": {
-                            transform: "rotateY(180deg)",
-                          },
-                        }}
-                      >
-                        <CardMedia
-                          component="img"
-                          image={`http://16.170.141.231:5000${product.images[0]}`}
-                          alt={product.name}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            backfaceVisibility: "hidden",
-                          }}
-                        />
-                        <CardMedia
-                          component="img"
-                          image={`http://16.170.141.231:5000${product.images[1]}`}
-                          alt={`${product.name} Back`}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            transform: "rotateY(180deg)",
-                            backfaceVisibility: "hidden",
-                          }}
-                        />
-                      </Box>
-                    </Box>
-
-                    <CardContent
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        px: 2,
-                        pt: 1,
-                        pb: 2,
-                        textAlign: "center",
+                        height: "100%",
                         position: "relative",
-                        "&::before": {
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          left: "10%",
-                          width: "80%",
-                          height: "1px",
-                          background:
-                            "linear-gradient(90deg, rgba(255,215,0,0) 0%, rgba(255,215,0,0.5) 50%, rgba(255,215,0,0) 100%)",
+                        transformStyle: "preserve-3d",
+                        transition: "transform 1s",
+                        "&:hover": {
+                          transform: "rotateY(180deg)",
                         },
                       }}
                     >
-                      <Typography
-                        variant="h6"
+                      <CardMedia
+                        component="img"
+                        image={`http://16.170.141.231:5000${product.images[0]}`}
+                        alt={product.name}
                         sx={{
-                          fontFamily: "'Raleway', sans-serif",
-                          fontSize: { xs: "16px", sm: "20px" },
-                          color: "white",
-                          fontWeight: "bold",
-                          mb: 1,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          textShadow: "0px 1px 3px rgba(0,0,0,0.5)",
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          backfaceVisibility: "hidden",
                         }}
-                      >
-                        {product.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: { xs: "12px", sm: "14px" },
-                          color: "#d0d0d0",
-                          mb: 2,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
-                        {product.description}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        component={motion.div}
-                        whileHover={{ scale: 1.05 }}
-                        sx={{
-                          color: "#ffcc00",
-                          fontSize: { xs: "14px", sm: "18px" },
-                          px: 2,
-                          py: 1,
-                          borderRadius: "4px",
-                          background: "rgba(0,0,0,0.3)",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-                          mb: 2,
-                        }}
-                      >
-                        Rs. {product.price.toLocaleString()}
-                      </Typography>
+                      />
+                    </Box>
+                    <CardMedia
+                      component="img"
+                      image={`http://16.170.141.231:5000${product.images[1]}`}
+                      alt={`${product.name} Back`}
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        transform: "rotateY(180deg)",
+                        backfaceVisibility: "hidden",
+                      }}
+                    />
+                  </Box>
 
-                      <Grid container spacing={1} justifyContent="center">
-                        <Grid item xs={8}>
-                          <Button
-                            variant="contained"
-                            sx={{
-                              bgcolor: product.inStock
-                                ? "black"
-                                : "rgba(128,128,128,0.7)",
-                              color: "white",
-                              fontSize: { xs: "0.7rem", sm: "1rem" }, // Responsive font size
+                  {/* Content */}
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      px: 2,
+                      pt: 1,
+                      pb: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "'Raleway', sans-serif",
+                        fontSize: { xs: "16px", sm: "20px" },
+                        color: "white",
+                        fontWeight: "bold",
+                        mb: 1,
+                      }}
+                    >
+                      {product.name}
+                    </Typography>
 
-                              border: product.inStock
-                                ? "1px solid rgba(255,215,0,0.5)"
-                                : "1px solid rgba(255,0,0,0.5)",
-                              ":hover": {
-                                bgcolor: product.inStock
-                                  ? "#111"
-                                  : "rgba(128,128,128,0.7)",
-                                transform: product.inStock
-                                  ? "translateY(-2px) scale(1.02)" // Added scale effect with translation
-                                  : "none",
-                                boxShadow: product.inStock
-                                  ? "0 4px 8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,215,0,0.5)"
-                                  : "none",
-                                transition:
-                                  "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
-                              },
-                              px: { xs: 2, sm: 7 },
-                              py: 1,
-                              borderRadius: "6px",
-                              textTransform: "none",
-                            }}
-                            onClick={() => handleOrderNow(product._id)}
-                            disabled={!product.inStock}
-                          >
-                            {product.inStock ? "Order Now" : "Out of Stock"}
-                          </Button>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Button
-                            sx={{
-                              bgcolor: "rgba(0,0,0,0.6)",
-                              color: "gold",
-                              borderRadius: "6px",
-                              border: "1px solid rgba(255,215,0,0.3)",
-                              height: "100%",
-                              minWidth: "40px",
-                              transition: "all 0.3s ease",
-                              ":hover": {
-                                color: "white",
-                                bgcolor: "rgba(0,0,0,0.8)",
-                              
-                              },
-                            }}
-                            onClick={() => handleAddToCart(product._id)}
-                            disabled={!product.inStock}
-                          >
-                            <ShoppingCartIcon
-                              sx={{
-                                fontSize: { xs: 18, sm: 24 },
-                                transition: "transform 0.3s ease",
-                                ":hover": {
-                                  transform: "translateY(-2px) rotate(15deg)", // Adding rotation effect
-                                },
-                              }}
-                            />
-                          </Button>
-                        </Grid>
+                    {/* 🔓 Full Product Description (no cut-off) */}
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontSize: { xs: "12px", sm: "14px" },
+                        color: "#d0d0d0",
+                        mb: 2,
+                        whiteSpace: "normal", // allow wrapping
+                        overflowWrap: "break-word",
+                      }}
+                    >
+                      {product.description}
+                    </Typography>
+
+                    <Typography
+                      variant="h6"
+                      component={motion.div}
+                      whileHover={{ scale: 1.05 }}
+                      sx={{
+                        color: "#ffcc00",
+                        fontSize: { xs: "14px", sm: "18px" },
+                        px: 2,
+                        py: 1,
+                        borderRadius: "4px",
+                        background: "rgba(0,0,0,0.3)",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                        mb: 2,
+                      }}
+                    >
+                      Rs. {product.price.toLocaleString()}
+                    </Typography>
+
+                    {/* Buttons */}
+                    <Grid container spacing={1} justifyContent="center">
+                      <Grid item xs={8}>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            bgcolor: product.inStock
+                              ? "black"
+                              : "rgba(128,128,128,0.7)",
+                            color: "white",
+                            fontSize: { xs: "0.7rem", sm: "1rem" },
+                            border: product.inStock
+                              ? "1px solid rgba(255,215,0,0.5)"
+                              : "1px solid rgba(255,0,0,0.5)",
+                            ":hover": {
+                              bgcolor: product.inStock ? "#111" : undefined,
+                              transform: product.inStock
+                                ? "translateY(-2px) scale(1.02)"
+                                : "none",
+                              boxShadow: product.inStock
+                                ? "0 4px 8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,215,0,0.5)"
+                                : "none",
+                              transition:
+                                "transform 0.3s ease, box-shadow 0.3s ease",
+                            },
+                            px: { xs: 2, sm: 7 },
+                            py: 1,
+                            borderRadius: "6px",
+                            textTransform: "none",
+                          }}
+                          onClick={() => handleOrderNow(product._id)}
+                          disabled={!product.inStock}
+                        >
+                          {product.inStock ? "Order Now" : "Out of Stock"}
+                        </Button>
                       </Grid>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                      <Grid item xs={4}>
+                        <Button
+                          sx={{
+                            bgcolor: "rgba(0,0,0,0.6)",
+                            color: "gold",
+                            borderRadius: "6px",
+                            border: "1px solid rgba(255,215,0,0.3)",
+                            height: "100%",
+                            minWidth: "40px",
+                            transition: "all 0.3s ease",
+                            ":hover": {
+                              color: "white",
+                              bgcolor: "rgba(0,0,0,0.8)",
+                            },
+                          }}
+                          onClick={() => handleAddToCart(product._id)}
+                          disabled={!product.inStock}
+                        >
+                          <ShoppingCartIcon
+                            sx={{
+                              fontSize: { xs: 18, sm: 24 },
+                              transition: "transform 0.3s ease",
+                              ":hover": {
+                                transform: "translateY(-2px) rotate(15deg)",
+                              },
+                            }}
+                          />
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
               </Grid>
             ))
           )}

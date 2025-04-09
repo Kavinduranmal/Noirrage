@@ -122,7 +122,7 @@ const AdminDashboard = () => {
       maxWidth="xl"
       sx={{ color: "#fff", padding: 3, borderRadius: 2 }}
     >
-           {/* Summary Cards */}
+      {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={4}>
           <Card
@@ -197,8 +197,9 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>{/* Summary Cards */}
-   
+      </Grid>
+      {/* Summary Cards */}
+
       {/* Monthly Sales Graph */}
       <Paper
         sx={{
@@ -283,6 +284,11 @@ const AdminDashboard = () => {
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
                 Quantity
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
+              >
+                Color
               </TableCell>
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
@@ -376,6 +382,16 @@ const AdminDashboard = () => {
                     ))}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
+                    {order.products.map((item) => (
+                      <Typography
+                        key={item.product?._id || item._id}
+                        sx={{ color: "#fff" }}
+                      >
+                        {item.color}
+                      </Typography>
+                    ))}
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff" }}>
                     Rs: {order.totalPrice}
                   </TableCell>
                   <TableCell>
@@ -437,6 +453,11 @@ const AdminDashboard = () => {
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
                 Quantity
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
+              >
+                color
               </TableCell>
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
@@ -521,6 +542,16 @@ const AdminDashboard = () => {
                         sx={{ color: "#fff", mb: 1 }}
                       >
                         {item.quantity}
+                      </Typography>
+                    ))}
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff" }}>
+                    {order.products.map((item) => (
+                      <Typography
+                        key={item.product?._id || item._id}
+                        sx={{ color: "#fff" }}
+                      >
+                        {item.color}
                       </Typography>
                     ))}
                   </TableCell>
