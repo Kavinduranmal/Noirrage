@@ -364,13 +364,14 @@ const CustProductList = () => {
                         width: "100%",
                         height: "100%",
                         position: "relative",
-                        transformStyle: "preserve-3d",
+                        transformStyle: "preserve-3d", // Ensure 3D effect is applied
                         transition: "transform 1s",
                         "&:hover": {
                           transform: "rotateY(180deg)",
                         },
                       }}
                     >
+                      {/* Front Image */}
                       <CardMedia
                         component="img"
                         image={`http://16.170.141.231:5000${product.images[0]}`}
@@ -382,25 +383,26 @@ const CustProductList = () => {
                           position: "absolute",
                           top: 0,
                           left: 0,
-                          backfaceVisibility: "hidden",
+                          backfaceVisibility: "hidden", // Hides the back when facing the user
+                        }}
+                      />
+                      {/* Back Image */}
+                      <CardMedia
+                        component="img"
+                        image={`http://16.170.141.231:5000${product.images[1]}`}
+                        alt={`${product.name} Back`}
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          transform: "rotateY(180deg)", // Rotate 180 degrees for the back image
+                          backfaceVisibility: "hidden", // Hide the back face when it's not visible
                         }}
                       />
                     </Box>
-                    <CardMedia
-                      component="img"
-                      image={`http://16.170.141.231:5000${product.images[1]}`}
-                      alt={`${product.name} Back`}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        transform: "rotateY(180deg)",
-                        backfaceVisibility: "hidden",
-                      }}
-                    />
                   </Box>
 
                   {/* Content */}
