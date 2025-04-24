@@ -1,6 +1,11 @@
 // App.js
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,12 +17,16 @@ import CustomerOrder from "./pages/Customer/CustomerDirectOrderForm";
 import ViewAllcart from "./pages/Customer/ViewAllcart";
 import Profile from "./pages/Customer/Profile";
 import Orderstatus from "./pages/Customer/MyOrders";
-import AddToCartOrderForm from "./pages/Customer/AddToCartOrderForm"
+import AddToCartOrderForm from "./pages/Customer/AddToCartOrderForm";
 // Other Components/Pages
 import NavBarforuser from "./components/Navbarforuser";
 import Home from "./components/Home";
 import AboutUs from "./components/AboutUs";
 import ContactUs from "./components/ContactUs";
+import Footer from "./components/Footer";
+import TermsPage from "./components/TermsPage";
+import PrivacyPage from "./components/PrivacyPage";
+import RefundPage from "./components/RefundPage";
 
 // Stripe Components
 import { Elements } from "@stripe/react-stripe-js";
@@ -25,18 +34,19 @@ import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./pages/Customer/PaymentForm";
 
 // Replace with your actual publishable key
-const stripePromise = loadStripe("pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11");
+const stripePromise = loadStripe(
+  "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11"
+);
 
 // Layout component for common routes and navbar logic
 const Layout = () => {
   const location = useLocation();
-  // Hide navbar on login and signup pages
-  const hideNavbar =
+  const hideOnAuthPages =
     location.pathname === "/user/Login" || location.pathname === "/user/signup";
 
   return (
     <>
-      {!hideNavbar && <NavBarforuser />}
+      {!hideOnAuthPages && <NavBarforuser />}
       <ToastContainer position="top-right" autoClose={1100} />
       <Routes>
         {/* Customer Routes */}
@@ -48,7 +58,6 @@ const Layout = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/userorders" element={<Orderstatus />} />
         <Route path="/AddToCartOrderForm" element={<AddToCartOrderForm />} />
-        {/* Stripe Checkout Route */}
         <Route
           path="/checkout"
           element={
@@ -58,14 +67,19 @@ const Layout = () => {
           }
         />
 
-        {/* Other Routes */}
+        {/* Other Pages */}
         <Route path="/" element={<Home />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/ContactUs" element={<ContactUs />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/refund" element={<RefundPage />} />
       </Routes>
+      {!hideOnAuthPages && <Footer />}
     </>
   );
 };
+
 
 const App = () => {
   return (
