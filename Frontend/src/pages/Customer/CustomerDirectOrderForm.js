@@ -545,18 +545,35 @@ const CustomerDirectOrderForm = () => {
                         label: "Address Line 2 (Optional)",
                       },
                       { id: "addressLine3", label: "City" },
-                      { id: "postalCode", label: "Postal Code" },
-                      { id: "email", label: "Email", required: true },
+                      {
+                        id: "postalCode",
+                        label: "Postal Code",
+                        required: false,
+                        type: "number",
+                      },
+                      {
+                        id: "email",
+                        label: "Email",
+                        required: true,
+                        type: "email",
+                      },
                       {
                         id: "contactNumber",
                         label: "Contact Number",
                         required: true,
+                        type: "tel",
+                        inputProps: {
+                          minLength: 10,
+                          maxLength: 10,
+                          pattern: "[0-9]*",
+                        },
                       },
                     ].map((field) => (
                       <TextField
                         key={field.id}
                         label={field.label}
                         fullWidth
+                        type={field.type || "text"}
                         value={shippingDetails[field.id] || ""}
                         onChange={(e) =>
                           setShippingDetails({
@@ -565,6 +582,7 @@ const CustomerDirectOrderForm = () => {
                           })
                         }
                         required={field.required}
+                        inputProps={field.inputProps}
                         sx={{
                           "& input": { color: "white" },
                           "& label": { color: "gray" },

@@ -27,7 +27,14 @@ const CustProductList = () => {
   const [productImageState, setProductImageState] = useState({});
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [expanded, setExpanded] = useState(false);
 
+  const toggleExpand = (productId) => {
+    setExpanded((prevState) => ({
+      ...prevState,
+      [productId]: !prevState[productId],
+    }));
+  };
   const token = localStorage.getItem("userToken");
 
   const handlePriceRangeChange = (event, newValue) => {
@@ -103,8 +110,8 @@ const CustProductList = () => {
 
   return (
     <Box sx={{ mb: 8, mt: 3 }}>
-      {/* Horizontal Filter Bar */}
-      {/* <Box
+      {/* Horizontal Filter Bar
+       {/* <Box
         sx={{
           width: { xs: "80%", sm: "80%" }, // Make it 90% on mobile, 80% on larger screens
           borderRadius: { xs: 10, sm: 50 },
@@ -274,13 +281,82 @@ const CustProductList = () => {
       {loading ? (
         <Grid container spacing={2} justifyContent="center">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Grid key={i} item xs={10} sm={6} md={3}>
-              <Box height={300} bgcolor="#2c2c2c" borderRadius={2} />
+            <Grid key={i} item xs={12} sm={6} md={2.8}>
+              <Box
+                sx={{
+                  mb: 4,
+                  bgcolor: "#2c2c2c",
+                  borderRadius: 2,
+                  p: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  boxShadow: "0px 4px 12px rgba(0,0,0,0.6)",
+                  height: "100%",
+                }}
+              >
+                {/* Image skeleton */}
+                <Skeleton
+                  variant="rectangular"
+                  width="100%"
+                  height={400}
+                  animation="wave"
+                  sx={{ borderRadius: 2, mb: 2 }}
+                />
+
+                {/* Product name */}
+                <Skeleton
+                  variant="text"
+                  animation="wave"
+                  width="80%"
+                  height={30}
+                  sx={{ mb: 1 }}
+                />
+
+                {/* Description lines */}
+                <Skeleton
+                  variant="text"
+                  animation="wave"
+                  width="90%"
+                  height={20}
+                  sx={{ mb: 0.5 }}
+                />
+
+                {/* Price */}
+                <Skeleton
+                  variant="rectangular"
+                  animation="wave"
+                  width="60%"
+                  height={30}
+                  sx={{ borderRadius: 1, mb: 2 }}
+                />
+
+                {/* Buttons */}
+                <Box sx={{ display: "flex", gap: 1, width: "100%" }}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={36}
+                    width="70%"
+                    sx={{ borderRadius: 1 }}
+                  />
+                  <Skeleton
+                    variant="circular"
+                    animation="wave"
+                    width={36}
+                    height={36}
+                  />
+                </Box>
+              </Box>
             </Grid>
           ))}
         </Grid>
       ) : (
-        <Grid container spacing={2} justifyContent="center">
+        <Grid
+          container
+          spacing={{ xs: 1, sm: 1, md: 4 }}
+          justifyContent="center"
+        >
           {products.length === 0 ? (
             <Box
               sx={{
@@ -319,7 +395,7 @@ const CustProductList = () => {
                 item
                 xs={6}
                 sm={6}
-                md={3}
+                md={2.8}
                 key={product._id}
                 component={motion.div}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -327,7 +403,7 @@ const CustProductList = () => {
               >
                 <Card
                   sx={{
-                    pt: "10px",
+                    pt: "20px",
                     border: "1px solid rgba(175, 175, 175, 0.34)",
                     background: "linear-gradient(45deg, #232526, #414345)",
                     boxShadow: "0 4px 15px rgba(0, 0, 0, 0.6)",
@@ -340,10 +416,10 @@ const CustProductList = () => {
                       size="small"
                       sx={{
                         position: "absolute",
-                        top: 8,
-                        left: 8,
+                        mb: 1,
+                        ml: 2,
                         zIndex: 10,
-                        bgcolor: "rgba(255,0,0,0.7)",
+                        bgcolor: "rgba(242, 3, 3, 0.68)",
                         color: "white",
                         fontWeight: "bold",
                         fontSize: 12,
@@ -354,9 +430,8 @@ const CustProductList = () => {
                   {/* Flip Image */}
                   <Box
                     sx={{
-                      perspective: "1000px",
                       width: "100%",
-                      height: { xs: 250, sm: 350, md: 500 }, // responsive height!
+                      height: { xs: 250, sm: 350, md: 450 }, // responsive height!
                     }}
                   >
                     <Box
@@ -434,16 +509,35 @@ const CustProductList = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: { xs: "12px", sm: "14px" },
+                        fontSize: { xs: "12px", sm: "12px", md: "15px" },
                         color: "#d0d0d0",
-                        mb: 2,
-                        whiteSpace: "normal", // allow wrapping
-                        overflowWrap: "break-word",
+                        mb: 1,
+                        lineHeight: 1.6,
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: expanded[product._id] ? "none" : 2,
+                        WebkitBoxOrient: "vertical",
                       }}
                     >
                       {product.description}
                     </Typography>
 
+                    <Button
+                      onClick={() => toggleExpand(product._id)}
+                      sx={{
+                        fontSize: "12px",
+                        textTransform: "none",
+                        color: "gray",
+                        p: 0,
+                        mb: 0.5,
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      {expanded[product._id] ? "Read Less" : "Read More"}
+                    </Button>
                     <Typography
                       variant="h6"
                       component={motion.div}
@@ -453,8 +547,8 @@ const CustProductList = () => {
                         fontSize: { xs: "14px", sm: "18px" },
                         px: 2,
                         py: 1,
-                        borderRadius: "4px",
-                        background: "rgba(0,0,0,0.3)",
+                        borderRadius: "10px",
+                        background: "rgba(0, 0, 0, 0.42)",
                         boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
                         mb: 2,
                       }}
@@ -495,7 +589,7 @@ const CustProductList = () => {
                           onClick={() => handleOrderNow(product._id)}
                           disabled={!product.inStock}
                         >
-                          {product.inStock ? "Order Now" : "Out of Stock"}
+                          {product.inStock ? "Order Now" : "OutofStock"}
                         </Button>
                       </Grid>
                       <Grid item xs={4}>
