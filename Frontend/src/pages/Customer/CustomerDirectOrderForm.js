@@ -16,23 +16,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Add, Remove, Close } from "@mui/icons-material";
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-  "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11"
-);
 
 const CustomerDirectOrderForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const stripe = useStripe();
-  const elements = useElements();
 
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
@@ -65,28 +52,46 @@ const CustomerDirectOrderForm = () => {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script); // Cleanup when component unmounts
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.payhere.onCompleted = function (orderId) {
+      toast.success("Payment successful!");
+      navigate("/payment-success");
+    };
+
+    window.payhere.onDismissed = function () {
+      toast.warn("Payment dismissed.");
+      navigate("/payment-cancel");
+    };
+
+    window.payhere.onError = function (error) {
+      toast.error("PayHere Error: " + error);
     };
   }, []);
 
   const handlePayHerePayment = () => {
     if (window.payhere) {
+      const total = selectedProduct.price * quantity;
+
       const payment = {
-        sandbox: true,
-        merchant_id: "YOUR_MERCHANT_ID",
-        return_url: "http://localhost:3000/payment-success",
-        cancel_url: "http://localhost:3000/payment-cancel",
-        notify_url: "http://your-backend-url.com/payhere-notify",
-        order_id: "ORDER_001",
-        items: "Clothing Order",
-        amount: "2500.00",
+        sandbox: false,
+        merchant_id: "243630",
+        return_url: "https://noirrage.com/payment-success",
+        cancel_url: "https://noirrage.com/payment-cancel",
+        notify_url: "https://noirrage.com/api/payhere/notify",
+        order_id: `ORDER_${Date.now()}`,
+        items: `${selectedProduct.name} x ${quantity}`,
+        amount: total.toFixed(2),
         currency: "LKR",
-        first_name: "John",
-        last_name: "Doe",
-        email: "johndoe@example.com",
-        phone: "0771234567",
-        address: "123, Colombo, Sri Lanka",
-        city: "Colombo",
+        first_name: "Noirrage",
+        last_name: "Customer",
+        email: shippingDetails.email,
+        phone: shippingDetails.contactNumber,
+        address: shippingDetails.addressLine1,
+        city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
       };
 
@@ -215,47 +220,14 @@ const CustomerDirectOrderForm = () => {
     };
 
     try {
-      // Create the order
       const { data } = await axios.post(
         "http://16.170.141.231:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const orderId = data.order._id;
 
-      // Create payment intent
-      const paymentResponse = await axios.post(
-        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
-        { orderId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const { clientSecret } = paymentResponse.data;
-
-      // Confirm payment
-      const cardElement = elements.getElement(CardElement);
-      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            email: shippingDetails.email,
-            address: {
-              line1: shippingDetails.addressLine1,
-              line2: shippingDetails.addressLine2,
-              city: shippingDetails.addressLine3,
-              postal_code: shippingDetails.postalCode,
-            },
-            phone: shippingDetails.contactNumber,
-          },
-        },
-      });
-
-      if (paymentResult.error) {
-        setPaymentError(paymentResult.error.message);
-        toast.error(paymentResult.error.message);
-      } else if (paymentResult.paymentIntent.status === "succeeded") {
-        toast.success("Order placed successfully!");
-        navigate("/userorders");
-      }
+      // Trigger PayHere payment directly after order is created
+      handlePayHerePayment();
     } catch (error) {
       setPaymentError(
         error.response?.data?.message || "Failed to process order"
@@ -674,29 +646,6 @@ const CustomerDirectOrderForm = () => {
                     </Box>
                   </Box>
 
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="h6" color="#fdc200" sx={{ mb: 1 }}>
-                      Payment
-                    </Typography>
-                    <CardElement
-                      options={{
-                        style: {
-                          base: {
-                            fontSize: "16px",
-                            color: "#ffffff",
-                            "::placeholder": { color: "#aab7c4" },
-                          },
-                          invalid: { color: "#ff4444" },
-                        },
-                      }}
-                    />
-                    {paymentError && (
-                      <Typography color="error" mt={2}>
-                        {paymentError}
-                      </Typography>
-                    )}
-                  </Box>
-
                   <Box
                     sx={{ display: "flex", gap: 2, justifyContent: "center" }}
                   >
@@ -712,10 +661,12 @@ const CustomerDirectOrderForm = () => {
                     >
                       Back
                     </Button>
+
                     <Button
                       variant="contained"
                       type="submit"
-                      disabled={processing || !stripe}
+                      onClick={handlePayHerePayment}
+                      disabled={processing}
                       sx={{
                         bgcolor: "#fdc200",
                         color: "black",
@@ -726,7 +677,6 @@ const CustomerDirectOrderForm = () => {
                     >
                       {processing ? "Processing..." : "Pay & Order"}
                     </Button>
-                    <Button onClick={handlePayHerePayment}>Pay Now</Button>
                   </Box>
                 </>
               )}
@@ -738,10 +688,4 @@ const CustomerDirectOrderForm = () => {
   );
 };
 
-const WrappedOrderForm = () => (
-  <Elements stripe={stripePromise}>
-    <CustomerDirectOrderForm />
-  </Elements>
-);
-
-export default WrappedOrderForm;
+export default CustomerDirectOrderForm;

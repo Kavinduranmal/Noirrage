@@ -11,7 +11,6 @@ clothing-ecommerce/
 │   │   ├── authController.js     # User authentication logic
 │   │   ├── productController.js  # CRUD operations for products
 │   │   ├── orderController.js    # Order handling
-│   │   ├── paymentController.js  # Payment gateway integration (Stripe/PayPal)
 │   ├── middleware/
 │   │   ├── authMiddleware.js     # Protect routes
 │   │   ├── errorMiddleware.js    # Global error handling
@@ -23,7 +22,6 @@ clothing-ecommerce/
 │   │   ├── authRoutes.js         # Authentication routes
 │   │   ├── productRoutes.js      # Product routes
 │   │   ├── orderRoutes.js        # Order routes
-│   │   ├── paymentRoutes.js      # Payment routes
 │   ├── utils/
 │   │   ├── generateToken.js      # JWT token generation
 │   ├── server.js                 # Express server entry point
@@ -41,7 +39,6 @@ clothing-ecommerce/
 │   │   │   ├── Home.js            # Home page
 │   │   │   ├── ProductPage.js     # Product details page
 │   │   │   ├── Cart.js            # Shopping cart page
-│   │   │   ├── Checkout.js        # Payment and order confirmation
 │   │   │   ├── Login.js           # User login page
 │   │   │   ├── Register.js        # User registration page
 │   │   │   ├── AdminDashboard.js  # Admin panel

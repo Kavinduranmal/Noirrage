@@ -28,15 +28,6 @@ import TermsPage from "./components/TermsPage";
 import PrivacyPage from "./components/PrivacyPage";
 import RefundPage from "./components/RefundPage";
 
-// Stripe Components
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import CheckoutForm from "./pages/Customer/PaymentForm";
-
-// Replace with your actual publishable key
-const stripePromise = loadStripe(
-  "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11"
-);
 
 // Layout component for common routes and navbar logic
 const Layout = () => {
@@ -58,15 +49,7 @@ const Layout = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/userorders" element={<Orderstatus />} />
         <Route path="/AddToCartOrderForm" element={<AddToCartOrderForm />} />
-        <Route
-          path="/checkout"
-          element={
-            <Elements stripe={stripePromise}>
-              <CheckoutForm />
-            </Elements>
-          }
-        />
-
+        
         {/* Other Pages */}
         <Route path="/" element={<Home />} />
         <Route path="/AboutUs" element={<AboutUs />} />

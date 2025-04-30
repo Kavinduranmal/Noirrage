@@ -23,10 +23,20 @@ const orderSchema = new mongoose.Schema(
       contactNumber: { type: String, required: true },
     },
     shippedAt: { type: Date },
+
+    // 🚀 Add these for PayHere support
+    isPaid: { type: Boolean, default: false },
+    paidAt: { type: Date },
+    paymentResult: {
+      id: { type: String },
+      status: { type: String },
+      method: { type: String },
+      amount: { type: String },
+      currency: { type: String },
+    },
   },
   { timestamps: true }
 );
 
 const Order = mongoose.model("Order", orderSchema);
-
 export default Order;

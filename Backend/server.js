@@ -10,7 +10,7 @@ import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-import stripePaymentRoutes from "./routes/stripePaymentRoutes.js";
+import payhereRoutes  from "./routes/payhereRoutes.js";
 
 // Initialize dotenv and express
 dotenv.config();
@@ -53,7 +53,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/api", stripePaymentRoutes);
+app.use("/api/payhere", payhereRoutes);
 
 
 // ✅ Serve Uploaded Images as Static Files
