@@ -9,16 +9,14 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import {
-  Phone,
-  Email,
-  Instagram,
-  Facebook,
-} from "@mui/icons-material"; // Material-UI icons
+import { Phone, Email } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 
-// TikTok Icon from FontAwesome
-import { FaTiktok } from "react-icons/fa"; // FontAwesome TikTok icon
+// Local image imports
+import whatsapp from "./what.jpg";
+import instagram from "./inster.jpg";
+import facebook from "./face.jpg";
+import tiktok from "./tik.jpg";
 
 // Fade-in animation
 const fadeIn = keyframes`
@@ -37,7 +35,7 @@ const ContactUs = () => {
     <Box
       id="contact"
       sx={{
-        bgcolor:"rgba(0, 0, 0, 0.55)" ,
+        bgcolor: "rgba(0, 0, 0, 0.55)",
         color: "#fff",
         minHeight: "100vh",
         display: "flex",
@@ -46,15 +44,12 @@ const ContactUs = () => {
         textAlign: "center",
         px: 3,
         overflow: "hidden",
-       
         position: "relative",
       }}
     >
       <Container maxWidth="md">
-        {/* Section Title */}
         <Typography
           variant="h2"
-          
           sx={{
             letterSpacing: "3px",
             textTransform: "uppercase",
@@ -68,7 +63,6 @@ const ContactUs = () => {
           Contact Us
         </Typography>
 
-        {/* Section Description */}
         <Typography
           variant="h5"
           sx={{
@@ -81,18 +75,10 @@ const ContactUs = () => {
           Get in Touch with Noirrage
         </Typography>
 
-        {/* Contact Information */}
-        <Box
-          sx={{
-            mt: 4,
-            maxWidth: "600px",
-            mx: "auto",
-          }}
-        >
-          {/* Phone Numbers */}
+        <Box sx={{ mt: 4, maxWidth: "600px", mx: "auto" }}>
           <List>
             <ListItem>
-              <ListItemIcon sx={{ color: "#e0b252" }}>
+              <ListItemIcon sx={{ color: "gray" }}>
                 <Phone />
               </ListItemIcon>
               <ListItemText
@@ -100,20 +86,18 @@ const ContactUs = () => {
                 secondary={
                   <>
                     <Typography variant="body1" sx={{ color: "#fff", mt: 1 }}>
-                    0777854037
+                      0777854037
                     </Typography>
                     <Typography variant="body1" sx={{ color: "#fff" }}>
-                    0743327138
-
+                      0743327138
                     </Typography>
                   </>
                 }
               />
             </ListItem>
 
-            {/* Email */}
             <ListItem>
-              <ListItemIcon sx={{ color: "#e0b252" }}>
+              <ListItemIcon sx={{ color: "gray" }}>
                 <Email />
               </ListItemIcon>
               <ListItemText
@@ -124,9 +108,7 @@ const ContactUs = () => {
                     sx={{
                       color: "#e0b252",
                       textDecoration: "none",
-                      "&:hover": {
-                        color: "#fff",
-                      },
+                      "&:hover": { color: "#fff" },
                     }}
                   >
                     Noirrage.lk@gmail.com
@@ -135,9 +117,7 @@ const ContactUs = () => {
               />
             </ListItem>
 
-            {/* Social Media Links */}
             <ListItem>
-              
               <ListItemText
                 primary="Follow Us:"
                 secondary={
@@ -149,22 +129,32 @@ const ContactUs = () => {
                       justifyContent: "center",
                     }}
                   >
+                    {/* WhatsApp */}
+                    <Link
+                      href="https://wa.me/94743327138"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Box
+                        component="img"
+                        src={whatsapp}
+                        alt="WhatsApp"
+                        sx={{ width: 40, height: 40 }}
+                      />
+                    </Link>
+
                     {/* Instagram */}
                     <Link
                       href="https://www.instagram.com/n_o_i_r_r_a_g_e/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      sx={{
-                        color: "#e0b252",
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: "#fff",
-                          transform: "scale(1.2)",
-                          transition: "transform 0.3s ease-in-out",
-                        },
-                      }}
                     >
-                      <Instagram fontSize="large" />
+                      <Box
+                        component="img"
+                        src={instagram}
+                        alt="Instagram"
+                        sx={{ width: 40, height: 40 }}
+                      />
                     </Link>
 
                     {/* Facebook */}
@@ -172,17 +162,13 @@ const ContactUs = () => {
                       href="https://www.facebook.com/share/1DPLDBX3H8/?mibextid=wwXIfr"
                       target="_blank"
                       rel="noopener noreferrer"
-                      sx={{
-                        color: "#e0b252",
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: "#fff",
-                          transform: "scale(1.2)",
-                          transition: "transform 0.3s ease-in-out",
-                        },
-                      }}
                     >
-                      <Facebook fontSize="large" />
+                      <Box
+                        component="img"
+                        src={facebook}
+                        alt="Facebook"
+                        sx={{ width: 40, height: 40 }}
+                      />
                     </Link>
 
                     {/* TikTok */}
@@ -190,17 +176,13 @@ const ContactUs = () => {
                       href="https://www.tiktok.com/@noirrage.lk?_t=ZS-8vEJhMKirvI&_r=1"
                       target="_blank"
                       rel="noopener noreferrer"
-                      sx={{
-                        color: "#e0b252",
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: "#fff",
-                          transform: "scale(1.2)",
-                          transition: "transform 0.3s ease-in-out",
-                        },
-                      }}
                     >
-                      <FaTiktok fontSize="3rem" color="#e0b252" />
+                      <Box
+                        component="img"
+                        src={tiktok}
+                        alt="TikTok"
+                        sx={{ width: 40, height: 40 }}
+                      />
                     </Link>
                   </Box>
                 }

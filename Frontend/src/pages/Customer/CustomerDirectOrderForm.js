@@ -237,7 +237,61 @@ const CustomerDirectOrderForm = () => {
       setProcessing(false);
     }
   };
+  //-------------------------------------------------------------------------------------------
 
+  const handleCashOnDelivery = async () => {
+    setProcessing(true);
+    setPaymentError(null);
+
+    const fullAddress = [
+      shippingDetails.addressLine1,
+      shippingDetails.addressLine2,
+      shippingDetails.addressLine3,
+      shippingDetails.postalCode,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const orderData = {
+      products: [
+        {
+          product: selectedProduct._id,
+          quantity,
+          size,
+          color,
+        },
+      ],
+      totalPrice: selectedProduct.price * quantity,
+      shippingDetails: {
+        email: shippingDetails.email,
+        address: fullAddress,
+        contactNumber: shippingDetails.contactNumber,
+      },
+      paymentMethod: "COD", // optional, if your backend supports it
+      isPaid: false, // mark unpaid
+    };
+
+    try {
+      await axios.post(
+        "http://16.170.141.231:5000/api/orders/create",
+        orderData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Order placed with Cash on Delivery!");
+      navigate("/userorders");
+    } catch (error) {
+      setPaymentError(
+        error.response?.data?.message || "Failed to process COD order"
+      );
+      toast.error(
+        error.response?.data?.message || "Failed to process COD order"
+      );
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  //-------------------------------------------------------------------------------------------
   if (loading || !selectedProduct || !userId) {
     return (
       <Box sx={{ width: "100%", m: 2 }}>
@@ -665,7 +719,6 @@ const CustomerDirectOrderForm = () => {
                     <Button
                       variant="contained"
                       type="submit"
-                      onClick={handlePayHerePayment}
                       disabled={processing}
                       sx={{
                         bgcolor: "#fdc200",
@@ -675,7 +728,21 @@ const CustomerDirectOrderForm = () => {
                         width: { xs: "100%", sm: "auto" },
                       }}
                     >
-                      {processing ? "Processing..." : "Pay & Order"}
+                      {processing ? "Processing..." : "Pay via Card"}
+                    </Button>
+
+                    <Button
+                      variant="outlined"
+                      onClick={handleCashOnDelivery}
+                      disabled={processing}
+                      sx={{
+                        color: "white",
+                        borderColor: "white",
+                        "&:hover": { borderColor: "#fdc200", color: "#fdc200" },
+                        width: { xs: "100%", sm: "auto" },
+                      }}
+                    >
+                      Cash on Delivery
                     </Button>
                   </Box>
                 </>
