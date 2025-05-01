@@ -28,16 +28,26 @@ import TermsPage from "./components/TermsPage";
 import PrivacyPage from "./components/PrivacyPage";
 import RefundPage from "./components/RefundPage";
 
-
+// Layout component for common routes and navbar logic
 // Layout component for common routes and navbar logic
 const Layout = () => {
   const location = useLocation();
-  const hideOnAuthPages =
+
+  const hideNavBar =
     location.pathname === "/user/Login" || location.pathname === "/user/signup";
+
+  const showFooter =
+    location.pathname === "/" ||
+    location.pathname === "/CustProductList" ||
+    location.pathname === "/AboutUs" ||
+    location.pathname === "/ContactUs" ||
+    location.pathname === "/privacy" ||
+    location.pathname === "/refund" ||
+    location.pathname === "/terms";
 
   return (
     <>
-      {!hideOnAuthPages && <NavBarforuser />}
+      {!hideNavBar && <NavBarforuser />}
       <ToastContainer position="top-right" autoClose={1100} />
       <Routes>
         {/* Customer Routes */}
@@ -49,7 +59,7 @@ const Layout = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/userorders" element={<Orderstatus />} />
         <Route path="/AddToCartOrderForm" element={<AddToCartOrderForm />} />
-        
+
         {/* Other Pages */}
         <Route path="/" element={<Home />} />
         <Route path="/AboutUs" element={<AboutUs />} />
@@ -58,11 +68,10 @@ const Layout = () => {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund" element={<RefundPage />} />
       </Routes>
-      {!hideOnAuthPages && <Footer />}
+      {showFooter && <Footer />}
     </>
   );
 };
-
 
 const App = () => {
   return (

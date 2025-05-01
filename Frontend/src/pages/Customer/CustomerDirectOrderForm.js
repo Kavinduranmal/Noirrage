@@ -716,7 +716,7 @@ const CustomerDirectOrderForm = () => {
                       Back
                     </Button>
 
-                    <Button
+                    {/* <Button
                       variant="contained"
                       type="submit"
                       disabled={processing}
@@ -729,7 +729,7 @@ const CustomerDirectOrderForm = () => {
                       }}
                     >
                       {processing ? "Processing..." : "Pay via Card"}
-                    </Button>
+                    </Button> */}
 
                     <Button
                       variant="outlined"

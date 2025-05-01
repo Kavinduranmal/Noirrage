@@ -188,88 +188,58 @@ const AddToCartOrderForm = () => {
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const orderId = data.order._id;
 
-      const paymentResponse = await axios.post(
-        "http://16.170.141.231:5000/api/stripe/create-payment-intent",
-        { orderId },
-        { headers: { Authorization: `Bearer ${token}` } }
+      toast.success("Order placed successfully!");
+      const updatedCart = cartItems.filter(
+        (item) => !selectedCartItems.includes(item._id)
       );
-      const { clientSecret } = paymentResponse.data;
-
-      const cardElement = elements.getElement(CardElement);
-      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            email: shippingDetails.email,
-            address: {
-              line1: shippingDetails.addressLine1,
-              line2: shippingDetails.addressLine2,
-              city: shippingDetails.addressLine3,
-              postal_code: shippingDetails.postalCode,
-            },
-            phone: shippingDetails.contactNumber,
-          },
-        },
-      });
-
-      if (paymentResult.error) {
-        setPaymentError(paymentResult.error.message);
-        toast.error(paymentResult.error.message);
-      } else if (paymentResult.paymentIntent.status === "succeeded") {
-        toast.success("Order placed successfully!");
-        const updatedCart = cartItems.filter(
-          (item) => !selectedCartItems.includes(item._id)
-        );
-        setCartItems(updatedCart);
-        setSelectedCartItems([]);
-        navigate("/userorders");
-      }
+      setCartItems(updatedCart);
+      setSelectedCartItems([]);
+      navigate("/userorders");
     } catch (error) {
       setPaymentError(
-        error.response?.data?.message || "Failed to process order"
+        error.response?.data?.message || "Failed to submit order"
       );
-      toast.error(error.response?.data?.message || "Failed to process order");
+      toast.error(error.response?.data?.message || "Failed to submit order");
     } finally {
       setProcessing(false);
     }
   };
 
-  const PaymentSection = useMemo(
-    () => (
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          sx={{
-            color: "gold",
-            fontSize: { xs: "1.2rem", md: "1.5rem" },
-            fontWeight: 600,
-            mb: 1,
-          }}
-        >
-          Payment Details
-        </Typography>
-        <CardElement
-          options={{
-            style: {
-              base: {
-                fontSize: "16px",
-                color: "#ffffff",
-                "::placeholder": { color: "#aab7c4" },
-              },
-              invalid: { color: "#ffvolution444" },
-            },
-          }}
-        />
-        {paymentError && (
-          <Typography sx={{ color: "#ff4d4d", mt: 2 }}>
-            {paymentError}
-          </Typography>
-        )}
-      </Box>
-    ),
-    [paymentError]
-  );
+  // const PaymentSection = useMemo(
+  //   () => (
+  //     <Box sx={{ mb: 4 }}>
+  //       <Typography
+  //         sx={{
+  //           color: "gold",
+  //           fontSize: { xs: "1.2rem", md: "1.5rem" },
+  //           fontWeight: 600,
+  //           mb: 1,
+  //         }}
+  //       >
+  //         Payment Details
+  //       </Typography>
+  //       <CardElement
+  //         options={{
+  //           style: {
+  //             base: {
+  //               fontSize: "16px",
+  //               color: "#ffffff",
+  //               "::placeholder": { color: "#aab7c4" },
+  //             },
+  //             invalid: { color: "#ffvolution444" },
+  //           },
+  //         }}
+  //       />
+  //       {paymentError && (
+  //         <Typography sx={{ color: "#ff4d4d", mt: 2 }}>
+  //           {paymentError}
+  //         </Typography>
+  //       )}
+  //     </Box>
+  //   ),
+  //   [paymentError]
+  // );
 
   if (loading || cartItems.length === 0) {
     return (
@@ -397,7 +367,7 @@ const AddToCartOrderForm = () => {
                             p: 2,
                             background:
                               "linear-gradient(145deg, #1f1f1f, #292929)",
-                            borderRadius:2,
+                            borderRadius: 2,
                             border: "1px solid rgba(255, 255, 255, 0.05)",
                             boxShadow: "0 8px 20px rgba(0, 0, 0, 0.5)",
                             flexDirection: { xs: "column", sm: "row" },
@@ -728,13 +698,13 @@ const AddToCartOrderForm = () => {
                           </motion.div>
                         ))}
 
-                        <motion.div
+                        {/* <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.8, duration: 0.5 }}
                         >
                           {PaymentSection}
-                        </motion.div>
+                        </motion.div> */}
 
                         <motion.div
                           initial={{ y: 30, opacity: 0 }}
@@ -772,7 +742,7 @@ const AddToCartOrderForm = () => {
                             >
                               Back to Cart
                             </Button>
-                            <Button
+                            {/* <Button
                               variant="contained"
                               type="submit"
                               disabled={processing || !stripe || !elements}
@@ -825,6 +795,22 @@ const AddToCartOrderForm = () => {
                               ) : (
                                 "Pay & Complete Order"
                               )}
+                            </Button> */}
+                            <Button
+                              variant="outlined"
+                              onClick={handleOrderSubmit}
+                              disabled={processing}
+                              sx={{
+                                color: "white",
+                                borderColor: "white",
+                                "&:hover": {
+                                  borderColor: "#fdc200",
+                                  color: "#fdc200",
+                                },
+                                width: { xs: "100%", sm: "auto" },
+                              }}
+                            >
+                              Cash on Delivery
                             </Button>
                           </Box>
                         </motion.div>
