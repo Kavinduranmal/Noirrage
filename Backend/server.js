@@ -13,13 +13,15 @@ import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import payhereRoutes from "./routes/payhereRoutes.js";
 
-// Setup
+// Setup environment and Express
 dotenv.config();
 const app = express();
+
+// Fix for ES Module __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// SSL Certs
+// SSL Certificate
 const sslOptions = {
   key: fs.readFileSync(path.join(__dirname, "certs/server.key")),
   cert: fs.readFileSync(path.join(__dirname, "certs/server.cert")),
@@ -36,6 +38,7 @@ app.use(
       "http://13.49.246.175:3000",
       "https://13.49.246.175:3000",
       "https://noirrage.com",
+      "https://api.noirrage.com", // ✅ Add this too
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -43,23 +46,27 @@ app.use(
   })
 );
 
-// Database & Static
+// MongoDB
 connectDB();
+
+// Upload folder static access
 const uploadPath = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
 app.use("/uploads", express.static(uploadPath));
 
-// Routes
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payhere", payhereRoutes);
 
-// Start HTTPS server
+// Start HTTPS Server
 const PORT = process.env.PORT || 5000;
-https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () =>
-  console.log(`🚀 HTTPS server running on port ${PORT}`)
-);
+https
+  .createServer(sslOptions, app)
+  .listen(PORT, "0.0.0.0", () =>
+    console.log(`🚀 HTTPS server running on https://api.noirrage.com:${PORT}`)
+  );
