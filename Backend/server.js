@@ -65,8 +65,6 @@ app.use("/api/payhere", payhereRoutes);
 
 // Start HTTPS Server
 const PORT = process.env.PORT || 5000;
-https
-  .createServer(sslOptions, app)
-  .listen(PORT, "0.0.0.0", () =>
-    console.log(`🚀 HTTPS server running on https://api.noirrage.com:${PORT}`)
-  );
+https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 HTTPS server running on https://api.noirrage.com:${PORT}`)
+);

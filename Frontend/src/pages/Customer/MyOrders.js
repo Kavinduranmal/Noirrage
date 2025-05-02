@@ -31,7 +31,7 @@ const MyOrders = () => {
     const getUserOrders = async () => {
       try {
         const { data } = await axios.get(
-          "https://16.170.141.231:5000/api/orders/byid",
+          "https://api.noirrage.com/api/orders/byid",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -57,7 +57,7 @@ const MyOrders = () => {
     }
     try {
       await axios.delete(
-        `https://16.170.141.231:5000/api/orders/${orderId}/cancel`,
+        `https://api.noirrage.com/api/orders/${orderId}/cancel`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -185,7 +185,7 @@ const MyOrders = () => {
                                 item.product &&
                                 item.product.images &&
                                 item.product.images.length > 0
-                                  ? `https://16.170.141.231:5000${
+                                  ? `https://api.noirrage.com${
                                       item.product.images[
                                         productImageState[item.product._id] || 0
                                       ]

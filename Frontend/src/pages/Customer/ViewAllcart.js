@@ -69,7 +69,7 @@ const AddToCartOrderForm = () => {
     const fetchUserDataAndCart = async () => {
       try {
         const userResponse = await axios.get(
-          "https://16.170.141.231:5000/api/auth/profileview",
+          "https://api.noirrage.com/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const user = userResponse.data;
@@ -84,7 +84,7 @@ const AddToCartOrderForm = () => {
         }));
 
         const cartResponse = await axios.get(
-          "https://16.170.141.231:5000/api/cart/view",
+          "https://api.noirrage.com/api/cart/view",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
@@ -108,7 +108,7 @@ const AddToCartOrderForm = () => {
   const handleRemove = async (itemId, onItemRemoved) => {
     try {
       await axios.delete(
-        `https://16.170.141.231:5000/api/cart/remove/${itemId}`,
+        `https://api.noirrage.com/api/cart/remove/${itemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -184,7 +184,7 @@ const AddToCartOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "httpss://16.170.141.231:5000/api/orders/create",
+        "httpss://api.noirrage.com/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -410,7 +410,7 @@ const AddToCartOrderForm = () => {
                               component="img"
                               image={
                                 item.product?.images?.length > 0
-                                  ? `https://16.170.141.231:5000${item.product.images[0]}`
+                                  ? `https://api.noirrage.com${item.product.images[0]}`
                                   : "/default-image.jpg"
                               }
                               alt={item.product?.sname || "Product Image"}

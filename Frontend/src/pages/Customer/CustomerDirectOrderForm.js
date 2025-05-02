@@ -111,7 +111,7 @@ const CustomerDirectOrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "https://16.170.141.231:5000/api/auth/profileview",
+          "https://api.noirrage.com/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -143,7 +143,7 @@ const CustomerDirectOrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "https://16.170.141.231:5000/api/products"
+        "https://api.noirrage.com/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -221,7 +221,7 @@ const CustomerDirectOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "https://16.170.141.231:5000/api/orders/create",
+        "https://api.noirrage.com/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -273,7 +273,7 @@ const CustomerDirectOrderForm = () => {
 
     try {
       await axios.post(
-        "https://16.170.141.231:5000/api/orders/create",
+        "https://api.noirrage.com/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -335,7 +335,7 @@ const CustomerDirectOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`https://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
+                image={`https://api.noirrage.com${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -361,7 +361,7 @@ const CustomerDirectOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(https://16.170.141.231:5000${img})`,
+                    backgroundImage: `url(https://api.noirrage.com${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index
