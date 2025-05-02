@@ -25,7 +25,6 @@ import m12 from "./images/12.jpg";
 
 import CustProductList from "../../src/pages/Customer/CustProductList";
 
-
 // Styled Components
 const HeroSection = styled(Box)(({ theme }) => ({
   height: "80vh",
@@ -66,14 +65,16 @@ const HeroSubtitle = styled(Typography)(({ theme }) => ({
 const settings = {
   dots: true,
   infinite: true,
-  speed: 800,
+  speed: 1000,
   slidesToShow: 1,
   slidesToScroll: 1,
   autoplay: true,
   autoplaySpeed: 3000,
-  pauseOnHover: true,
+  fade: true,              // 👈 fade style
+  cssEase: "ease-in-out",  // 👈 smooth easing
   arrows: false,
 };
+
 
 const Home = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -94,44 +95,43 @@ const Home = () => {
                 background: `url(${img}) center/cover no-repeat`,
               }}
             >
-             <Box
-  sx={{
-    display: "flex",
-    justifyContent: "center", // center horizontally
-    alignItems: "center",     // center vertically
-    height: "100%",
-    width: "100%",
-    flexDirection: "column",  // stack the texts vertically
-    textAlign: "center",
-  }}
->
-  <Typography
-    variant="h2"
-    sx={{
-      fontFamily: "'Raleway', sans-serif",
-      letterSpacing: "3px",
-      textTransform: "uppercase",
-      fontWeight: 400,
-      color: "#fff",
-    }}
-  >
-    Noirrage
-  </Typography>
+              <Box
+                sx={{
+                  mr: 2,
+                  display: "flex",
+                  justifyContent: "center", // center horizontally
+                  alignItems: "center", // center vertically
+                  height: "100%",
+                  width: { xs:"90%" ,md: "100%" },
+                  flexDirection: "column", // stack the texts vertically
+                  textAlign: "center",
+                }}
+              >
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontFamily: "'Raleway', sans-serif",
+                    letterSpacing: "3px",
+                    textTransform: "uppercase",
+                    fontWeight: 400,
+                    color: "#fff",
+                  }}
+                >
+                  Noirrage
+                </Typography>
 
-  <Typography
-    variant="h6"
-    sx={{
-      fontFamily: "'Raleway', sans-serif",
-      mt: 1,
-      fontWeight: 300,
-      color: "#fff",
-    }}
-  >
-    Embrace Your Individuality
-  </Typography>
-</Box>
-
-
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontFamily: "'Raleway', sans-serif",
+                    mt: 1,
+                    fontWeight: 300,
+                    color: "#fff",
+                  }}
+                >
+                  Embrace Your Individuality
+                </Typography>
+              </Box>
             </HeroSection>
           ))}
         </Slider>
