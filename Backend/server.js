@@ -10,7 +10,7 @@ import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-import payhereRoutes  from "./routes/payhereRoutes.js";
+import payhereRoutes from "./routes/payhereRoutes.js";
 
 // Initialize dotenv and express
 dotenv.config();
@@ -21,7 +21,6 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // Parse JSON data
 app.use(express.urlencoded({ extended: true })); // ✅ Parse form-data properly
-
 
 // Fix "__dirname" in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -36,14 +35,20 @@ if (!fs.existsSync(uploadPath)) {
 // ✅ Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-  origin: ["http://16.170.141.231:3000", "http://localhost:3000", "http://13.49.246.175:3000"],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-
+app.use(
+  cors({
+    origin: [
+      "http://16.170.141.231:3000",
+      "http://localhost:3000",
+      "http://13.49.246.175:3000",
+      "https://13.49.246.175:3000",
+      "https://noirrage.com",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // ✅ Connect to MongoDB
 connectDB();
@@ -55,10 +60,11 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payhere", payhereRoutes);
 
-
 // ✅ Serve Uploaded Images as Static Files
 app.use("/uploads", express.static(uploadPath));
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);
