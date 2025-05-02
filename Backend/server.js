@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import https from "https";
 
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -12,34 +13,26 @@ import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import payhereRoutes from "./routes/payhereRoutes.js";
 
-// Initialize dotenv and express
+// Setup
 dotenv.config();
-
 const app = express();
-
-// Middleware
-app.use(cors());
-app.use(express.json()); // Parse JSON data
-app.use(express.urlencoded({ extended: true })); // ✅ Parse form-data properly
-
-// Fix "__dirname" in ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Ensure "uploads" folder exists
-const uploadPath = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
+// SSL Certs
+const sslOptions = {
+  key: fs.readFileSync(path.join(__dirname, "certs/server.key")),
+  cert: fs.readFileSync(path.join(__dirname, "certs/server.cert")),
+};
 
-// ✅ Middleware
+// Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-      "http://16.170.141.231:3000",
       "http://localhost:3000",
+      "http://16.170.141.231:3000",
       "http://13.49.246.175:3000",
       "https://13.49.246.175:3000",
       "https://noirrage.com",
@@ -50,21 +43,23 @@ app.use(
   })
 );
 
-// ✅ Connect to MongoDB
+// Database & Static
 connectDB();
+const uploadPath = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+app.use("/uploads", express.static(uploadPath));
 
-// ✅ Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payhere", payhereRoutes);
 
-// ✅ Serve Uploaded Images as Static Files
-app.use("/uploads", express.static(uploadPath));
-
-// ✅ Start Server
+// Start HTTPS server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`🚀 Server running on port ${PORT}`)
+https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 HTTPS server running on port ${PORT}`)
 );
