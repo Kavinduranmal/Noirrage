@@ -65,7 +65,7 @@ const CustProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "https://16.170.141.231:5000/api/products/"
+        "http://16.170.141.231:5000/api/products/"
       );
       setProducts(response.data);
     } catch (error) {

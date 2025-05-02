@@ -111,7 +111,7 @@ const CustomerDirectOrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "http://16.170.141.231:5000/api/auth/profileview",
+          "https://16.170.141.231:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -143,7 +143,7 @@ const CustomerDirectOrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "http://16.170.141.231:5000/api/products"
+        "https://16.170.141.231:5000/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -221,7 +221,7 @@ const CustomerDirectOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "http://16.170.141.231:5000/api/orders/create",
+        "https://16.170.141.231:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -273,7 +273,7 @@ const CustomerDirectOrderForm = () => {
 
     try {
       await axios.post(
-        "http://16.170.141.231:5000/api/orders/create",
+        "https://16.170.141.231:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -306,7 +306,7 @@ const CustomerDirectOrderForm = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 3, mb:  { xs: 10, md: 3 }}}>
+    <Container maxWidth="lg" sx={{ mt: 3, mb: { xs: 10, md: 3 } }}>
       <Box
         sx={{
           p: { xs: 2, md: 3 },
@@ -335,7 +335,7 @@ const CustomerDirectOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`http://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
+                image={`https://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -361,7 +361,7 @@ const CustomerDirectOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(http://16.170.141.231:5000${img})`,
+                    backgroundImage: `url(https://16.170.141.231:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index
@@ -631,7 +631,7 @@ const CustomerDirectOrderForm = () => {
                       bgcolor: "black",
                       color: "gold",
                       fontWeight: "bold",
-                      "&:hover": { bgcolor: "black",color :"gray" },
+                      "&:hover": { bgcolor: "black", color: "gray" },
                       width: { xs: "100%", sm: "auto" },
                     }}
                     type="submit"
@@ -654,85 +654,101 @@ const CustomerDirectOrderForm = () => {
                   >
                     Confirm Your Order
                   </Typography>
-                 
+
                   <Box
-  sx={{
-    flex: 1,
-    background: "linear-gradient(90deg, #232526,rgb(51, 55, 58))",
-    borderRadius: 2,
-    mb:2,
-    p: 3,
-    color: "white",
-   
-  }}
->
-  <Typography
-    variant="h5"
-    sx={{
-      color: "#fdc200",
-      fontWeight: 600,
-      fontFamily: "'Raleway', sans-serif",
-      mb: 2,
-    }}
-  >
-    Order Summary
-  </Typography>
-
-  <Typography sx={{ mb: 1 }}>
-    {selectedProduct.name} - {quantity} x Rs {selectedProduct.price.toFixed(2)}
-  </Typography>
-  <Typography sx={{ mb: 1 }}>Size: {size}</Typography>
-  <Typography sx={{ mb: 1 }}>Color: {color}</Typography>
-  <Typography sx={{ mb: 1 }}>
-    Shipping to:{" "}
-    {[
-      shippingDetails.addressLine1,
-      shippingDetails.addressLine2,
-      shippingDetails.addressLine3,
-      shippingDetails.postalCode,
-    ]
-      .filter(Boolean)
-      .join(", ")}
-  </Typography>
-  <Typography sx={{ mb: 1 }}>Email: {shippingDetails.email}</Typography>
-  <Typography sx={{ mb: 2 }}>Contact: {shippingDetails.contactNumber}</Typography>
-
-  {/* Pricing Breakdown */}
-  <Typography sx={{ fontWeight: 500 }}>
-    Item Total: Rs {(selectedProduct.price * quantity).toFixed(2)}
-  </Typography>
-  <Typography sx={{ fontWeight: 500 }}>Delivery Fee: Rs 470.00</Typography>
-  <Typography
-    sx={{
-      mt: 5,
-      fontSize: "1.2rem",
-   
-      color: "#fdc200",
-    }}
-  >
-    Total Price: Rs {(selectedProduct.price * quantity + 475).toFixed(2)}
-  </Typography>
-  <Box
-                    sx={{mt:4.5, display: "flex", gap: 2, justifyContent: "center" }}
+                    sx={{
+                      flex: 1,
+                      background:
+                        "linear-gradient(90deg, #232526,rgb(51, 55, 58))",
+                      borderRadius: 2,
+                      mb: 2,
+                      p: 3,
+                      color: "white",
+                    }}
                   >
-                    <Button
-                      variant="outlined"
-                      onClick={() => setStep(1)}
+                    <Typography
+                      variant="h5"
                       sx={{
-                        bgcolor:"black",
-                        color: "white",
-                        borderColor: "black",
-                        
-                        "&:hover": { bgcolor:"black",
-                          color: "gray",
-                          borderColor: "black",},
-                        width: { xs: "100%", sm: "auto" },
+                        color: "#fdc200",
+                        fontWeight: 600,
+                        fontFamily: "'Raleway', sans-serif",
+                        mb: 2,
                       }}
                     >
-                      Back
-                    </Button>
+                      Order Summary
+                    </Typography>
 
-                    {/* <Button
+                    <Typography sx={{ mb: 1 }}>
+                      {selectedProduct.name} - {quantity} x Rs{" "}
+                      {selectedProduct.price.toFixed(2)}
+                    </Typography>
+                    <Typography sx={{ mb: 1 }}>Size: {size}</Typography>
+                    <Typography sx={{ mb: 1 }}>Color: {color}</Typography>
+                    <Typography sx={{ mb: 1 }}>
+                      Shipping to:{" "}
+                      {[
+                        shippingDetails.addressLine1,
+                        shippingDetails.addressLine2,
+                        shippingDetails.addressLine3,
+                        shippingDetails.postalCode,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </Typography>
+                    <Typography sx={{ mb: 1 }}>
+                      Email: {shippingDetails.email}
+                    </Typography>
+                    <Typography sx={{ mb: 2 }}>
+                      Contact: {shippingDetails.contactNumber}
+                    </Typography>
+
+                    {/* Pricing Breakdown */}
+                    <Typography sx={{ fontWeight: 500 }}>
+                      Item Total: Rs{" "}
+                      {(selectedProduct.price * quantity).toFixed(2)}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500 }}>
+                      Delivery Fee: Rs 470.00
+                    </Typography>
+                    <Typography
+                      sx={{
+                        mt: 5,
+                        fontSize: "1.2rem",
+
+                        color: "#fdc200",
+                      }}
+                    >
+                      Total Price: Rs{" "}
+                      {(selectedProduct.price * quantity + 475).toFixed(2)}
+                    </Typography>
+                    <Box
+                      sx={{
+                        mt: 4.5,
+                        display: "flex",
+                        gap: 2,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        onClick={() => setStep(1)}
+                        sx={{
+                          bgcolor: "black",
+                          color: "white",
+                          borderColor: "black",
+
+                          "&:hover": {
+                            bgcolor: "black",
+                            color: "gray",
+                            borderColor: "black",
+                          },
+                          width: { xs: "100%", sm: "auto" },
+                        }}
+                      >
+                        Back
+                      </Button>
+
+                      {/* <Button
                       variant="contained"
                       type="submit"
                       disabled={processing}
@@ -747,27 +763,28 @@ const CustomerDirectOrderForm = () => {
                       {processing ? "Processing..." : "Pay via Card"}
                     </Button> */}
 
-                    <Button
-                      variant="outlined"
-                      onClick={handleCashOnDelivery}
-                      disabled={processing}
-                      sx={{
-                        bgcolor:"black",
-                        color: "white",
-                        fontSize: { xs:"0.8rem", md:"1rem" },
-                        borderColor: "black",
-                        "&:hover": {bgcolor:"gold", borderColor: "black", color: "black", fontWeight: "bold"},
-                        width: { xs: "100%", sm: "auto" },
-                      }}
-                    >
-                      Cash on Delivery
-                    </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={handleCashOnDelivery}
+                        disabled={processing}
+                        sx={{
+                          bgcolor: "black",
+                          color: "white",
+                          fontSize: { xs: "0.8rem", md: "1rem" },
+                          borderColor: "black",
+                          "&:hover": {
+                            bgcolor: "gold",
+                            borderColor: "black",
+                            color: "black",
+                            fontWeight: "bold",
+                          },
+                          width: { xs: "100%", sm: "auto" },
+                        }}
+                      >
+                        Cash on Delivery
+                      </Button>
+                    </Box>
                   </Box>
-</Box>
-
-
-
-                  
                 </>
               )}
             </form>

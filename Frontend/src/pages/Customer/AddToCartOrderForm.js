@@ -63,7 +63,7 @@ const AddToCartOrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "http://16.170.141.231:5000/api/products"
+        "https://16.170.141.231:5000/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -106,7 +106,7 @@ const AddToCartOrderForm = () => {
     };
 
     try {
-      await axios.post("http://16.170.141.231:5000/api/cart/add", cartData, {
+      await axios.post("https://16.170.141.231:5000/api/cart/add", cartData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item added to cart!");
@@ -159,7 +159,7 @@ const AddToCartOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`http://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
+                image={`https://16.170.141.231:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -185,7 +185,7 @@ const AddToCartOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(http://16.170.141.231:5000${img})`,
+                    backgroundImage: `url(https://16.170.141.231:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index
