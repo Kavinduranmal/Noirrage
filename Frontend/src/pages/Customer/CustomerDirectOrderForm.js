@@ -306,7 +306,7 @@ const CustomerDirectOrderForm = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ my: 3 }}>
+    <Container maxWidth="lg" sx={{ mt: 3, mb:  { xs: 10, md: 3 }}}>
       <Box
         sx={{
           p: { xs: 2, md: 3 },
@@ -391,7 +391,7 @@ const CustomerDirectOrderForm = () => {
                     variant="h4"
                     color="#fdc200"
                     sx={{
-                      mb: 4,
+                      mb: 2,
                       fontFamily: "'Raleway', sans-serif",
                       textAlign: { xs: "center", md: "left" },
                     }}
@@ -612,12 +612,12 @@ const CustomerDirectOrderForm = () => {
                         sx={{
                           "& input": { color: "white" },
                           "& label": { color: "gray" },
-                          "& label.Mui-focused": { color: "white" },
+                          "& label.Mui-focused": { color: "gold" },
                           "& .MuiOutlinedInput-root": {
                             "& fieldset": { borderColor: "gray" },
                             "&:hover fieldset": { borderColor: "white" },
                             "&.Mui-focused fieldset": {
-                              borderColor: "#fdc200",
+                              borderColor: "gold",
                             },
                           },
                         }}
@@ -627,11 +627,11 @@ const CustomerDirectOrderForm = () => {
                   <Button
                     variant="contained"
                     sx={{
-                      mt: 3,
-                      bgcolor: "#fdc200",
-                      color: "black",
+                      mt: 2,
+                      bgcolor: "black",
+                      color: "gold",
                       fontWeight: "bold",
-                      "&:hover": { bgcolor: "#e0a800" },
+                      "&:hover": { bgcolor: "black",color :"gray" },
                       width: { xs: "100%", sm: "auto" },
                     }}
                     type="submit"
@@ -654,62 +654,78 @@ const CustomerDirectOrderForm = () => {
                   >
                     Confirm Your Order
                   </Typography>
-                  <Box sx={{ mb: 3 }}>
-                    <Typography
-                      variant="h6"
-                      color="white"
-                      sx={{
-                        fontWeight: 500,
-                        textAlign: { xs: "center", md: "left" },
-                      }}
-                    >
-                      Total: Rs {selectedProduct.price * quantity}.00
-                    </Typography>
-                  </Box>
-
-                  <Box sx={{ mb: 3 }}>
-                    <Typography
-                      variant="h6"
-                      color="#fdc200"
-                      sx={{ mb: 1, fontFamily: "'Raleway', sans-serif" }}
-                    >
-                      Order Summary
-                    </Typography>
-                    <Box sx={{ color: "white" }}>
-                      <Typography>
-                        {selectedProduct.name} - {quantity} x Rs{" "}
-                        {selectedProduct.price}
-                      </Typography>
-                      <Typography>Size: {size}</Typography>
-                      <Typography>Color: {color}</Typography>
-                      <Typography>
-                        Shipping to:{" "}
-                        {[
-                          shippingDetails.addressLine1,
-                          shippingDetails.addressLine2,
-                          shippingDetails.addressLine3,
-                          shippingDetails.postalCode,
-                        ]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </Typography>
-                      <Typography>Email: {shippingDetails.email}</Typography>
-                      <Typography>
-                        Contact: {shippingDetails.contactNumber}
-                      </Typography>
-                    </Box>
-                  </Box>
-
+                 
                   <Box
-                    sx={{ display: "flex", gap: 2, justifyContent: "center" }}
+  sx={{
+    flex: 1,
+    background: "linear-gradient(90deg, #232526,rgb(51, 55, 58))",
+    borderRadius: 2,
+    mb:2,
+    p: 3,
+    color: "white",
+   
+  }}
+>
+  <Typography
+    variant="h5"
+    sx={{
+      color: "#fdc200",
+      fontWeight: 600,
+      fontFamily: "'Raleway', sans-serif",
+      mb: 2,
+    }}
+  >
+    Order Summary
+  </Typography>
+
+  <Typography sx={{ mb: 1 }}>
+    {selectedProduct.name} - {quantity} x Rs {selectedProduct.price.toFixed(2)}
+  </Typography>
+  <Typography sx={{ mb: 1 }}>Size: {size}</Typography>
+  <Typography sx={{ mb: 1 }}>Color: {color}</Typography>
+  <Typography sx={{ mb: 1 }}>
+    Shipping to:{" "}
+    {[
+      shippingDetails.addressLine1,
+      shippingDetails.addressLine2,
+      shippingDetails.addressLine3,
+      shippingDetails.postalCode,
+    ]
+      .filter(Boolean)
+      .join(", ")}
+  </Typography>
+  <Typography sx={{ mb: 1 }}>Email: {shippingDetails.email}</Typography>
+  <Typography sx={{ mb: 2 }}>Contact: {shippingDetails.contactNumber}</Typography>
+
+  {/* Pricing Breakdown */}
+  <Typography sx={{ fontWeight: 500 }}>
+    Item Total: Rs {(selectedProduct.price * quantity).toFixed(2)}
+  </Typography>
+  <Typography sx={{ fontWeight: 500 }}>Delivery Fee: Rs 470.00</Typography>
+  <Typography
+    sx={{
+      mt: 5,
+      fontSize: "1.2rem",
+   
+      color: "#fdc200",
+    }}
+  >
+    Total Price: Rs {(selectedProduct.price * quantity + 475).toFixed(2)}
+  </Typography>
+  <Box
+                    sx={{mt:4.5, display: "flex", gap: 2, justifyContent: "center" }}
                   >
                     <Button
                       variant="outlined"
                       onClick={() => setStep(1)}
                       sx={{
+                        bgcolor:"black",
                         color: "white",
-                        borderColor: "white",
-                        "&:hover": { borderColor: "#fdc200", color: "#fdc200" },
+                        borderColor: "black",
+                        
+                        "&:hover": { bgcolor:"black",
+                          color: "gray",
+                          borderColor: "black",},
                         width: { xs: "100%", sm: "auto" },
                       }}
                     >
@@ -736,15 +752,22 @@ const CustomerDirectOrderForm = () => {
                       onClick={handleCashOnDelivery}
                       disabled={processing}
                       sx={{
+                        bgcolor:"black",
                         color: "white",
-                        borderColor: "white",
-                        "&:hover": { borderColor: "#fdc200", color: "#fdc200" },
+                        fontSize: { xs:"0.8rem", md:"1rem" },
+                        borderColor: "black",
+                        "&:hover": {bgcolor:"gold", borderColor: "black", color: "black", fontWeight: "bold"},
                         width: { xs: "100%", sm: "auto" },
                       }}
                     >
                       Cash on Delivery
                     </Button>
                   </Box>
+</Box>
+
+
+
+                  
                 </>
               )}
             </form>

@@ -95,7 +95,7 @@ const AddToCartOrderForm = () => {
           navigate("/CustProductList");
         }
       } catch (error) {
-        toast.error("Failed to load cart or user details");
+        // toast.error("Failed to load cart or user details");
         navigate("/CustProductList");
       } finally {
         setLoading(false);
@@ -507,31 +507,62 @@ const AddToCartOrderForm = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
                   >
-                    <Typography
-                      sx={{
-                        color: "gold",
-                        textAlign: "right",
-                        mt: 3,
-                        fontSize: { xs: "1.4rem", md: "1.8rem" },
-                        textShadow: "0 2px 4px rgba(0,0,0,0.6)",
-                      }}
-                    >
-                      Subtotal: Rs{" "}
-                      <span
-                        style={{ display: "inline-block", minWidth: "80px" }}
-                      >
-                        {cartItems
-                          .filter((item) =>
-                            selectedCartItems.includes(item._id)
-                          )
-                          .reduce(
-                            (total, item) =>
-                              total + (item.product?.price || 0) * item.qty,
-                            0
-                          )}
-                        .00
-                      </span>
-                    </Typography>
+                    <Box sx={{ textAlign: "end", mt: 3 ,mr:3}}>
+  {/* Subtotal */}
+  <Typography
+    sx={{
+
+      color: "white",
+      fontSize: { xs: "1.2rem", md: "1.2rem" },
+      textShadow: "0 2px 4px rgba(0,0,0,0.6)",
+    }}
+  >
+    Subtotal: Rs{" "}
+    <span style={{ display: "inline-block", minWidth: "80px" }}>
+      {cartItems
+        .filter((item) => selectedCartItems.includes(item._id))
+        .reduce(
+          (total, item) => total + (item.product?.price || 0) * item.qty,
+          0
+        )}
+      .00
+    </span>
+  </Typography>
+
+  {/* Delivery Fee */}
+  <Typography
+    sx={{
+      color: "white",
+      fontSize: { xs: "1.2rem", md: "1.1rem" },
+      mt: 1,
+    }}
+  >
+    Delivery Fee: Rs 475.00
+  </Typography>
+
+  {/* Total */}
+  <Typography
+    sx={{
+      color: "#fdc200",
+     
+      fontSize: { xs: "1.6rem", md: "1.5rem" },
+      mt: 1,
+      textShadow: "0 2px 6px rgba(0,0,0,0.6)",
+    }}
+  >
+    Total: Rs{" "}
+    <span style={{ display: "inline-block", minWidth: "80px" }}>
+      {cartItems
+        .filter((item) => selectedCartItems.includes(item._id))
+        .reduce(
+          (total, item) => total + (item.product?.price || 0) * item.qty,
+          0
+        ) + 475}
+      .00
+    </span>
+  </Typography>
+</Box>
+
                   </motion.div>
                 </motion.div>
 
@@ -801,11 +832,16 @@ const AddToCartOrderForm = () => {
                               onClick={handleOrderSubmit}
                               disabled={processing}
                               sx={{
+                                borderRadius: 3,
+                                bgcolor: "black",
                                 color: "white",
-                                borderColor: "white",
+                                fontSize: { xs: "1rem", md: "1rem" },
+                                borderColor: "black",
                                 "&:hover": {
-                                  borderColor: "#fdc200",
-                                  color: "#fdc200",
+                                  bgcolor: "gold",
+                                  borderColor: "black",
+                                  color: "black",
+                                  fontWeight: "bold",
                                 },
                                 width: { xs: "100%", sm: "auto" },
                               }}
@@ -826,7 +862,7 @@ const AddToCartOrderForm = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
               >
-                <Typography
+                {/* <Typography
                   sx={{
                     color: "gold",
                     textAlign: "right",
@@ -846,7 +882,7 @@ const AddToCartOrderForm = () => {
                       )}
                     .00
                   </span>
-                </Typography>
+                </Typography> */}
               </motion.div>
             </motion.div>
           </Box>

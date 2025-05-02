@@ -130,7 +130,7 @@ const AddToCartOrderForm = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ my: 3 }}>
+    <Container maxWidth="lg" sx={{ mt: 3,mb:{ xs:10 ,md: 3 } }}>
       <Box
         sx={{
           p: { xs: 2, md: 3 },

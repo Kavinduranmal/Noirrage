@@ -14,6 +14,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PhoneIcon from "@mui/icons-material/Phone";
+
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import Typography from "@mui/material/Typography"; // For desktop text
 import logo from "../images/logo.png"; // Adjust import path
@@ -161,7 +163,7 @@ const Navbar = () => {
                 transition: "all 0.3s ease",
               }}
             >
-              <ContactMailIcon />
+              <PhoneIcon />
             </IconButton>
             <IconButton
               onClick={handleLogout}

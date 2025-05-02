@@ -48,7 +48,19 @@ const Layout = () => {
   return (
     <>
       {!hideNavBar && <NavBarforuser />}
-      <ToastContainer position="top-right" autoClose={1100} />
+      <ToastContainer
+  position="top-right"
+  autoClose={1100}
+  toastStyle={{
+    backgroundColor: "#111",
+    color: "#fff",
+    borderRadius: "8px",
+    fontFamily: "'Raleway', sans-serif",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.6)",
+    padding: "16px",
+  }}
+/>
+
       <Routes>
         {/* Customer Routes */}
         <Route path="/user/Login" element={<UserLogin />} />

@@ -41,7 +41,7 @@ const MyOrders = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
-        toast.error("Failed to fetch orders. Please try again.");
+        toast.error("No orders Found");
         setLoading(false);
       }
     };
@@ -89,11 +89,11 @@ const MyOrders = () => {
   };
 
   return (
-    <Container maxWidth={false} sx={{ p: 0 }}>
+    <Container maxWidth={false} sx={{ pb: 8 }}>
     
       <FullWidthSection>
         {loading ? (
-          <Box sx={{ width: "100%", mb: 2 }}>
+          <Box sx={{ width: "100%", mb: { xs: 8, md: 3 } }}>
             <LinearProgress
               sx={{
                 backgroundColor: "black",
@@ -246,7 +246,7 @@ const MyOrders = () => {
                         >
                           Total:{" "}
                           <span style={{ color: "gold" }}>
-                            Rs {order.totalPrice}
+                            Rs {order.totalPrice + 475}
                           </span>
                         </Typography>
                         <Typography
@@ -303,9 +303,9 @@ const MyOrders = () => {
                             bgcolor: "gold",
                             color: "black",
                             fontFamily: "'Poppins', sans-serif",
-
+                            fontSize:{ xs: "0.6rem",  md: "0.9rem" },
                             borderRadius: "8px",
-
+                            fontWeight:"bold",
                             mt: 2,
                             width: "50%",
                             "&:hover": {

@@ -1,10 +1,30 @@
 import React from "react";
-import { Typography, Box, Button } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/system";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+import d1 from "./images/d1.jpg";
+import d2 from "./images/d2.jpg";
+import d3 from "./images/d3.jpg";
+import d4 from "./images/d4.jpg";
+
+import m1 from "./images/1.jpg";
+import m2 from "./images/2.jpg";
+import m3 from "./images/3.jpg";
+import m4 from "./images/4.jpg";
+import m5 from "./images/5.jpg";
+import m6 from "./images/6.jpg";
+import m7 from "./images/7.jpg";
+import m8 from "./images/8.jpg";
+import m9 from "./images/9.jpg";
+import m10 from "./images/10.jpg";
+import m11 from "./images/11.jpg";
+import m12 from "./images/12.jpg";
+
 import CustProductList from "../../src/pages/Customer/CustProductList";
+
 
 // Styled Components
 const HeroSection = styled(Box)(({ theme }) => ({
@@ -31,19 +51,6 @@ const HeroSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-const HeroTitle = styled(Typography)(({ theme }) => ({
-  fontSize: "3rem",
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "2px",
-  [theme.breakpoints.down("md")]: {
-    fontSize: "2.5rem",
-  },
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "2rem",
-  },
-}));
-
 const HeroSubtitle = styled(Typography)(({ theme }) => ({
   fontSize: "1.5rem",
   fontWeight: 300,
@@ -56,29 +63,6 @@ const HeroSubtitle = styled(Typography)(({ theme }) => ({
     fontSize: "1.1rem",
   },
 }));
-
-const HeroButton = styled(Button)(({ theme }) => ({
-  marginTop: "20px",
-  padding: "12px 30px",
-  fontSize: "1rem",
-  fontWeight: 500,
-  textTransform: "none",
-  backgroundColor: "#ff6f61",
-  color: "#fff",
-  borderRadius: "8px",
-  transition: "all 0.3s ease-in-out",
-  "&:hover": {
-    backgroundColor: "#e65b50",
-    transform: "scale(1.05)",
-  },
-}));
-
-const FullWidthSection = styled(Box)({
-  width: "100%",
-  padding: "40px 0",
-});
-
-// Slideshow Settings
 const settings = {
   dots: true,
   infinite: true,
@@ -86,69 +70,77 @@ const settings = {
   slidesToShow: 1,
   slidesToScroll: 1,
   autoplay: true,
-  autoplaySpeed: 2000,
+  autoplaySpeed: 3000,
   pauseOnHover: true,
-  fade: true,
-  arrows: false, // This will hide the navigation arrows
+  arrows: false,
 };
 
-// Array of 10 images for the slideshow
-const images = [
-  "https://images.unsplash.com/photo-1520006403909-838d6b92c22e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-  "https://images.unsplash.com/photo-1509067917181-3ec8d8ef5170?q=80&w=2067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-  "https://images.unsplash.com/photo-1582719188393-bb71ca45dbb9?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1298&q=80",
-  "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?ixlib=rb-1.2.1&auto=format&fit=crop&w=1301&q=80",
-  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80",
-  "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-  "https://images.unsplash.com/photo-1523194258983-4ef0203f0c47?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1561526116-e2460f4d40a9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2xvdGhzfGVufDB8fDB8fHww",
-];
-
 const Home = () => {
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const desktopImages = [d1, d2, d3, d4];
+  const mobileImages = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12];
+  const imagesToUse = isMobile ? mobileImages : desktopImages;
+
   return (
     <div>
-      {/* Hero Section with Slideshow */}
+      {/* Slideshow */}
       <Box sx={{ position: "relative" }}>
         <Slider {...settings}>
-          {images.map((image, index) => (
-            <Box key={index}>
-              <HeroSection
-                sx={{
-                  background: `url(${image}) center/cover no-repeat`,
-                }}
-              >
-                <Typography
-                  variant="h2"
-                  sx={{
-                    fontFamily: "'Raleway', sans-serif",
-                    letterSpacing: "3px",
-                    textTransform: "uppercase",
-                    display: "inline-block",
-                    mx: "auto",
-                  }}
-                >
-                  Noirrage
-                </Typography>
-                <HeroSubtitle
-                  sx={{ fontFamily: "'Raleway', sans-serif" }}
-                  variant="h6"
-                >
-                  Elevate your fashion with our exclusive collections
-                </HeroSubtitle>
-              </HeroSection>
-            </Box>
+          {imagesToUse.map((img, index) => (
+            <HeroSection
+              key={index}
+              sx={{
+                background: `url(${img}) center/cover no-repeat`,
+              }}
+            >
+             <Box
+  sx={{
+    display: "flex",
+    justifyContent: "center", // center horizontally
+    alignItems: "center",     // center vertically
+    height: "100%",
+    width: "100%",
+    flexDirection: "column",  // stack the texts vertically
+    textAlign: "center",
+  }}
+>
+  <Typography
+    variant="h2"
+    sx={{
+      fontFamily: "'Raleway', sans-serif",
+      letterSpacing: "3px",
+      textTransform: "uppercase",
+      fontWeight: 400,
+      color: "#fff",
+    }}
+  >
+    Noirrage
+  </Typography>
+
+  <Typography
+    variant="h6"
+    sx={{
+      fontFamily: "'Raleway', sans-serif",
+      mt: 1,
+      fontWeight: 300,
+      color: "#fff",
+    }}
+  >
+    Embrace Your Individuality
+  </Typography>
+</Box>
+
+
+            </HeroSection>
           ))}
         </Slider>
       </Box>
 
-      {/* Featured Products Section */}
-      <FullWidthSection>
-
-
+      {/* Featured Product List */}
+      <Box sx={{ width: "100%", padding: "40px 0" }}>
         <CustProductList />
-      </FullWidthSection>
+      </Box>
     </div>
   );
 };

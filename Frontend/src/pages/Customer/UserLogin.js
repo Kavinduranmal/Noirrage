@@ -14,14 +14,30 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
+const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "icloud.com", "hotmail.com"];
 
 const UserLogin = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [admin, setAdmin] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
+  const handleChangeemail = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setAdmin((prev) => ({ ...prev, email: value }));
+  
+    const domain = value.split("@")[1];
+    if (domain && !allowedDomains.includes(domain.toLowerCase())) {
+      setEmailError("");
+    } else {
+      setEmailError("");
+    }
+  };
+  
   const handleChange = (e) =>
     setAdmin({ ...admin, [e.target.name]: e.target.value });
 
@@ -85,34 +101,37 @@ const UserLogin = () => {
           </Typography>
 
           <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              margin="normal"
-              required
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <MdOutlineMail color="#aaa" size={24} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& label": { color: "#aaa" },
-                "& label.Mui-focused": { color: "#fdc200" },
-                "& input": { color: "#fff" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#555" },
-                  "&:hover fieldset": { borderColor: "#888" },
-                  "&.Mui-focused fieldset": { borderColor: "#fdc200" },
-                  borderRadius: "8px",
-                },
-                mb: 2,
-              }}
-              onChange={handleChange}
-            />
+          <TextField
+      fullWidth
+      label="Email"
+      name="email"
+      type="email"
+      value={email}
+      margin="normal"
+      required
+      onChange={handleChangeemail}
+      error={!!emailError}
+      helperText={emailError}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <MdOutlineMail color="#aaa" size={24} />
+          </InputAdornment>
+        ),
+      }}
+      sx={{
+        "& label": { color: "#aaa" },
+        "& label.Mui-focused": { color: "#fdc200" },
+        "& input": { color: "#fff" },
+        "& .MuiOutlinedInput-root": {
+          "& fieldset": { borderColor: "#555" },
+          "&:hover fieldset": { borderColor: "#888" },
+          "&.Mui-focused fieldset": { borderColor: "#fdc200" },
+          borderRadius: "8px",
+        },
+        mb: 2,
+      }}
+    />
 
             <TextField
               fullWidth

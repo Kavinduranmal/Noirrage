@@ -89,7 +89,7 @@ const ContactUs = () => {
                       0777854037
                     </Typography>
                     <Typography variant="body1" sx={{ color: "#fff" }}>
-                      0743327138
+                      0772353441
                     </Typography>
                   </>
                 }
