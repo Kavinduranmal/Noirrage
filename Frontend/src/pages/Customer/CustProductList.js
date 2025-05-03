@@ -65,7 +65,7 @@ const CustProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://noirrage.com/api/products/"
+        "https://noirrage.com/api/products/"
 
       );
       setProducts(response.data);

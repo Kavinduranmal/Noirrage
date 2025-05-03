@@ -52,7 +52,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://noirrage.com/api/auth/user/register",
+        "https://noirrage.com/api/auth/user/register",
         formData
       );
       toast.success("Signup successful!");

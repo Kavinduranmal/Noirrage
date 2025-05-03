@@ -63,7 +63,7 @@ const AddToCartOrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "http://noirrage.com/api/products"
+        "https://noirrage.com/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -106,7 +106,7 @@ const AddToCartOrderForm = () => {
     };
 
     try {
-      await axios.post("http://noirrage.com/api/cart/add", cartData, {
+      await axios.post("https://noirrage.com/api/cart/add", cartData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item added to cart!");
@@ -159,7 +159,7 @@ const AddToCartOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`http://noirrage.com${selectedProduct.images[selectedImageIndex]}`}
+                image={`https://noirrage.com${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -185,7 +185,7 @@ const AddToCartOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(http://noirrage.com${img})`,
+                    backgroundImage: `url(https://noirrage.com${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index

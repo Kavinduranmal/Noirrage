@@ -69,7 +69,7 @@ const AddToCartOrderForm = () => {
     const fetchUserDataAndCart = async () => {
       try {
         const userResponse = await axios.get(
-          "http://noirrage.com/api/auth/profileview",
+          "https://noirrage.com/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const user = userResponse.data;
@@ -84,7 +84,7 @@ const AddToCartOrderForm = () => {
         }));
 
         const cartResponse = await axios.get(
-          "http://noirrage.com/api/cart/view",
+          "https://noirrage.com/api/cart/view",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (cartResponse.data.items && cartResponse.data.items.length > 0) {
@@ -107,12 +107,9 @@ const AddToCartOrderForm = () => {
 
   const handleRemove = async (itemId, onItemRemoved) => {
     try {
-      await axios.delete(
-        `http://noirrage.com/api/cart/remove/${itemId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`https://noirrage.com/api/cart/remove/${itemId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Item removed from cart!");
       onItemRemoved(itemId);
     } catch (error) {
@@ -184,7 +181,7 @@ const AddToCartOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "http://noirrage.com/api/orders/create",
+        "https://noirrage.com/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -410,7 +407,7 @@ const AddToCartOrderForm = () => {
                               component="img"
                               image={
                                 item.product?.images?.length > 0
-                                  ? `http://noirrage.com${item.product.images[0]}`
+                                  ? `https://noirrage.com${item.product.images[0]}`
                                   : "/default-image.jpg"
                               }
                               alt={item.product?.sname || "Product Image"}
@@ -507,62 +504,70 @@ const AddToCartOrderForm = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
                   >
-                    <Box sx={{ textAlign: "end", mt: 3 ,mr:3}}>
-  {/* Subtotal */}
-  <Typography
-    sx={{
+                    <Box sx={{ textAlign: "end", mt: 3, mr: 3 }}>
+                      {/* Subtotal */}
+                      <Typography
+                        sx={{
+                          color: "white",
+                          fontSize: { xs: "1.2rem", md: "1.2rem" },
+                          textShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                        }}
+                      >
+                        Subtotal: Rs{" "}
+                        <span
+                          style={{ display: "inline-block", minWidth: "80px" }}
+                        >
+                          {cartItems
+                            .filter((item) =>
+                              selectedCartItems.includes(item._id)
+                            )
+                            .reduce(
+                              (total, item) =>
+                                total + (item.product?.price || 0) * item.qty,
+                              0
+                            )}
+                          .00
+                        </span>
+                      </Typography>
 
-      color: "white",
-      fontSize: { xs: "1.2rem", md: "1.2rem" },
-      textShadow: "0 2px 4px rgba(0,0,0,0.6)",
-    }}
-  >
-    Subtotal: Rs{" "}
-    <span style={{ display: "inline-block", minWidth: "80px" }}>
-      {cartItems
-        .filter((item) => selectedCartItems.includes(item._id))
-        .reduce(
-          (total, item) => total + (item.product?.price || 0) * item.qty,
-          0
-        )}
-      .00
-    </span>
-  </Typography>
+                      {/* Delivery Fee */}
+                      <Typography
+                        sx={{
+                          color: "white",
+                          fontSize: { xs: "1.2rem", md: "1.1rem" },
+                          mt: 1,
+                        }}
+                      >
+                        Delivery Fee: Rs 475.00
+                      </Typography>
 
-  {/* Delivery Fee */}
-  <Typography
-    sx={{
-      color: "white",
-      fontSize: { xs: "1.2rem", md: "1.1rem" },
-      mt: 1,
-    }}
-  >
-    Delivery Fee: Rs 475.00
-  </Typography>
+                      {/* Total */}
+                      <Typography
+                        sx={{
+                          color: "#fdc200",
 
-  {/* Total */}
-  <Typography
-    sx={{
-      color: "#fdc200",
-     
-      fontSize: { xs: "1.6rem", md: "1.5rem" },
-      mt: 1,
-      textShadow: "0 2px 6px rgba(0,0,0,0.6)",
-    }}
-  >
-    Total: Rs{" "}
-    <span style={{ display: "inline-block", minWidth: "80px" }}>
-      {cartItems
-        .filter((item) => selectedCartItems.includes(item._id))
-        .reduce(
-          (total, item) => total + (item.product?.price || 0) * item.qty,
-          0
-        ) + 475}
-      .00
-    </span>
-  </Typography>
-</Box>
-
+                          fontSize: { xs: "1.6rem", md: "1.5rem" },
+                          mt: 1,
+                          textShadow: "0 2px 6px rgba(0,0,0,0.6)",
+                        }}
+                      >
+                        Total: Rs{" "}
+                        <span
+                          style={{ display: "inline-block", minWidth: "80px" }}
+                        >
+                          {cartItems
+                            .filter((item) =>
+                              selectedCartItems.includes(item._id)
+                            )
+                            .reduce(
+                              (total, item) =>
+                                total + (item.product?.price || 0) * item.qty,
+                              0
+                            ) + 475}
+                          .00
+                        </span>
+                      </Typography>
+                    </Box>
                   </motion.div>
                 </motion.div>
 
