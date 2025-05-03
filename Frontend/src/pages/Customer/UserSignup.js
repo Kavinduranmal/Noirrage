@@ -52,7 +52,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/user/register",
+        "http://13.49.246.175:5000/api/auth/user/register",
         formData
       );
       toast.success("Signup successful!");
