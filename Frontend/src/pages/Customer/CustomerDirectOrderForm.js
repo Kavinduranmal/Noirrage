@@ -111,7 +111,7 @@ const CustomerDirectOrderForm = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          "https://api.noirrage.com/api/auth/profileview",
+          "http://localhost:5000/api/auth/profileview",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserId(response.data._id);
@@ -143,7 +143,7 @@ const CustomerDirectOrderForm = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        "https://api.noirrage.com/api/products"
+        "http://localhost:5000/api/products"
       );
       const product = data.find((p) => p._id === productId);
       if (product) {
@@ -221,7 +221,7 @@ const CustomerDirectOrderForm = () => {
 
     try {
       const { data } = await axios.post(
-        "https://api.noirrage.com/api/orders/create",
+        "http://localhost:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -273,7 +273,7 @@ const CustomerDirectOrderForm = () => {
 
     try {
       await axios.post(
-        "https://api.noirrage.com/api/orders/create",
+        "http://localhost:5000/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -335,7 +335,7 @@ const CustomerDirectOrderForm = () => {
             <Card sx={{ boxShadow: 3, p: 2 }}>
               <CardMedia
                 component="img"
-                image={`https://api.noirrage.com${selectedProduct.images[selectedImageIndex]}`}
+                image={`http://localhost:5000${selectedProduct.images[selectedImageIndex]}`}
                 alt={selectedProduct.name}
                 sx={{
                   borderRadius: "10px",
@@ -361,7 +361,7 @@ const CustomerDirectOrderForm = () => {
                   sx={{
                     minWidth: 50,
                     height: 50,
-                    backgroundImage: `url(https://api.noirrage.com${img})`,
+                    backgroundImage: `url(http://localhost:5000${img})`,
                     backgroundSize: "cover",
                     border:
                       selectedImageIndex === index

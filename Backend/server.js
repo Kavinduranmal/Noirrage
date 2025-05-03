@@ -5,8 +5,8 @@ import connectDB from "./config/db.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import https from "https";
 
+// Routes
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
@@ -21,12 +21,6 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// SSL Certificate
-const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, "certs/server.key")),
-  cert: fs.readFileSync(path.join(__dirname, "certs/server.cert")),
-};
-
 // Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -36,9 +30,7 @@ app.use(
       "http://localhost:3000",
       "http://16.170.141.231:3000",
       "http://13.49.246.175:3000",
-      "https://13.49.246.175:3000",
-      "https://noirrage.com",
-      "https://api.noirrage.com", // ✅ Add this too
+      "https://13.49.246.175:3000"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -63,8 +55,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payhere", payhereRoutes);
 
-// Start HTTPS Server
+// Start HTTP Server (No SSL)
 const PORT = process.env.PORT || 5000;
-https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () =>
-  console.log(`🚀 HTTPS server running on https://api.noirrage.com:${PORT}`)
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 HTTP server running on ${PORT}`)
 );
