@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { styled } from "@mui/system";
+import { Grid, styled } from "@mui/system";
 import { Person, Email } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -505,7 +505,8 @@ const Profile = () => {
           }}
         >
           {orders.length > 0 ? (
-            orders.map((order) => (
+            <Grid>
+            {Array.isArray(orders) && orders.map((order) => (
               <OrderCard
                 key={order._id}
                 order={order}
@@ -513,7 +514,8 @@ const Profile = () => {
                 handleImageHover={handleImageHover}
                 handleCancelOrder={handleCancelOrder}
               />
-            ))
+            ))}
+            </Grid>
           ) : (
             <Typography
               variant="h6"
@@ -1347,7 +1349,7 @@ const OrderCard = React.memo(
       >
         {/* Product List */}
         <Box sx={{ mb: 2 }}>
-          {order.products.map((item) => (
+        {Array.isArray(order.products) && order.products.map((item) => (
             <Box
               key={item.product?._id || item._id}
               sx={{

@@ -62,9 +62,7 @@ const AddToCartOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get(
-        "https://noirrage.com/api/products"
-      );
+      const { data } = await axios.get("https://noirrage.com/api/products");
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
@@ -130,7 +128,7 @@ const AddToCartOrderForm = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 3,mb:{ xs:10 ,md: 3 } }}>
+    <Container maxWidth="lg" sx={{ mt: 3, mb: { xs: 10, md: 3 } }}>
       <Box
         sx={{
           p: { xs: 2, md: 3 },
@@ -178,22 +176,23 @@ const AddToCartOrderForm = () => {
                 flexWrap: "wrap",
               }}
             >
-              {selectedProduct.images.map((img, index) => (
-                <Button
-                  key={index}
-                  onClick={() => setSelectedImageIndex(index)}
-                  sx={{
-                    minWidth: 50,
-                    height: 50,
-                    backgroundImage: `url(https://noirrage.com${img})`,
-                    backgroundSize: "cover",
-                    border:
-                      selectedImageIndex === index
-                        ? "2px solid gold"
-                        : "1px solid black",
-                  }}
-                />
-              ))}
+              {Array.isArray(selectedProduct?.images) &&
+                selectedProduct.images.map((img, index) => (
+                  <Button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    sx={{
+                      minWidth: 50,
+                      height: 50,
+                      backgroundImage: `url(https://noirrage.com${img})`,
+                      backgroundSize: "cover",
+                      border:
+                        selectedImageIndex === index
+                          ? "2px solid gold"
+                          : "1px solid black",
+                    }}
+                  />
+                ))}
             </Box>
           </Box>
 
@@ -293,45 +292,46 @@ const AddToCartOrderForm = () => {
                   </Box>
                 </Box>
                 <Box sx={{ flex: 1 }}>
-                      <Typography
-                        color="white"
-                        variant="subtitle1"
-                        fontWeight="bold"
-                      >
-                        Pick a Color
-                      </Typography>
-                      <ToggleButtonGroup
-                        value={color}
-                        exclusive
-                        onChange={handleColorChange}
-                        sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 1,
-                          mt: 1,
-                        }}
-                      >
-                        {availableColors.map((colorOption, index) => (
-                          <ToggleButton
-                            key={index}
-                            value={colorOption}
-                            sx={{
-                              backgroundColor: colorOption.toLowerCase(),
-                              color: "white",
-                              border: "1px solid black",
-                              "&.Mui-selected": {
-                                border: "2px solid gold",
-                              },
-                              minWidth: "50px",
-                              height: "40px",
-                              padding: 0,
-                            }}
-                          >
-                            {/* No text, just the color box */}
-                          </ToggleButton>
-                        ))}
-                      </ToggleButtonGroup>
-                    </Box>
+                  <Typography
+                    color="white"
+                    variant="subtitle1"
+                    fontWeight="bold"
+                  >
+                    Pick a Color
+                  </Typography>
+                  <ToggleButtonGroup
+                    value={color}
+                    exclusive
+                    onChange={handleColorChange}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 1,
+                      mt: 1,
+                    }}
+                  >
+                    {Array.isArray(availableColors) &&
+                      availableColors.map((colorOption, index) => (
+                        <ToggleButton
+                          key={index}
+                          value={colorOption}
+                          sx={{
+                            backgroundColor: colorOption.toLowerCase(),
+                            color: "white",
+                            border: "1px solid black",
+                            "&.Mui-selected": {
+                              border: "2px solid gold",
+                            },
+                            minWidth: "50px",
+                            height: "40px",
+                            padding: 0,
+                          }}
+                        >
+                          {/* No text, just the color box */}
+                        </ToggleButton>
+                      ))}
+                  </ToggleButtonGroup>
+                </Box>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                   <Typography
                     color="white"
@@ -346,23 +346,24 @@ const AddToCartOrderForm = () => {
                     onChange={handleSizeChange}
                     sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
                   >
-                    {availableSizes.map((sizeOption, index) => (
-                      <ToggleButton
-                        key={index}
-                        value={sizeOption}
-                        sx={{
-                          color: "black",
-                          backgroundColor: "#c6c6c6",
-                          border: "1px solid #ccc",
-                          "&.Mui-selected": {
-                            border: "2px solid gold",
-                            color: "white",
-                          },
-                        }}
-                      >
-                        {sizeOption}
-                      </ToggleButton>
-                    ))}
+                    {Array.isArray(availableSizes) &&
+                      availableSizes.map((sizeOption, index) => (
+                        <ToggleButton
+                          key={index}
+                          value={sizeOption}
+                          sx={{
+                            color: "black",
+                            backgroundColor: "#c6c6c6",
+                            border: "1px solid #ccc",
+                            "&.Mui-selected": {
+                              border: "2px solid gold",
+                              color: "white",
+                            },
+                          }}
+                        >
+                          {sizeOption}
+                        </ToggleButton>
+                      ))}
                   </ToggleButtonGroup>
                 </Box>
               </Box>

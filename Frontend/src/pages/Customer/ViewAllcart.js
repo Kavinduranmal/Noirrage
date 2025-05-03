@@ -162,12 +162,15 @@ const AddToCartOrderForm = () => {
     );
 
     const orderData = {
-      products: selectedItems.map((item) => ({
-        product: item.product._id,
-        quantity: item.qty,
-        size: item.size,
-        color: item.color,
-      })),
+      products: Array.isArray(selectedItems)
+  ? selectedItems.map((item) => ({
+      product: item.product._id,
+      quantity: item.qty,
+      size: item.size,
+      color: item.color,
+    }))
+  : [],
+
       totalPrice: selectedItems.reduce(
         (total, item) => total + (item.product?.price || 0) * item.qty,
         0

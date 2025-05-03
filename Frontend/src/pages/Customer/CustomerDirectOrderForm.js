@@ -354,7 +354,7 @@ const CustomerDirectOrderForm = () => {
                 flexWrap: "wrap",
               }}
             >
-              {selectedProduct.images.map((img, index) => (
+              {Array.isArray(selectedProduct?.images) && selectedProduct.images.map((img, index) => (
                 <Button
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
@@ -489,7 +489,7 @@ const CustomerDirectOrderForm = () => {
                           mt: 1,
                         }}
                       >
-                        {availableColors.map((colorOption, index) => (
+                      {Array.isArray(availableColors) && availableColors.map((colorOption, index) => (
                           <ToggleButton
                             key={index}
                             value={colorOption}
@@ -527,7 +527,7 @@ const CustomerDirectOrderForm = () => {
                         onChange={handleSizeChange}
                         sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
                       >
-                        {availableSizes.map((sizeOption, index) => (
+                        {Array.isArray(availableSizes) && availableSizes.map((sizeOption, index) => (
                           <ToggleButton
                             key={index}
                             value={sizeOption}
