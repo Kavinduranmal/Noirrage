@@ -391,8 +391,7 @@ const CustProductList = () => {
               </Button>
             </Box>
           ) : (
-            <Grid >
-            {Array.isArray(products) && products.map((product) => (
+            products.map((product) => (
               <Grid
                 item
                 xs={6}
@@ -629,8 +628,7 @@ const CustProductList = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            ))}
-            </Grid>
+            ))
           )}
         </Grid>
       )}
