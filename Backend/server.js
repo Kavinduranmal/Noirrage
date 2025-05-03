@@ -24,17 +24,13 @@ const __dirname = path.dirname(__filename);
 // Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",           // for local dev
-      "https://noirrage.com"             // ✅ your production domain
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-  })
-);
+app.use(cors({
+  origin: ["https://noirrage.com", "http://localhost:3000"],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 
 
 // MongoDB
@@ -55,7 +51,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/payhere", payhereRoutes);
 
 // Start HTTP Server (No SSL)
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 80;
 app.listen(PORT, "0.0.0.0", () =>
   console.log(`🚀 HTTP server running on ${PORT}`)
 );
