@@ -36,7 +36,7 @@ import { loadStripe } from "@stripe/stripe-js";
 const STRIPE_PUBLIC_KEY =
   "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11";
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://13.49.246.175:5000";
+  process.env.REACT_APP_API_URL || "http://noirrage.com";
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
@@ -285,7 +285,7 @@ const Profile = () => {
 
     try {
       const { data } = await axios.post(
-        "http://13.49.246.175:5000/api/orders/create",
+        "http://noirrage.com/api/orders/create",
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -811,7 +811,7 @@ const Profile = () => {
                               component="img"
                               image={
                                 item.product?.images?.length > 0
-                                  ? `http://13.49.246.175:5000${item.product.images[0]}`
+                                  ? `http://noirrage.com${item.product.images[0]}`
                                   : "/default-image.jpg"
                               }
                               alt={item.product?.sname || "Product Image"}

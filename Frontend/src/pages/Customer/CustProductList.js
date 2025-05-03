@@ -65,7 +65,7 @@ const CustProductList = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://13.49.246.175:5000/api/products/"
+        "http://noirrage.com/api/products/"
 
       );
       setProducts(response.data);
@@ -450,7 +450,9 @@ const CustProductList = () => {
                       {/* Front Image */}
                       <CardMedia
                         component="img"
-                        image={`http://13.49.246.175:5000:5000${product.images[0]}`}
+                        image={`https://noirrage.com${product.images[0]}`}
+
+
                         alt={product.name}
                         sx={{
                           width: "100%",
@@ -465,7 +467,7 @@ const CustProductList = () => {
                       {/* Back Image */}
                       <CardMedia
                         component="img"
-                        image={`http://13.49.246.175:5000:5000${product.images[1]}`}
+                        image={`https://noirrage.com${product.images[1]}`}
                         alt={`${product.name} Back`}
                         sx={{
                           width: "100%",

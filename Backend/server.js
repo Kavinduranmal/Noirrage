@@ -27,16 +27,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "http://16.170.141.231:3000",
-      "http://13.49.246.175:3000",
-      "https://13.49.246.175:3000"
+      "http://localhost:3000",           // for local dev
+      "https://noirrage.com"             // ✅ your production domain
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
 
 // MongoDB
 connectDB();
