@@ -24,6 +24,7 @@ const __dirname = path.dirname(__filename);
 // Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cors({
   origin: ["https://noirrage.com", "http://localhost:3000"],
   credentials: true,
@@ -31,7 +32,16 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-
+// ✅ CSP Header to allow external fonts/styles
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy",
+    "default-src 'self'; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.mathpix.com; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "script-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data: blob: https://noirrage.com;");
+  next();
+});
 
 // MongoDB
 connectDB();
@@ -51,7 +61,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/payhere", payhereRoutes);
 
 // Start HTTP Server (No SSL)
-const PORT = process.env.PORT || 80
+const PORT = process.env.PORT || 80;
 app.listen(PORT, "0.0.0.0", () =>
   console.log(`🚀 HTTP server running on ${PORT}`)
 );
