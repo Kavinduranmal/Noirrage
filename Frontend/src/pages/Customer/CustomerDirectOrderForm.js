@@ -708,7 +708,7 @@ const CustomerDirectOrderForm = () => {
                       {(selectedProduct.price * quantity).toFixed(2)}
                     </Typography>
                     <Typography sx={{ fontWeight: 500 }}>
-                      Delivery Fee: Rs 470.00
+                      Delivery Fee: Rs 475.00
                     </Typography>
                     <Typography
                       sx={{
