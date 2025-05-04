@@ -27,6 +27,8 @@ import Footer from "./components/Footer";
 import TermsPage from "./components/TermsPage";
 import PrivacyPage from "./components/PrivacyPage";
 import RefundPage from "./components/RefundPage";
+import PaymentSuccess from "./components/Payment/PaymentSuccess";
+import PaymentCancel from "./components/Payment/PaymentCancel";
 
 // Layout component for common routes and navbar logic
 // Layout component for common routes and navbar logic
@@ -49,17 +51,17 @@ const Layout = () => {
     <>
       {!hideNavBar && <NavBarforuser />}
       <ToastContainer
-  position="top-right"
-  autoClose={1100}
-  toastStyle={{
-    backgroundColor: "#111",
-    color: "#fff",
-    borderRadius: "8px",
-    fontFamily: "'Raleway', sans-serif",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.6)",
-    padding: "16px",
-  }}
-/>
+        position="top-right"
+        autoClose={1100}
+        toastStyle={{
+          backgroundColor: "#111",
+          color: "#fff",
+          borderRadius: "8px",
+          fontFamily: "'Raleway', sans-serif",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.6)",
+          padding: "16px",
+        }}
+      />
 
       <Routes>
         {/* Customer Routes */}
@@ -79,6 +81,8 @@ const Layout = () => {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund" element={<RefundPage />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
       </Routes>
       {showFooter && <Footer />}
     </>
