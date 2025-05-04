@@ -297,7 +297,7 @@ const MyOrders = () => {
                         </Typography>
                       </Box>
                       <center>
-                        <Button
+                        {/* <Button
                           variant="contained"
                           sx={{
                             bgcolor: "gold",
@@ -327,7 +327,7 @@ const MyOrders = () => {
                           {order.status === "Shipped"
                             ? "Shipped"
                             : "Cancel Order"}
-                        </Button>
+                        </Button> */}
                       </center>
                     </CardContent>
                   </Card>
