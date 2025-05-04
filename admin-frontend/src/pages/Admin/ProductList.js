@@ -37,7 +37,7 @@ const ProductList = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://16.170.141.231:5000/api/products"
+        "http://13.49.246.175:5000/api/products"
       );
       setProducts(response.data); // The response should contain the inStock status now
     } catch (error) {
@@ -49,7 +49,7 @@ const ProductList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://16.170.141.231:5000/api/products/${id}`);
+      await axios.delete(`http://13.49.246.175:5000/api/products/${id}`);
       toast.success("Product deleted successfully");
       fetchProducts();
     } catch {
@@ -67,7 +67,7 @@ const ProductList = () => {
       );
 
       await axios.put(
-        `http://16.170.141.231:5000/api/products/${id}/out-of-stock`,
+        `http://13.49.246.175:5000/api/products/${id}/out-of-stock`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -93,7 +93,7 @@ const ProductList = () => {
       );
 
       await axios.put(
-        `http://16.170.141.231:5000/api/products/${id}/restored`,
+        `http://13.49.246.175:5000/api/products/${id}/restored`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -188,7 +188,7 @@ const ProductList = () => {
                       <CardMedia
                         component="img"
                         height="150"
-                        image={`http://16.170.141.231:5000${
+                        image={`http://13.49.246.175:5000${
                           product.images[productImageState[product._id] || 0]
                         }`} // Dynamic image index for each product
                         alt={product.name}

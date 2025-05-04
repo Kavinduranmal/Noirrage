@@ -50,7 +50,7 @@ const AdminDashboard = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        "http://16.170.141.231:5000/api/orders/all",
+        "http://13.49.246.175:5000/api/orders/all",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
     }
     try {
       await axios.put(
-        `http://16.170.141.231:5000/api/orders/${orderId}/ship`,
+        `http://13.49.246.175:5000/api/orders/${orderId}/ship`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -325,7 +325,7 @@ const AdminDashboard = () => {
                           >
                             <CardMedia
                               component="img"
-                              image={`http://16.170.141.231:5000${
+                              image={`http://13.49.246.175:5000${
                                 item.product.images[
                                   productImageState[item.product._id] || 0
                                 ]
@@ -489,7 +489,7 @@ const AdminDashboard = () => {
                           >
                             <CardMedia
                               component="img"
-                              image={`http://16.170.141.231:5000${
+                              image={`http://13.49.246.175:5000${
                                 item.product.images[
                                   productImageState[item.product._id] || 0
                                 ]
