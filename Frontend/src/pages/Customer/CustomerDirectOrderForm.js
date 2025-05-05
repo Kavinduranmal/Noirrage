@@ -50,39 +50,42 @@ const CustomerDirectOrderForm = () => {
     script.src = "https://www.payhere.lk/lib/payhere.js";
     script.async = true;
     document.body.appendChild(script);
-
+  
     return () => {
       document.body.removeChild(script);
     };
   }, []);
 
+  
   useEffect(() => {
     window.payhere.onCompleted = function (orderId) {
       toast.success("Payment successful!");
       navigate("/payment-success");
     };
-
+  
     window.payhere.onDismissed = function () {
-      toast.warn("Payment dismissed.");
+      toast.warn("Payment was dismissed.");
       navigate("/payment-cancel");
     };
-
+  
     window.payhere.onError = function (error) {
-      toast.error("PayHere Error: " + error);
+      toast.error("Payment Error: " + error);
     };
   }, []);
+  
+
 
   const handlePayHerePayment = () => {
     if (window.payhere) {
       const total = selectedProduct.price * quantity;
-
+  
       const payment = {
         sandbox: false,
-        merchant_id: "243630",
+        merchant_id: "243630", // Your Live Merchant ID
         return_url: "https://noirrage.com/payment-success",
         cancel_url: "https://noirrage.com/payment-cancel",
         notify_url: "https://noirrage.com/api/payhere/notify",
-        order_id: `ORDER_${Date.now()}`,
+        order_id: `ORDER_${Date.now()}`, // Should match backend
         items: `${selectedProduct.name} x ${quantity}`,
         amount: total.toFixed(2),
         currency: "LKR",
@@ -94,12 +97,14 @@ const CustomerDirectOrderForm = () => {
         city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
       };
-
+  
       window.payhere.startPayment(payment);
     } else {
-      alert("PayHere script not loaded. Please try again.");
+      toast.error("PayHere script not loaded. Please refresh the page.");
     }
   };
+  
+
 
   useEffect(() => {
     if (!token) {
@@ -748,20 +753,21 @@ const CustomerDirectOrderForm = () => {
                         Back
                       </Button>
 
-                      {/* <Button
-                      variant="contained"
-                      type="submit"
-                      disabled={processing}
-                      sx={{
-                        bgcolor: "#fdc200",
-                        color: "black",
-                        fontWeight: "bold",
-                        "&:hover": { bgcolor: "#e0a800" },
-                        width: { xs: "100%", sm: "auto" },
-                      }}
-                    >
-                      {processing ? "Processing..." : "Pay via Card"}
-                    </Button> */}
+                      <Button
+  variant="contained"
+  onClick={handlePayHerePayment}
+  disabled={processing}
+  sx={{
+    bgcolor: "#fdc200",
+    color: "black",
+    fontWeight: "bold",
+    "&:hover": { bgcolor: "#e0a800" },
+    width: { xs: "100%", sm: "auto" },
+  }}
+>
+  Pay with Card
+</Button>
+
 
                       <Button
                         variant="outlined"

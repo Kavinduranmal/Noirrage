@@ -1,52 +1,67 @@
 import Order from "../models/order.js";
+import crypto from "crypto";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 export const handlePayHereNotification = async (req, res) => {
-  const PAYHERE_MERCHANT_SECRET = process.env.PAYHERE_SECRET;
-
   try {
     const {
+      merchant_id,
       order_id,
+      amount,
+      currency,
       status_code,
-      payhere_amount,
-      payhere_currency,
+      md5sig,
       payment_id,
       method,
     } = req.body;
 
-    // console.log("✅ PayHere IPN received:", req.body);
+    const merchantSecret = process.env.PAYHERE_SECRET;
 
-    // Only continue if payment is successful
+    // Generate local MD5 signature to verify
+    const localSig = crypto
+      .createHash("md5")
+      .update(
+        merchant_id +
+          order_id +
+          amount +
+          currency +
+          status_code +
+          merchantSecret
+      )
+      .digest("hex")
+      .toUpperCase();
+
+    if (localSig !== md5sig) {
+      return res.status(403).send("Invalid signature from PayHere.");
+    }
+
+    // Continue only if status_code === "2" (success)
     if (status_code === "2") {
       const extractedOrderId = order_id.replace("ORDER_", "");
-
       const order = await Order.findById(extractedOrderId);
 
       if (!order) {
-        return res.status(404).json({ message: "Order not found" });
+        return res.status(404).send("Order not found");
       }
 
-      // Update order payment status
       order.isPaid = true;
       order.paidAt = new Date();
       order.paymentResult = {
         id: payment_id,
         status: "Paid via PayHere",
         method,
-        amount: payhere_amount,
-        currency: payhere_currency,
+        amount,
+        currency,
       };
 
       await order.save();
-      return res.status(200).send("Order marked as paid");
+      return res.status(200).send("Order updated as paid");
     }
 
-    // If not successful
-    res.status(200).send("Payment not completed");
-  } catch (err) {
-    // console.error("❌ PayHere notify error:", err.message);
-    res.status(500).send("Internal server error");
+    return res.status(200).send("Payment was not successful");
+  } catch (error) {
+    console.error("Notify Error:", error.message);
+    return res.status(500).send("Server error");
   }
 };
