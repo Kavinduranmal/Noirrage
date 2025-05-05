@@ -75,17 +75,17 @@ const CustomerDirectOrderForm = () => {
   
 
 
-  const handlePayHerePayment = () => {
+  const handlePayHerePayment = (orderId) => {
     if (window.payhere) {
       const total = selectedProduct.price * quantity;
   
       const payment = {
-        sandbox: false,
-        merchant_id: "243630", // Your Live Merchant ID
+        sandbox: true,
+        merchant_id: "243630",
         return_url: "https://noirrage.com/payment-success",
         cancel_url: "https://noirrage.com/payment-cancel",
         notify_url: "https://noirrage.com/api/payhere/notify",
-        order_id: `ORDER_${Date.now()}`, // Should match backend
+        order_id: `ORDER_${orderId}`, // ✅ actual MongoDB _id
         items: `${selectedProduct.name} x ${quantity}`,
         amount: total.toFixed(2),
         currency: "LKR",
@@ -97,12 +97,12 @@ const CustomerDirectOrderForm = () => {
         city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
       };
-  
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",payment)
       window.payhere.startPayment(payment);
     } else {
       toast.error("PayHere script not loaded. Please refresh the page.");
     }
-  };
+  }; 
   
 
 
@@ -230,9 +230,11 @@ const CustomerDirectOrderForm = () => {
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      // Trigger PayHere payment directly after order is created
-      handlePayHerePayment();
+      
+      console.log("Created Order ID:", data._id); // ✅ This shows the real MongoDB _id
+      
+      handlePayHerePayment(data._id); // ✅ Pass the correct ID to PayHere
+      
     } catch (error) {
       setPaymentError(
         error.response?.data?.message || "Failed to process order"

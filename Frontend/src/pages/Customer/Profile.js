@@ -1155,14 +1155,6 @@ const Profile = () => {
                               </motion.div>
                             ))}
 
-                            {/* <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.8, duration: 0.5 }}
-                        >
-                          {PaymentSection}
-                        </motion.div> */}
-
                             <motion.div
                               initial={{ y: 30, opacity: 0 }}
                               animate={{ y: 0, opacity: 1 }}
@@ -1199,60 +1191,7 @@ const Profile = () => {
                                 >
                                   Back to Cart
                                 </Button>
-                                {/* <Button
-                              variant="contained"
-                              type="submit"
-                              disabled={processing || !stripe || !elements}
-                              startIcon={<CreditCard />}
-                              sx={{
-                                bgcolor: "black",
-                                color: "white",
-                                fontWeight: 600,
-                                px: 4,
-                                py: 1.2,
-                                fontSize: { xs: "0.9rem", md: "1rem" },
-                                borderRadius: 3,
-                                position: "relative",
-                                overflow: "hidden",
-                                transition: "all 0.3s ease",
-                                boxShadow: "0 6px 15px rgba(0,0,0,0.4)",
-                                "&::before": {
-                                  content: '""',
-                                  position: "absolute",
-                                  top: 0,
-                                  left: "-100%",
-                                  width: "100%",
-                                  height: "100%",
-                                  background:
-                                    "linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent)",
-                                  transition: "all 0.6s ease",
-                                },
-                                "&:not(:disabled):hover": {
-                                  color: "black",
-                                  bgcolor: "gold",
-                                  transform: "translateY(-5px)",
-                                  boxShadow: "0 10px 20px rgba(255,215,0,0.3)",
-                                },
-                                "&:not(:disabled):hover::before": {
-                                  left: "100%",
-                                },
-                                "&:disabled": {
-                                  bgcolor: "rgba(0,0,0,0.5)",
-                                  color: "rgba(255,255,255,0.5)",
-                                },
-                              }}
-                            >
-                              {processing ? (
-                                <>
-                                  <span className="processing-text">
-                                    Processing
-                                  </span>
-                                  <span className="dot-animation">...</span>
-                                </>
-                              ) : (
-                                "Pay & Complete Order"
-                              )}
-                            </Button> */}
+
                                 <Button
                                   variant="outlined"
                                   onClick={handleOrderSubmit}
@@ -1347,62 +1286,66 @@ const OrderCard = React.memo(
       >
         {/* Product List */}
         <Box sx={{ mb: 2 }}>
-        {Array.isArray(order.products) && order.products.map((item) => (
-            <Box
-              key={item.product?._id || item._id}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mb: 2,
-                gap: 2,
-              }}
-            >
-              <CardMedia
-                component="img"
-                image={
-                  item.product?.images?.length > 0
-                    ? `${API_BASE_URL}${
-                        item.product.images[
-                          productImageState[item.product._id] || 0
-                        ]
-                      }`
-                    : `${API_BASE_URL}/default-image.jpg`
-                }
-                alt={item.product?.name || "Product Image"}
+          {Array.isArray(order.products) &&
+            order.products.map((item) => (
+              <Box
+                key={item.product?._id || item._id}
                 sx={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 2,
-                  objectFit: "cover",
-                  transition: "transform 0.5s ease",
-                  ":hover": { transform: "scale(1.05)" },
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 2,
+                  gap: 2,
                 }}
-                onMouseEnter={() => handleImageHover(item.product?._id, true)}
-                onMouseLeave={() => handleImageHover(item.product?._id, false)}
-              />
-              <Box>
-                <Typography
+              >
+                <CardMedia
+                  component="img"
+                  image={
+                    item.product?.images?.length > 0
+                      ? `${API_BASE_URL}${
+                          item.product.images[
+                            productImageState[item.product._id] || 0
+                          ]
+                        }`
+                      : `${API_BASE_URL}/default-image.jpg`
+                  }
+                  alt={item.product?.name || "Product Image"}
                   sx={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: 500,
-                    fontSize: "1rem",
-                    color: "#fff",
+                    width: 80,
+                    height: 80,
+                    borderRadius: 2,
+                    objectFit: "cover",
+                    transition: "transform 0.5s ease",
+                    ":hover": { transform: "scale(1.05)" },
                   }}
-                >
-                  {item.product?.name || "Unknown Product"}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontFamily: "'Poppins', sans-serif",
-                    fontSize: "0.9rem",
-                    color: "rgba(255, 255, 255, 0.8)",
-                  }}
-                >
-                  Qty: {item.quantity} | Size: {item.size} | Color: {item.color}
-                </Typography>
+                  onMouseEnter={() => handleImageHover(item.product?._id, true)}
+                  onMouseLeave={() =>
+                    handleImageHover(item.product?._id, false)
+                  }
+                />
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontWeight: 500,
+                      fontSize: "1rem",
+                      color: "#fff",
+                    }}
+                  >
+                    {item.product?.name || "Unknown Product"}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontSize: "0.9rem",
+                      color: "rgba(255, 255, 255, 0.8)",
+                    }}
+                  >
+                    Qty: {item.quantity} | Size: {item.size} | Color:{" "}
+                    {item.color}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
         </Box>
 
         {/* Order Details */}
@@ -1459,38 +1402,6 @@ const OrderCard = React.memo(
             Ordered on: {new Date(order.createdAt).toLocaleDateString()}
           </Typography>
         </Box>
-        <center>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "gold",
-              color: "black",
-
-              fontSize: { xs: "0.6rem", md: "0.9rem" },
-              borderRadius: "8px",
-              fontWeight: "bold",
-              fontFamily: "'Poppins', sans-serif",
-
-              mt: 2,
-              width: "50%",
-              "&:hover": {
-                bgcolor: order.status === "Shipped" ? "gold" : "red",
-                transform: "scale(1.02)",
-              },
-              "&:disabled": {
-                bgcolor: "#666",
-                color: "#999",
-              },
-              transition: "all 0.3s ease",
-            }}
-            onClick={(event) =>
-              handleCancelOrder(order._id, order.status, event)
-            }
-            disabled={order.status === "Shipped"}
-          >
-            {order.status === "Shipped" ? "Shipped" : "Cancel Order"}
-          </Button>
-        </center>
       </CardContent>
     </Card>
   )
