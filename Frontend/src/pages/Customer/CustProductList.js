@@ -64,10 +64,7 @@ const CustProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(
-        "https://noirrage.com/api/products/"
-
-      );
+      const response = await axios.get("https://noirrage.com/api/products/");
       setProducts(response.data);
     } catch (error) {
       toast.error(error.response?.data.message || "Error fetching products", {
@@ -111,138 +108,6 @@ const CustProductList = () => {
 
   return (
     <Box sx={{ mb: 8, mt: 3 }}>
-      {/* Horizontal Filter Bar
-       {/* <Box
-        sx={{
-          width: { xs: "80%", sm: "80%" }, // Make it 90% on mobile, 80% on larger screens
-          borderRadius: { xs: 10, sm: 50 },
-          bgcolor: "rgba(244, 203, 0, 0.19)",
-          px: { xs: 2, sm: 4, md: 6 },
-          py: 2,
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" }, // Stack vertically on mobile, row on larger screens
-          alignItems: "center",
-          justifyContent: "space-between",
-          fontFamily: "'Raleway', sans-serif",
-          borderBottom: "1px solid rgba(255, 215, 0, 0.2)",
-          mb: 3,
-          border: "1px solid rgb(246, 193, 0)",
-          margin: "0 auto", // Center the bar horizontally
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            color: "gold",
-            fontFamily: "'Poppins', sans-serif",
-            fontWeight: "bold",
-            mb: { xs: 2, sm: 0 },
-            minWidth: "150px",
-          }}
-        >
-          Filter Products By Price
-        </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" }, // Stack vertically on mobile
-            alignItems: "center",
-            flex: 1,
-            maxWidth: 500,
-            mx: { xs: 0, sm: 3 },
-          }}
-        >
-          <Typography
-            sx={{
-              mr: 2,
-              fontWeight: "bold",
-              color: "gold",
-              fontStyle: "italic", // Makes the text italic
-              mb: { xs: 1, sm: 0 }, // Margin bottom on mobile for spacing
-            }}
-          >
-            From
-          </Typography>
-
-          <Slider
-            value={priceRange}
-            onChange={handlePriceRangeChange}
-            valueLabelDisplay="auto"
-            valueLabelFormat={(value) => `Rs. ${value}`}
-            min={0}
-            max={6000}
-            step={50}
-            sx={{
-              color: "gold", // Track color
-              height: 2, // Track height
-              "& .MuiSlider-thumb": {
-                backgroundColor: "gold", // Thumb color
-                width: 15, // Thumb size
-                height: 15, // Thumb size
-                borderRadius: "50%", // Circular thumb
-              },
-              "& .MuiSlider-track": {
-                borderRadius: 5, // Rounded track corners
-                height: 2, // Track height
-                background:
-                  "linear-gradient(90deg, rgba(255, 215, 0, 0.5) 0%, rgba(255, 215, 0, 0.9) 100%)", // Custom track gradient
-              },
-              "& .MuiSlider-rail": {
-                backgroundColor: "rgba(255, 215, 0, 0.2)", // Subtle color for the rail
-                height: 2, // Rail height
-              },
-              "& .MuiSlider-valueLabel": {
-                fontSize: 14, // Value label font size
-                backgroundColor: "black", // Background color for value label
-                color: "gold", // Text color for the label
-                borderRadius: 1, // Rounded corners for value label
-                padding: "4px 6px", // Padding inside value label
-                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)", // Shadow effect
-                "& .MuiSlider-valueLabelLabel": {
-                  fontSize: "12px", // Smaller label text size
-                },
-              },
-              "&:hover .MuiSlider-thumb": {
-                backgroundColor: "rgb(255, 215, 0)", // Thumb color on hover
-              },
-            }}
-          />
-
-          <Typography
-            sx={{
-              fontWeight: "bold",
-              ml: { xs: 0, sm: 2 },
-              color: "gold",
-              fontStyle: "italic", // Makes the text italic
-              mb: { xs: 1, sm: 0 }, // Margin bottom on mobile for spacing
-            }}
-          >
-            To
-          </Typography>
-        </Box>
-
-        <Button
-          variant="contained"
-          onClick={applyFilters}
-          sx={{
-            borderRadius: 50,
-            bgcolor: "gold",
-            color: "black",
-            py: 1,
-            mt: { xs: 2, sm: 0 },
-            width: "100%", // Full width on mobile
-            maxWidth: 150, // Limit the button width on larger screens
-            "&:hover": {
-              bgcolor: "black",
-              color: "white",
-            },
-          }}
-        >
-          Apply Filters
-        </Button>
-      </Box> */}
-
       {/* Title */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
@@ -451,8 +316,6 @@ const CustProductList = () => {
                       <CardMedia
                         component="img"
                         image={`https://noirrage.com${product.images[0]}`}
-
-
                         alt={product.name}
                         sx={{
                           width: "100%",

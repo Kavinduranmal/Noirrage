@@ -30,12 +30,11 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
 
-
   const handleChangeemail = (e) => {
     const value = e.target.value;
     setEmail(value);
     setFormData((prev) => ({ ...prev, email: value })); // ✅ sync email with formData
-  
+
     const domain = value.split("@")[1];
     if (domain && !allowedDomains.includes(domain.toLowerCase())) {
       setEmailError("");
@@ -43,7 +42,6 @@ const Signup = () => {
       setEmailError("");
     }
   };
-  
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -97,7 +95,7 @@ const Signup = () => {
               fontFamily: "'Raleway', sans-serif",
               fontSize: { xs: "1.5rem", sm: "2.5rem" },
               color: "#fdc200",
-              
+
               mb: 3,
             }}
           >
@@ -135,36 +133,36 @@ const Signup = () => {
             />
 
             <TextField
-                  fullWidth
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  margin="normal"
-                  required
-                  onChange={handleChangeemail}
-                  error={!!emailError}
-                  helperText={emailError}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <MdOutlineMail color="#aaa" size={24} />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    "& label": { color: "#aaa" },
-                    "& label.Mui-focused": { color: "#fdc200" },
-                    "& input": { color: "#fff" },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#555" },
-                      "&:hover fieldset": { borderColor: "#888" },
-                      "&.Mui-focused fieldset": { borderColor: "#fdc200" },
-                      borderRadius: "8px",
-                    },
-                    mb: 2,
-                  }}
-                />
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={email}
+              margin="normal"
+              required
+              onChange={handleChangeemail}
+              error={!!emailError}
+              helperText={emailError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <MdOutlineMail color="#aaa" size={24} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& label": { color: "#aaa" },
+                "& label.Mui-focused": { color: "#fdc200" },
+                "& input": { color: "#fff" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#555" },
+                  "&:hover fieldset": { borderColor: "#888" },
+                  "&.Mui-focused fieldset": { borderColor: "#fdc200" },
+                  borderRadius: "8px",
+                },
+                mb: 2,
+              }}
+            />
 
             <TextField
               fullWidth
@@ -234,7 +232,7 @@ const Signup = () => {
                 fontFamily: "'Raleway', sans-serif",
                 borderRadius: "8px",
                 py: 1,
-                
+
                 "&:hover": {
                   bgcolor: "#e0a800",
                   transform: "scale(1.02)",

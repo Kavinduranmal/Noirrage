@@ -14,7 +14,13 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
-const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com", "icloud.com", "hotmail.com"];
+const allowedDomains = [
+  "gmail.com",
+  "yahoo.com",
+  "outlook.com",
+  "icloud.com",
+  "hotmail.com",
+];
 
 const UserLogin = () => {
   const navigate = useNavigate();
@@ -29,7 +35,7 @@ const UserLogin = () => {
     const value = e.target.value;
     setEmail(value);
     setAdmin((prev) => ({ ...prev, email: value }));
-  
+
     const domain = value.split("@")[1];
     if (domain && !allowedDomains.includes(domain.toLowerCase())) {
       setEmailError("");
@@ -37,7 +43,7 @@ const UserLogin = () => {
       setEmailError("");
     }
   };
-  
+
   const handleChange = (e) =>
     setAdmin({ ...admin, [e.target.name]: e.target.value });
 
@@ -47,7 +53,7 @@ const UserLogin = () => {
       const { data } = await axios.post(
         "https://noirrage.com/api/auth/user/login",
         admin
-      );      
+      );
       localStorage.setItem("userToken", data.token);
       if (data.admin && data.admin.email) {
         localStorage.setItem("userEmail", data.admin.email);
@@ -76,7 +82,8 @@ const UserLogin = () => {
             p: { xs: 3, sm: 4 },
             boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.9)",
             borderRadius: "5px",
-            background: "linear-gradient(135deg,rgb(31, 34, 36),rgb(68, 72, 75))",
+            background:
+              "linear-gradient(135deg,rgb(31, 34, 36),rgb(68, 72, 75))",
             textAlign: "center",
             transition: "all 0.3s ease",
           }}
@@ -93,7 +100,7 @@ const UserLogin = () => {
               fontFamily: "'Raleway', sans-serif",
               fontSize: { xs: "1.5rem", sm: "2.5rem" },
               color: "#fdc200",
-              
+
               mb: 3,
             }}
           >
@@ -101,37 +108,37 @@ const UserLogin = () => {
           </Typography>
 
           <form onSubmit={handleSubmit}>
-          <TextField
-      fullWidth
-      label="Email"
-      name="email"
-      type="email"
-      value={email}
-      margin="normal"
-      required
-      onChange={handleChangeemail}
-      error={!!emailError}
-      helperText={emailError}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <MdOutlineMail color="#aaa" size={24} />
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        "& label": { color: "#aaa" },
-        "& label.Mui-focused": { color: "#fdc200" },
-        "& input": { color: "#fff" },
-        "& .MuiOutlinedInput-root": {
-          "& fieldset": { borderColor: "#555" },
-          "&:hover fieldset": { borderColor: "#888" },
-          "&.Mui-focused fieldset": { borderColor: "#fdc200" },
-          borderRadius: "8px",
-        },
-        mb: 2,
-      }}
-    />
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={email}
+              margin="normal"
+              required
+              onChange={handleChangeemail}
+              error={!!emailError}
+              helperText={emailError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <MdOutlineMail color="#aaa" size={24} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& label": { color: "#aaa" },
+                "& label.Mui-focused": { color: "#fdc200" },
+                "& input": { color: "#fff" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#555" },
+                  "&:hover fieldset": { borderColor: "#888" },
+                  "&.Mui-focused fieldset": { borderColor: "#fdc200" },
+                  borderRadius: "8px",
+                },
+                mb: 2,
+              }}
+            />
 
             <TextField
               fullWidth
@@ -199,7 +206,7 @@ const UserLogin = () => {
                 fontFamily: "'Raleway', sans-serif",
                 borderRadius: "8px",
                 py: 1,
-               
+
                 "&:hover": {
                   bgcolor: "gold",
                   color: "black",

@@ -56,12 +56,9 @@ const MyOrders = () => {
       return;
     }
     try {
-      await axios.delete(
-        `https://noirrage.com/api/orders/${orderId}/cancel`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`https://noirrage.com/api/orders/${orderId}/cancel`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Order canceled successfully!");
       setOrders((prevOrders) =>
         prevOrders.filter((order) => order._id !== orderId)
@@ -90,7 +87,6 @@ const MyOrders = () => {
 
   return (
     <Container maxWidth={false} sx={{ pb: 8 }}>
-    
       <FullWidthSection>
         {loading ? (
           <Box sx={{ width: "100%", mb: { xs: 8, md: 3 } }}>
@@ -104,38 +100,38 @@ const MyOrders = () => {
           </Box>
         ) : (
           <Box sx={{ mt: 4 }}>
-             <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 100 }}
-      >
-        <Typography
-          variant="h3"
-          sx={{
-            color: "gold",
-            fontFamily: "'Poppins', sans-serif",
-            textAlign: "center",
-            mt: { xs: 3, md: 3 },
-            mb: { xs: 3, md: 3 },
-            fontSize: { xs: "1.8rem", md: "3rem" },
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 100 }}
+            >
+              <Typography
+                variant="h3"
+                sx={{
+                  color: "gold",
+                  fontFamily: "'Poppins', sans-serif",
+                  textAlign: "center",
+                  mt: { xs: 3, md: 3 },
+                  mb: { xs: 3, md: 3 },
+                  fontSize: { xs: "1.8rem", md: "3rem" },
 
-            textShadow: "0 2px 10px rgba(255, 215, 0, 0.3)",
-            letterSpacing: "1px",
-            position: "relative",
-            "&::after": {
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "80px",
-              height: "3px",
-              background:
-                "linear-gradient(90deg, transparent, gold, transparent)",
-              borderRadius: "2px",
-            },
-          }}
-        >
-          My Orders
-        </Typography>
-      </motion.div>
+                  textShadow: "0 2px 10px rgba(255, 215, 0, 0.3)",
+                  letterSpacing: "1px",
+                  position: "relative",
+                  "&::after": {
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "80px",
+                    height: "3px",
+                    background:
+                      "linear-gradient(90deg, transparent, gold, transparent)",
+                    borderRadius: "2px",
+                  },
+                }}
+              >
+                My Orders
+              </Typography>
+            </motion.div>
 
             <Box
               sx={{
@@ -296,39 +292,6 @@ const MyOrders = () => {
                           {new Date(order.createdAt).toLocaleDateString()}
                         </Typography>
                       </Box>
-                      <center>
-                        {/* <Button
-                          variant="contained"
-                          sx={{
-                            bgcolor: "gold",
-                            color: "black",
-                            fontFamily: "'Poppins', sans-serif",
-                            fontSize:{ xs: "0.6rem",  md: "0.9rem" },
-                            borderRadius: "8px",
-                            fontWeight:"bold",
-                            mt: 2,
-                            width: "50%",
-                            "&:hover": {
-                              bgcolor: "black",
-                              bgcolor: "red",
-                              transform: "scale(1.02)",
-                            },
-                            "&:disabled": {
-                              bgcolor: "#666",
-                              color: "#999",
-                            },
-                            transition: "all 0.3s ease",
-                          }}
-                          onClick={(event) =>
-                            handleCancelOrder(order._id, order.status, event)
-                          }
-                          disabled={order.status === "Shipped"}
-                        >
-                          {order.status === "Shipped"
-                            ? "Shipped"
-                            : "Cancel Order"}
-                        </Button> */}
-                      </center>
                     </CardContent>
                   </Card>
                 ))
