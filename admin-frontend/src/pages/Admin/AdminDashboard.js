@@ -288,8 +288,14 @@ const AdminDashboard = () => {
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
+                Size
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
+              >
                 Color
               </TableCell>
+              
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
@@ -387,6 +393,16 @@ const AdminDashboard = () => {
                         key={item.product?._id || item._id}
                         sx={{ color: "#fff" }}
                       >
+                        {item.size}
+                      </Typography>
+                    ))}
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff" }}>
+                    {order.products.map((item) => (
+                      <Typography
+                        key={item.product?._id || item._id}
+                        sx={{ color: "#fff" }}
+                      >
                         {item.color}
                       </Typography>
                     ))}
@@ -453,6 +469,11 @@ const AdminDashboard = () => {
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
                 Quantity
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
+              >
+                Size
               </TableCell>
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
@@ -542,6 +563,16 @@ const AdminDashboard = () => {
                         sx={{ color: "#fff", mb: 1 }}
                       >
                         {item.quantity}
+                      </Typography>
+                    ))}
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff" }}>
+                    {order.products.map((item) => (
+                      <Typography
+                        key={item.product?._id || item._id}
+                        sx={{ color: "#fff" }}
+                      >
+                        {item.size}
                       </Typography>
                     ))}
                   </TableCell>
