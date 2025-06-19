@@ -120,12 +120,14 @@ const CustomerDirectOrderForm = () => {
       const total = selectedProduct.price * quantity;
 
       const payment = {
-        sandbox: true,
+        sandbox: true, // still use sandbox while testing
         merchant_id: "1230937",
-        return_url: "http://localhost:3000/payment-success",
-        cancel_url: "http://localhost:3000/payment-cancel",
-        notify_url: "http://localhost:3000/api/payhere/notify",
-        order_id: `ORDER_${orderId.toString().slice(-8)}`, // only last 8 chars
+
+        return_url: "https://noirrage.com/payment-success",
+        cancel_url: "https://noirrage.com/payment-cancel",
+        notify_url: "https://noirrage.com/api/payhere/notify", // ✅ LIVE DOMAIN
+
+        order_id: `ORDER_${orderId}`, // full ID is fine now
         items: `${selectedProduct.name} x ${quantity}`,
         amount: total.toFixed(2),
         currency: "LKR",
@@ -137,6 +139,7 @@ const CustomerDirectOrderForm = () => {
         city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
       };
+
       // 🧾 Log full order info
       console.log("🧾 Order Summary:");
       console.log("🆔 Order ID:", orderId);
