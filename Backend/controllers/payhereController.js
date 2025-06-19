@@ -18,27 +18,32 @@ export const handlePayHereNotification = async (req, res) => {
 
     const merchantSecret = process.env.PAYHERE_SECRET;
 
-    // Generate local MD5 signature to verify
+    // ✅ Hash the secret first (PayHere requires this format)
+    const hashedSecret = crypto.createHash("md5").update(merchantSecret).digest("hex");
+
+    // ✅ Construct the local signature
     const localSig = crypto
       .createHash("md5")
       .update(
         merchant_id +
-          order_id +
-          amount +
-          currency +
-          status_code +
-          merchantSecret
+        order_id +
+        amount +
+        currency +
+        status_code +
+        hashedSecret
       )
       .digest("hex")
       .toUpperCase();
 
+    // ✅ Compare signatures
     if (localSig !== md5sig) {
       return res.status(403).send("Invalid signature from PayHere.");
     }
 
-    // Continue only if status_code === "2" (success)
+    // ✅ Proceed only if payment was successful
     if (status_code === "2") {
       const extractedOrderId = order_id.replace("ORDER_", "");
+
       const order = await Order.findById(extractedOrderId);
 
       if (!order) {

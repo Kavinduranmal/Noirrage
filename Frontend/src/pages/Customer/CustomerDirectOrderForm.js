@@ -72,17 +72,60 @@ const CustomerDirectOrderForm = () => {
     };
   }, []);
 
-  const handlePayHerePayment = (orderId) => {
-    if (window.payhere) {
+  const handlePayHerePayment = async () => {
+    if (!window.payhere) {
+      toast.error("PayHere script not loaded. Please refresh the page.");
+      return;
+    }
+
+    setProcessing(true);
+    setPaymentError(null);
+
+    const fullAddress = [
+      shippingDetails.addressLine1,
+      shippingDetails.addressLine2,
+      shippingDetails.addressLine3,
+      shippingDetails.postalCode,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const orderData = {
+      products: [
+        {
+          product: selectedProduct._id,
+          quantity,
+          size,
+          color,
+        },
+      ],
+      totalPrice: selectedProduct.price * quantity,
+      shippingDetails: {
+        email: shippingDetails.email,
+        address: fullAddress,
+        contactNumber: shippingDetails.contactNumber,
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        "https://noirrage.com/api/orders/create",
+        orderData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const orderId = data._id || data.order?._id;
+      console.log("Created Order ID:", orderId);
+
       const total = selectedProduct.price * quantity;
 
       const payment = {
         sandbox: true,
         merchant_id: "1230937",
-        return_url: "https://noirrage.com/payment-success",
-        cancel_url: "https://noirrage.com/payment-cancel",
-        notify_url: "https://noirrage.com/api/payhere/notify",
-        order_id: `ORDER_${orderId}`, // ✅ actual MongoDB _id
+        return_url: "http://localhost:3000/payment-success",
+        cancel_url: "http://localhost:3000/payment-cancel",
+        notify_url: "http://localhost:3000/api/payhere/notify",
+        order_id: `ORDER_${orderId}`,
         items: `${selectedProduct.name} x ${quantity}`,
         amount: total.toFixed(2),
         currency: "LKR",
@@ -91,13 +134,26 @@ const CustomerDirectOrderForm = () => {
         email: shippingDetails.email,
         phone: shippingDetails.contactNumber,
         address: shippingDetails.addressLine1,
-        city: shippingDetails.addressLine3,
+        city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
       };
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", payment);
+// 🧾 Log full order info
+console.log("🧾 Order Summary:");
+console.log("🆔 Order ID:", orderId);
+console.log("📦 Product:", selectedProduct.name);
+console.log("🎨 Color:", color);
+console.log("📐 Size:", size);
+console.log("🔢 Quantity:", quantity);
+console.log("💰 Total Amount:", total.toFixed(2));
+console.log("📧 Email:", shippingDetails.email);
+console.log("📞 Contact:", shippingDetails.contactNumber);
+      console.log("✅ Final Payment Object:", payment);
       window.payhere.startPayment(payment);
-    } else {
-      toast.error("PayHere script not loaded. Please refresh the page.");
+    } catch (error) {
+      toast.error("Failed to create order for payment.");
+      console.error("❌ Order Creation Error:", error);
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -224,9 +280,12 @@ const CustomerDirectOrderForm = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Created Order ID:", data._id); // ✅ This shows the real MongoDB _id
+      // ✅ FIX: Use correct path to order ID
+      const orderId = data._id || data.order?._id;
 
-      handlePayHerePayment(data._id); // ✅ Pass the correct ID to PayHere
+      console.log("Created Order ID:", orderId);
+
+      handlePayHerePayment(orderId); // ✅ Pass correct ID to PayHere
     } catch (error) {
       setPaymentError(
         error.response?.data?.message || "Failed to process order"
@@ -236,6 +295,7 @@ const CustomerDirectOrderForm = () => {
       setProcessing(false);
     }
   };
+
   //-------------------------------------------------------------------------------------------
 
   const handleCashOnDelivery = async () => {
