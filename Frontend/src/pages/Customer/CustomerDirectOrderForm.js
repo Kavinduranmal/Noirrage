@@ -50,38 +50,35 @@ const CustomerDirectOrderForm = () => {
     script.src = "https://www.payhere.lk/lib/payhere.js";
     script.async = true;
     document.body.appendChild(script);
-  
+
     return () => {
       document.body.removeChild(script);
     };
   }, []);
 
-  
   useEffect(() => {
     window.payhere.onCompleted = function (orderId) {
       toast.success("Payment successful!");
       navigate("/payment-success");
     };
-  
+
     window.payhere.onDismissed = function () {
       toast.warn("Payment was dismissed.");
       navigate("/payment-cancel");
     };
-  
+
     window.payhere.onError = function (error) {
       toast.error("Payment Error: " + error);
     };
   }, []);
-  
-
 
   const handlePayHerePayment = (orderId) => {
     if (window.payhere) {
       const total = selectedProduct.price * quantity;
-  
+
       const payment = {
         sandbox: true,
-        merchant_id: "243630",
+        merchant_id: "1230937",
         return_url: "https://noirrage.com/payment-success",
         cancel_url: "https://noirrage.com/payment-cancel",
         notify_url: "https://noirrage.com/api/payhere/notify",
@@ -94,17 +91,15 @@ const CustomerDirectOrderForm = () => {
         email: shippingDetails.email,
         phone: shippingDetails.contactNumber,
         address: shippingDetails.addressLine1,
-        city: shippingDetails.addressLine3 || "Colombo",
+        city: shippingDetails.addressLine3,
         country: "Sri Lanka",
       };
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",payment)
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", payment);
       window.payhere.startPayment(payment);
     } else {
       toast.error("PayHere script not loaded. Please refresh the page.");
     }
-  }; 
-  
-
+  };
 
   useEffect(() => {
     if (!token) {
@@ -147,9 +142,7 @@ const CustomerDirectOrderForm = () => {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get(
-        "https://noirrage.com/api/products"
-      );
+      const { data } = await axios.get("https://noirrage.com/api/products");
       const product = data.find((p) => p._id === productId);
       if (product) {
         setSelectedProduct(product);
@@ -230,11 +223,10 @@ const CustomerDirectOrderForm = () => {
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       console.log("Created Order ID:", data._id); // ✅ This shows the real MongoDB _id
-      
+
       handlePayHerePayment(data._id); // ✅ Pass the correct ID to PayHere
-      
     } catch (error) {
       setPaymentError(
         error.response?.data?.message || "Failed to process order"
@@ -279,11 +271,9 @@ const CustomerDirectOrderForm = () => {
     };
 
     try {
-      await axios.post(
-        "https://noirrage.com/api/orders/create",
-        orderData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.post("https://noirrage.com/api/orders/create", orderData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Order placed with Cash on Delivery!");
       navigate("/userorders");
     } catch (error) {
@@ -361,22 +351,23 @@ const CustomerDirectOrderForm = () => {
                 flexWrap: "wrap",
               }}
             >
-              {Array.isArray(selectedProduct?.images) && selectedProduct.images.map((img, index) => (
-                <Button
-                  key={index}
-                  onClick={() => setSelectedImageIndex(index)}
-                  sx={{
-                    minWidth: 50,
-                    height: 50,
-                    backgroundImage: `url(https://noirrage.com${img})`,
-                    backgroundSize: "cover",
-                    border:
-                      selectedImageIndex === index
-                        ? "2px solid gold"
-                        : "1px solid black",
-                  }}
-                />
-              ))}
+              {Array.isArray(selectedProduct?.images) &&
+                selectedProduct.images.map((img, index) => (
+                  <Button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    sx={{
+                      minWidth: 50,
+                      height: 50,
+                      backgroundImage: `url(https://noirrage.com${img})`,
+                      backgroundSize: "cover",
+                      border:
+                        selectedImageIndex === index
+                          ? "2px solid gold"
+                          : "1px solid black",
+                    }}
+                  />
+                ))}
             </Box>
           </Box>
 
@@ -496,25 +487,26 @@ const CustomerDirectOrderForm = () => {
                           mt: 1,
                         }}
                       >
-                      {Array.isArray(availableColors) && availableColors.map((colorOption, index) => (
-                          <ToggleButton
-                            key={index}
-                            value={colorOption}
-                            sx={{
-                              backgroundColor: colorOption.toLowerCase(),
-                              color: "white",
-                              border: "1px solid black",
-                              "&.Mui-selected": {
-                                border: "2px solid gold",
-                              },
-                              minWidth: "50px",
-                              height: "40px",
-                              padding: 0,
-                            }}
-                          >
-                            {/* No text, just the color box */}
-                          </ToggleButton>
-                        ))}
+                        {Array.isArray(availableColors) &&
+                          availableColors.map((colorOption, index) => (
+                            <ToggleButton
+                              key={index}
+                              value={colorOption}
+                              sx={{
+                                backgroundColor: colorOption.toLowerCase(),
+                                color: "white",
+                                border: "1px solid black",
+                                "&.Mui-selected": {
+                                  border: "2px solid gold",
+                                },
+                                minWidth: "50px",
+                                height: "40px",
+                                padding: 0,
+                              }}
+                            >
+                              {/* No text, just the color box */}
+                            </ToggleButton>
+                          ))}
                       </ToggleButtonGroup>
                     </Box>
 
@@ -534,23 +526,24 @@ const CustomerDirectOrderForm = () => {
                         onChange={handleSizeChange}
                         sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
                       >
-                        {Array.isArray(availableSizes) && availableSizes.map((sizeOption, index) => (
-                          <ToggleButton
-                            key={index}
-                            value={sizeOption}
-                            sx={{
-                              color: "black",
-                              backgroundColor: "#c6c6c6",
-                              border: "1px solid #ccc",
-                              "&.Mui-selected": {
-                                border: "2px solid gold",
-                                color: "white",
-                              },
-                            }}
-                          >
-                            {sizeOption}
-                          </ToggleButton>
-                        ))}
+                        {Array.isArray(availableSizes) &&
+                          availableSizes.map((sizeOption, index) => (
+                            <ToggleButton
+                              key={index}
+                              value={sizeOption}
+                              sx={{
+                                color: "black",
+                                backgroundColor: "#c6c6c6",
+                                border: "1px solid #ccc",
+                                "&.Mui-selected": {
+                                  border: "2px solid gold",
+                                  color: "white",
+                                },
+                              }}
+                            >
+                              {sizeOption}
+                            </ToggleButton>
+                          ))}
                       </ToggleButtonGroup>
                     </Box>
                   </Box>
@@ -756,20 +749,19 @@ const CustomerDirectOrderForm = () => {
                       </Button>
 
                       <Button
-  variant="contained"
-  onClick={handlePayHerePayment}
-  disabled={processing}
-  sx={{
-    bgcolor: "#fdc200",
-    color: "black",
-    fontWeight: "bold",
-    "&:hover": { bgcolor: "#e0a800" },
-    width: { xs: "100%", sm: "auto" },
-  }}
->
-  Pay with Card
-</Button>
-
+                        variant="contained"
+                        onClick={handlePayHerePayment}
+                        disabled={processing}
+                        sx={{
+                          bgcolor: "#fdc200",
+                          color: "black",
+                          fontWeight: "bold",
+                          "&:hover": { bgcolor: "#e0a800" },
+                          width: { xs: "100%", sm: "auto" },
+                        }}
+                      >
+                        Pay with Card
+                      </Button>
 
                       <Button
                         variant="outlined"
