@@ -125,7 +125,7 @@ const CustomerDirectOrderForm = () => {
         return_url: "http://localhost:3000/payment-success",
         cancel_url: "http://localhost:3000/payment-cancel",
         notify_url: "http://localhost:3000/api/payhere/notify",
-        order_id: `ORDER_${orderId}`,
+        order_id: `ORDER_${orderId.toString().slice(-8)}`, // only last 8 chars
         items: `${selectedProduct.name} x ${quantity}`,
         amount: total.toFixed(2),
         currency: "LKR",
@@ -137,16 +137,16 @@ const CustomerDirectOrderForm = () => {
         city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
       };
-// 🧾 Log full order info
-console.log("🧾 Order Summary:");
-console.log("🆔 Order ID:", orderId);
-console.log("📦 Product:", selectedProduct.name);
-console.log("🎨 Color:", color);
-console.log("📐 Size:", size);
-console.log("🔢 Quantity:", quantity);
-console.log("💰 Total Amount:", total.toFixed(2));
-console.log("📧 Email:", shippingDetails.email);
-console.log("📞 Contact:", shippingDetails.contactNumber);
+      // 🧾 Log full order info
+      console.log("🧾 Order Summary:");
+      console.log("🆔 Order ID:", orderId);
+      console.log("📦 Product:", selectedProduct.name);
+      console.log("🎨 Color:", color);
+      console.log("📐 Size:", size);
+      console.log("🔢 Quantity:", quantity);
+      console.log("💰 Total Amount:", total.toFixed(2));
+      console.log("📧 Email:", shippingDetails.email);
+      console.log("📞 Contact:", shippingDetails.contactNumber);
       console.log("✅ Final Payment Object:", payment);
       window.payhere.startPayment(payment);
     } catch (error) {
