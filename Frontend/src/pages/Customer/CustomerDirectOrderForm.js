@@ -122,10 +122,9 @@ const CustomerDirectOrderForm = () => {
       const payment = {
         sandbox: true, // still use sandbox while testing
         merchant_id: "1230937",
-
         return_url: "https://noirrage.com/payment-success",
         cancel_url: "https://noirrage.com/payment-cancel",
-        notify_url: "https://noirrage.com/api/payhere/notify", // ✅ LIVE DOMAIN
+        notify_url: "http://13.49.246.175:5000/api/payhere/notify",
 
         order_id: `ORDER_${orderId}`, // full ID is fine now
         items: `${selectedProduct.name} x ${quantity}`,
