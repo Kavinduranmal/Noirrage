@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const handlePayHereNotification = async (req, res) => {
+  console.log("🔥 PayHere Callback Received:");
+  console.log(req.body);
+
   try {
     const {
       merchant_id,
@@ -18,7 +21,7 @@ export const handlePayHereNotification = async (req, res) => {
 
     const merchantSecret = process.env.PAYHERE_SECRET;
 
-    // ✅ Hash the secret first (PayHere requires this format)
+    // ✅ Hash the secret
     const hashedSecret = crypto.createHash("md5").update(merchantSecret).digest("hex");
 
     // ✅ Construct the local signature
@@ -35,12 +38,16 @@ export const handlePayHereNotification = async (req, res) => {
       .digest("hex")
       .toUpperCase();
 
-    // ✅ Compare signatures
+    // 🔍 Log both signatures for debugging
+    console.log("🔐 Local Signature  :", localSig);
+    console.log("🔐 PayHere Signature:", md5sig);
+
+    // ❌ If signature doesn't match, reject
     if (localSig !== md5sig) {
       return res.status(403).send("Invalid signature from PayHere.");
     }
 
-    // ✅ Proceed only if payment was successful
+    // ✅ Only continue if payment success
     if (status_code === "2") {
       const extractedOrderId = order_id.replace("ORDER_", "");
 
@@ -66,7 +73,7 @@ export const handlePayHereNotification = async (req, res) => {
 
     return res.status(200).send("Payment was not successful");
   } catch (error) {
-    console.error("Notify Error:", error.message);
+    console.error("❌ Notify Error:", error.message);
     return res.status(500).send("Server error");
   }
 };
