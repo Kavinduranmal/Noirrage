@@ -3,6 +3,7 @@ import Product from "../models/product.js";
 import Cart from "../models/cart.js"; // Added to clear cart after order
 import mongoose from "mongoose";
 
+
 export const createOrder = async (req, res) => {
   try {
     const { shippingDetails, cartItemIds, products } = req.body;
