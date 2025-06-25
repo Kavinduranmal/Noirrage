@@ -2,41 +2,6 @@ import Order from "../models/order.js";
 import Product from "../models/product.js";
 import Cart from "../models/cart.js"; // Added to clear cart after order
 import mongoose from "mongoose";
-import nodemailer from "nodemailer";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "noirrage.lk@gmail.com",
-    pass: "Nisansala@123",
-  },
-});
-
-const sendOrderConfirmationEmail = async (order) => {
-  const { shippingDetails, products, totalPrice } = order;
-
-  const productDetails = products
-    .map(
-      (item) =>
-        `Product: ${item.product.name}\nSize: ${item.size}\nColor: ${item.color}\nQuantity: ${item.quantity}\n`
-    )
-    .join("\n");
-
-  const mailOptions = {
-    from: "noirrage.lk@gmail.com",
-    to: shippingDetails.email,
-    subject: "Order Confirmation - Your Order is Placed!",
-    text: `Dear Customer,\n\nThank you for your order!\n\nOrder Details:\n${productDetails}\nTotal Price: Rs ${totalPrice}\n\nWe will update you once the order is shipped.\n\nBest regards,\nNoirRage Team`,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log("Order confirmation email sent successfully.");
-  } catch (error) {
-    console.error("Error sending email:", error);
-  }
-};
-
 
 export const createOrder = async (req, res) => {
   try {
@@ -70,7 +35,9 @@ export const createOrder = async (req, res) => {
       );
 
       if (selectedItems.length === 0) {
-        return res.status(400).json({ message: "No valid cart items selected" });
+        return res
+          .status(400)
+          .json({ message: "No valid cart items selected" });
       }
 
       for (let item of selectedItems) {
@@ -142,7 +109,9 @@ export const createOrder = async (req, res) => {
         productDetails.push(product); // Store product details for email
       }
     } else {
-      return res.status(400).json({ message: "No cart items or products provided" });
+      return res
+        .status(400)
+        .json({ message: "No cart items or products provided" });
     }
 
     const newOrder = new Order({
@@ -154,17 +123,6 @@ export const createOrder = async (req, res) => {
     });
 
     await newOrder.save();
-
-    // Send email confirmation
-    await sendOrderConfirmationEmail({
-      ...newOrder.toObject(),
-      products: orderProducts.map((item) => ({
-        product: productDetails.find((p) => p._id.equals(item.product)),
-        quantity: item.quantity,
-        size: item.size,
-        color: item.color,
-      })),
-    });
 
     res
       .status(201)
