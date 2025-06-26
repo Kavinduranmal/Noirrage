@@ -120,8 +120,8 @@ const CustomerDirectOrderForm = () => {
       const total = selectedProduct.price * quantity;
 
       const payment = {
-        sandbox: true, // still use sandbox while testing
-        merchant_id: "1230937",
+        sandbox: false,
+        merchant_id: "243630",
         return_url: "https://noirrage.com/payment-success",
         cancel_url: "https://noirrage.com/payment-cancel",
         notify_url: "http://localhost:5000/api/payhere/notify",
