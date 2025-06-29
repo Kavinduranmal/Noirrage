@@ -1,8 +1,9 @@
 import express from "express";
-import { handlePayHereNotification } from "../controllers/payhereController.js";
+import { createPayHereForm, handlePayHereNotification } from "../controllers/payhereController.js";
 
 const router = express.Router();
 
-router.post("/notify", handlePayHereNotification);
+router.get("/form/:orderId", createPayHereForm);     // PayHere Form
+router.post("/notify", handlePayHereNotification);   // Payment Status Callback
 
 export default router;
