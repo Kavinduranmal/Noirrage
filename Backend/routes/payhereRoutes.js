@@ -1,9 +1,15 @@
 import express from "express";
-import { createPayHereForm, handlePayHereNotification } from "../controllers/payhereController.js";
+import {
+  generatePayHereIntent,
+  handlePayHereNotification,
+} from "../controllers/payhereController.js";
 
 const router = express.Router();
 
-router.get("/form/:orderId", createPayHereForm);     // PayHere Form
-router.post("/notify", handlePayHereNotification);   // Payment Status Callback
+// Modern route - order created only after successful payment
+router.post("/intend", generatePayHereIntent);
+
+// PayHere notifies this endpoint on payment success
+router.post("/notify", handlePayHereNotification);
 
 export default router;
