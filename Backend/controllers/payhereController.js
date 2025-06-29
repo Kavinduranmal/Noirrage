@@ -37,9 +37,9 @@ export const createPayHereForm = async (req, res) => {
         <body onload="document.forms[0].submit()">
           <form method="post" action="${payHereURL}">
             <input type="hidden" name="merchant_id" value="${merchant_id}">
-            <input type="hidden" name="return_url" value="https://yourdomain.com/payment-success">
-            <input type="hidden" name="cancel_url" value="https://yourdomain.com/payment-cancel">
-            <input type="hidden" name="notify_url" value="https://yourdomain.com/api/payhere/notify">
+            <input type="hidden" name="return_url" value="https://noirrage.com/payment-success">
+            <input type="hidden" name="cancel_url" value="https://noirrage.com/payment-cancel">
+            <input type="hidden" name="notify_url" value="https://noirrage.com/api/payhere/notify">
 
             <input type="hidden" name="order_id" value="${orderRef}">
             <input type="hidden" name="items" value="Order ${orderRef}">

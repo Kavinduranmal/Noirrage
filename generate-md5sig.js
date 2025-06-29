@@ -1,10 +1,10 @@
 const crypto = require("crypto");
 
 const merchantId = "243630"; // your merchant ID
-const orderId = "ORDER_685d023cb0e2c40ebfef2f83"; // full ORDER_ ID
+const orderId = "ORDER_6860f262e744d7b4415159a0"; // full ORDER_ ID
 const amount = "2500.00";
 const currency = "LKR";
-const statusCode = "2";
+const statusCode = "1";
 const merchantSecret = "2593653674155692546334836575832156367575"; // from your .env
 
 const hashedSecret = crypto
