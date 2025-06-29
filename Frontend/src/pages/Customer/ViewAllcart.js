@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useTheme } from "@mui/material/styles";
 import {
   Container,
   TextField,
@@ -21,22 +22,9 @@ import ArrowForward from "@mui/icons-material/ArrowForward";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import CreditCard from "@mui/icons-material/CreditCard";
 
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-  "pk_test_51QvbnMRqDKD7gCFBoXQPbCKeKKaWNneQKpfcTMa0nKiC6dsUTO9Y4ilSLBPu74BJFDeXltxYMGwGYppzdo7m2tBx0027lVqT11"
-);
-
 const AddToCartOrderForm = () => {
   const navigate = useNavigate();
-  const stripe = useStripe();
-  const elements = useElements();
+
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const [cartItems, setCartItems] = useState([]);
@@ -58,7 +46,79 @@ const AddToCartOrderForm = () => {
     console.log("AddToCartOrderForm mounted");
     return () => console.log("AddToCartOrderForm unmounted");
   }, []);
+  // -------------------------------------------------------------------------------------------
+  const handlePayHerePayment = async () => {
+    if (!window.payhere) {
+      toast.error("PayHere script not loaded. Please refresh the page.");
+      return;
+    }
 
+    if (selectedCartItems.length === 0) {
+      toast.error("Please select at least one item to pay");
+      return;
+    }
+
+    if (
+      !shippingDetails.email ||
+      !shippingDetails.addressLine1 ||
+      !shippingDetails.contactNumber
+    ) {
+      toast.error("Please fill in all required shipping details");
+      return;
+    }
+
+    setProcessing(true);
+    setPaymentError(null);
+
+    try {
+      const deliveryFee = 475;
+      const selectedItems = cartItems.filter((item) =>
+        selectedCartItems.includes(item._id)
+      );
+
+      const totalPrice =
+        selectedItems.reduce(
+          (total, item) => total + (item.product?.price || 0) * item.qty,
+          0
+        ) + deliveryFee;
+
+      const paymentRequest = {
+        product: selectedItems.map((item) => item.product._id).join(", "), // for display only
+        quantity: selectedItems.length,
+        size: "-", // can be customized per item if needed
+        color: "-",
+        totalPrice,
+        shippingDetails: {
+          email: shippingDetails.email,
+          addressLine1: shippingDetails.addressLine1,
+          addressLine2: shippingDetails.addressLine2,
+          addressLine3: shippingDetails.addressLine3,
+          postalCode: shippingDetails.postalCode,
+          contactNumber: shippingDetails.contactNumber,
+        },
+      };
+
+      const { data } = await axios.post(
+        "https://noirrage.com/api/payhere/intend",
+        paymentRequest,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const payment = data.payment;
+      console.log("✅ Payment Object from Backend:", payment);
+
+      window.payhere.startPayment(payment);
+    } catch (error) {
+      console.error("❌ PayHere Cart Payment Error:", error);
+      toast.error("Failed to initiate payment.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // -------------------------------------------------------------------------------------------
   useEffect(() => {
     if (!token) {
       toast.error("Please log in to continue");
@@ -205,41 +265,6 @@ const AddToCartOrderForm = () => {
       setProcessing(false);
     }
   };
-
-  // const PaymentSection = useMemo(
-  //   () => (
-  //     <Box sx={{ mb: 4 }}>
-  //       <Typography
-  //         sx={{
-  //           color: "gold",
-  //           fontSize: { xs: "1.2rem", md: "1.5rem" },
-  //           fontWeight: 600,
-  //           mb: 1,
-  //         }}
-  //       >
-  //         Payment Details
-  //       </Typography>
-  //       <CardElement
-  //         options={{
-  //           style: {
-  //             base: {
-  //               fontSize: "16px",
-  //               color: "#ffffff",
-  //               "::placeholder": { color: "#aab7c4" },
-  //             },
-  //             invalid: { color: "#ffvolution444" },
-  //           },
-  //         }}
-  //       />
-  //       {paymentError && (
-  //         <Typography sx={{ color: "#ff4d4d", mt: 2 }}>
-  //           {paymentError}
-  //         </Typography>
-  //       )}
-  //     </Box>
-  //   ),
-  //   [paymentError]
-  // );
 
   if (loading || cartItems.length === 0) {
     return (
@@ -737,14 +762,6 @@ const AddToCartOrderForm = () => {
                           </motion.div>
                         ))}
 
-                        {/* <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.8, duration: 0.5 }}
-                        >
-                          {PaymentSection}
-                        </motion.div> */}
-
                         <motion.div
                           initial={{ y: 30, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
@@ -781,60 +798,7 @@ const AddToCartOrderForm = () => {
                             >
                               Back to Cart
                             </Button>
-                            {/* <Button
-                              variant="contained"
-                              type="submit"
-                              disabled={processing || !stripe || !elements}
-                              startIcon={<CreditCard />}
-                              sx={{
-                                bgcolor: "black",
-                                color: "white",
-                                fontWeight: 600,
-                                px: 4,
-                                py: 1.2,
-                                fontSize: { xs: "0.9rem", md: "1rem" },
-                                borderRadius: 3,
-                                position: "relative",
-                                overflow: "hidden",
-                                transition: "all 0.3s ease",
-                                boxShadow: "0 6px 15px rgba(0,0,0,0.4)",
-                                "&::before": {
-                                  content: '""',
-                                  position: "absolute",
-                                  top: 0,
-                                  left: "-100%",
-                                  width: "100%",
-                                  height: "100%",
-                                  background:
-                                    "linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent)",
-                                  transition: "all 0.6s ease",
-                                },
-                                "&:not(:disabled):hover": {
-                                  color: "black",
-                                  bgcolor: "gold",
-                                  transform: "translateY(-5px)",
-                                  boxShadow: "0 10px 20px rgba(255,215,0,0.3)",
-                                },
-                                "&:not(:disabled):hover::before": {
-                                  left: "100%",
-                                },
-                                "&:disabled": {
-                                  bgcolor: "rgba(0,0,0,0.5)",
-                                  color: "rgba(255,255,255,0.5)",
-                                },
-                              }}
-                            >
-                              {processing ? (
-                                <>
-                                  <span className="processing-text">
-                                    Processing
-                                  </span>
-                                  <span className="dot-animation">...</span>
-                                </>
-                              ) : (
-                                "Pay & Complete Order"
-                              )}
-                            </Button> */}
+
                             <Button
                               variant="outlined"
                               onClick={handleOrderSubmit}
@@ -855,6 +819,23 @@ const AddToCartOrderForm = () => {
                               }}
                             >
                               Cash on Delivery
+                            </Button>
+
+                            <Button
+                              variant="contained"
+                              onClick={handlePayHerePayment}
+                              disabled={processing}
+                              sx={{
+                                borderRadius: 3,
+                                bgcolor: "#fdc200",
+                                color: "black",
+                                 fontSize: { xs: "1rem", md: "1rem" },
+                                fontWeight: "bold",
+                                "&:hover": { bgcolor: "#e0a800" },
+                                 width: { xs: "100%", sm: "auto" },
+                              }}
+                            >
+                              Pay with Card
                             </Button>
                           </Box>
                         </motion.div>
@@ -900,10 +881,4 @@ const AddToCartOrderForm = () => {
   );
 };
 
-const WrappedAddToCartOrderForm = () => (
-  <Elements stripe={stripePromise}>
-    <AddToCartOrderForm />
-  </Elements>
-);
-
-export default WrappedAddToCartOrderForm;
+export default AddToCartOrderForm;

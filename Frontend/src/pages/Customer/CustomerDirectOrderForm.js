@@ -16,6 +16,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Add, Remove, Close } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 const CustomerDirectOrderForm = () => {
   const navigate = useNavigate();
@@ -664,6 +665,7 @@ const CustomerDirectOrderForm = () => {
                       fontWeight: "bold",
                       "&:hover": { bgcolor: "black", color: "gray" },
                       width: { xs: "100%", sm: "auto" },
+                       fontSize: { xs: "1rem", md: "1rem" },
                     }}
                     type="submit"
                   >
@@ -752,69 +754,75 @@ const CustomerDirectOrderForm = () => {
                       Total Price: Rs{" "}
                       {(selectedProduct.price * quantity + 475).toFixed(2)}
                     </Typography>
-                    <Box
-                      sx={{
-                        mt: 4.5,
-                        display: "flex",
-                        gap: 2,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        onClick={() => setStep(1)}
-                        sx={{
-                          bgcolor: "black",
-                          color: "white",
-                          borderColor: "black",
 
-                          "&:hover": {
+                    
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 3,
+                          justifyContent: "center",
+                          flexDirection: { xs: "column", sm: "row" },
+                          mt: 4,
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          onClick={() => setStep(1)}
+                          sx={{
                             bgcolor: "black",
-                            color: "gray",
+                            color: "white",
                             borderColor: "black",
-                          },
-                          width: { xs: "100%", sm: "auto" },
-                        }}
-                      >
-                        Back
-                      </Button>
 
-                      <Button
-                        variant="contained"
-                        onClick={handlePayHerePayment}
-                        disabled={processing}
-                        sx={{
-                          bgcolor: "#fdc200",
-                          color: "black",
-                          fontWeight: "bold",
-                          "&:hover": { bgcolor: "#e0a800" },
-                          width: { xs: "100%", sm: "auto" },
-                        }}
-                      >
-                        Pay with Card
-                      </Button>
+                            "&:hover": {
+                              bgcolor: "black",
+                              color: "gray",
+                              borderColor: "black",
+                            },
+                            width: { xs: "100%", sm: "auto" },
+                          }}
+                        >
+                          Back
+                        </Button>
 
-                      <Button
-                        variant="outlined"
-                        onClick={handleCashOnDelivery}
-                        disabled={processing}
-                        sx={{
-                          bgcolor: "black",
-                          color: "white",
-
-                          borderColor: "black",
-                          "&:hover": {
-                            bgcolor: "gold",
-                            borderColor: "black",
+                        <Button
+                          variant="contained"
+                          onClick={handlePayHerePayment}
+                          disabled={processing}
+                          sx={{
+                            
+                            bgcolor: "#fdc200",
                             color: "black",
+                            fontSize: { xs: "1rem", md: "1rem" },
                             fontWeight: "bold",
-                          },
-                          width: { xs: "100%", sm: "auto" },
-                        }}
-                      >
-                        Cash on Delivery
-                      </Button>
-                    </Box>
+                            "&:hover": { bgcolor: "#e0a800" },
+                            width: { xs: "100%", sm: "auto" },
+                          }}
+                        >
+                          Pay with Card
+                        </Button>
+
+                        <Button
+                          variant="outlined"
+                          onClick={handleCashOnDelivery}
+                          disabled={processing}
+                          sx={{
+                            bgcolor: "black",
+                            color: "white",
+
+                            borderColor: "black",
+                            "&:hover": {
+                              bgcolor: "gold",
+                              borderColor: "black",
+                              color: "black",
+                              fontWeight: "bold",
+                            },
+                            width: { xs: "100%", sm: "auto" },
+                          }}
+                        >
+                          Cash on Delivery
+                        </Button>
+                      </Box>
+                    
                   </Box>
                 </>
               )}
