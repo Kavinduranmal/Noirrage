@@ -119,25 +119,26 @@ const CustomerDirectOrderForm = () => {
       console.log("✅ Created Order ID:", orderId);
 
       const total = selectedProduct.price * quantity;
-
-      // 2️⃣ Fetch hash from your backend
-      const { data: hashResponse } = await axios.get(
+      
+      // 2️⃣ Fetch PayHere form HTML and extract hash
+      const { data: formHtml } = await axios.get(
         `https://noirrage.com/api/payhere/form/${orderId}`
       );
-      const paymentHash = hashResponse.hash;
+      console.log("📄 PayHere Form HTML:", formHtml);
+
+      const match = formHtml.match(/name="hash" value="(.+?)"/);
+      if (!match || !match[1]) {
+        throw new Error("Failed to extract PayHere hash from form");
+      }
+      const paymentHash = match[1];
+      console.log("✅ Extracted PayHere Hash:", paymentHash);
 
       // 3️⃣ Construct the payment object
       const payment = {
-        sandbox: false,
         merchant_id: "243630",
         return_url: "https://noirrage.com/payment-success",
         cancel_url: "https://noirrage.com/payment-cancel",
         notify_url: "https://noirrage.com/api/payhere/notify",
-
-        order_id: `ORDER_${orderId}`,
-        items: `${selectedProduct.name} x ${quantity}`,
-        amount: total.toFixed(2),
-        currency: "LKR",
         first_name: "Noirrage",
         last_name: "Customer",
         email: shippingDetails.email,
@@ -145,6 +146,10 @@ const CustomerDirectOrderForm = () => {
         address: shippingDetails.addressLine1,
         city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
+        order_id: `ORDER_${orderId}`,
+        items: `${selectedProduct.name} x ${quantity}`,
+        currency: "LKR",
+        amount: total.toFixed(2),
         hash: paymentHash, // ✅ Must include hash for signature verification
       };
 

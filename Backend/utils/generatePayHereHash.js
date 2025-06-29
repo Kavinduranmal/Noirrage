@@ -1,4 +1,3 @@
-// utils/generatePayHereHash.js
 import crypto from "crypto";
 
 export function generatePayHereHash({ merchant_id, order_id, amount, currency, merchant_secret }) {
