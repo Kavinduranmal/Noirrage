@@ -846,7 +846,7 @@ const CustomerDirectOrderForm = () => {
                         sx={{
                           bgcolor: "black",
                           color: "white",
-                          fontSize: { xs: "0.8rem", md: "1rem" },
+                          
                           borderColor: "black",
                           "&:hover": {
                             bgcolor: "gold",
