@@ -90,84 +90,36 @@ const CustomerDirectOrderForm = () => {
       .filter(Boolean)
       .join(", ");
 
-    const orderData = {
-      products: [
+    try {
+      // 1️⃣ Send intent to backend (no order creation yet!)
+      const response = await axios.post(
+        "https://noirrage.com/api/payhere/intend",
         {
           product: selectedProduct._id,
           quantity,
           size,
           color,
+          totalPrice: selectedProduct.price * quantity,
+          shippingDetails: {
+            email: shippingDetails.email,
+            addressLine1: shippingDetails.addressLine1,
+            addressLine2: shippingDetails.addressLine2,
+            addressLine3: shippingDetails.addressLine3,
+            postalCode: shippingDetails.postalCode,
+            contactNumber: shippingDetails.contactNumber,
+          },
         },
-      ],
-      totalPrice: selectedProduct.price * quantity,
-      shippingDetails: {
-        email: shippingDetails.email,
-        address: fullAddress,
-        contactNumber: shippingDetails.contactNumber,
-      },
-    };
-
-    try {
-      // 1️⃣ Create order on the backend
-      const { data } = await axios.post(
-        "https://noirrage.com/api/orders/create",
-        orderData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const orderId = data._id || data.order?._id;
-      console.log("✅ Created Order ID:", orderId);
+      const payment = response.data.payment;
+      console.log("✅ Payment Object from Backend:", payment);
 
-      const total = selectedProduct.price * quantity;
-      
-      // 2️⃣ Fetch PayHere form HTML and extract hash
-      const { data: formHtml } = await axios.get(
-        `https://noirrage.com/api/payhere/form/${orderId}`
-      );
-      console.log("📄 PayHere Form HTML:", formHtml);
-
-      const match = formHtml.match(/name="hash" value="(.+?)"/);
-      if (!match || !match[1]) {
-        throw new Error("Failed to extract PayHere hash from form");
-      }
-      const paymentHash = match[1];
-      console.log("✅ Extracted PayHere Hash:", paymentHash);
-
-      // 3️⃣ Construct the payment object
-      const payment = {
-        merchant_id: "243630",
-        return_url: "https://noirrage.com/payment-success",
-        cancel_url: "https://noirrage.com/payment-cancel",
-        notify_url: "https://noirrage.com/api/payhere/notify",
-        first_name: "Noirrage",
-        last_name: "Customer",
-        email: shippingDetails.email,
-        phone: shippingDetails.contactNumber,
-        address: shippingDetails.addressLine1,
-        city: shippingDetails.addressLine3 || "Colombo",
-        country: "Sri Lanka",
-        order_id: `ORDER_${orderId}`,
-        items: `${selectedProduct.name} x ${quantity}`,
-        currency: "LKR",
-        amount: total.toFixed(2),
-        hash: paymentHash, // ✅ Must include hash for signature verification
-      };
-
-      // 🧾 Log full order info
-      console.log("🧾 Order Summary:");
-      console.log("🆔 Order ID:", orderId);
-      console.log("📦 Product:", selectedProduct.name);
-      console.log("🎨 Color:", color);
-      console.log("📐 Size:", size);
-      console.log("🔢 Quantity:", quantity);
-      console.log("💰 Total Amount:", total.toFixed(2));
-      console.log("📧 Email:", shippingDetails.email);
-      console.log("📞 Contact:", shippingDetails.contactNumber);
-      console.log("✅ Final Payment Object:", payment);
+      // 2️⃣ Start PayHere payment
       window.payhere.startPayment(payment);
     } catch (error) {
-      toast.error("Failed to create order for payment.");
-      console.error("❌ Order Creation Error:", error);
+      toast.error("Failed to initialize payment.");
+      console.error("❌ Payment Intent Error:", error);
     } finally {
       setProcessing(false);
     }
@@ -846,7 +798,7 @@ const CustomerDirectOrderForm = () => {
                         sx={{
                           bgcolor: "black",
                           color: "white",
-                          
+
                           borderColor: "black",
                           "&:hover": {
                             bgcolor: "gold",
