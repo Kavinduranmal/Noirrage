@@ -6,21 +6,23 @@ import Product from "../models/product.js";
 
 dotenv.config();
 
-// STEP 1: Generate PayHere Payment Intent
+// 🎯 STEP 1: Generate PayHere Payment Intent (returns hash)
 export const generatePayHereIntent = async (req, res) => {
   try {
-    const { products, totalPrice, shippingDetails } = req.body;
+    const {
+      product,
+      quantity,
+      size,
+      color,
+      totalPrice,
+      shippingDetails,
+    } = req.body;
 
-    if (
-      !Array.isArray(products) ||
-      products.length === 0 ||
-      !totalPrice ||
-      !shippingDetails?.email
-    ) {
+    if (!product || !quantity || !totalPrice || !shippingDetails?.email) {
       return res.status(400).send("Missing required payment data");
     }
 
-    const orderId = crypto.randomUUID();
+    const orderId = crypto.randomUUID(); // TEMPORARY ID (not saved yet)
     const merchant_id = process.env.PAYHERE_MERCHANT_ID;
     const merchant_secret = process.env.PAYHERE_SECRET;
     const currency = "LKR";
@@ -46,14 +48,11 @@ export const generatePayHereIntent = async (req, res) => {
       city: shippingDetails.addressLine3 || "Colombo",
       country: "Sri Lanka",
       order_id: `ORDER_${orderId}`,
-      items: `Cart Checkout`,
+      items: `Product: ${product}`,
       currency,
       amount: parseFloat(totalPrice).toFixed(2),
       hash,
-      custom_1: JSON.stringify({
-        products, // Array of cart items
-        shippingDetails,
-      }),
+      custom_1: JSON.stringify({ product, quantity, size, color, shippingDetails }),
     };
 
     res.json({ payment });
@@ -63,7 +62,7 @@ export const generatePayHereIntent = async (req, res) => {
   }
 };
 
-// STEP 2: Handle PayHere Notification
+// 🎯 STEP 2: Handle PayHere Notification and Create Order
 export const handlePayHereNotification = async (req, res) => {
   console.log("🔥 PayHere Callback Received:", req.body);
 
@@ -93,39 +92,40 @@ export const handlePayHereNotification = async (req, res) => {
       .createHash("md5")
       .update(
         merchant_id +
-          order_id +
-          amountFormatted +
-          currency +
-          status_code +
-          hashedSecret
+        order_id +
+        amountFormatted +
+        currency +
+        status_code +
+        hashedSecret
       )
       .digest("hex")
       .toUpperCase();
+
+    console.log("🔐 Local Signature:", localSig);
+    console.log("🔐 PayHere Signature:", md5sig);
 
     if (localSig !== md5sig) {
       return res.status(403).send("Invalid signature from PayHere.");
     }
 
     if (status_code === "2") {
+      // Extract and parse order data from custom_1
       const orderMeta = JSON.parse(custom_1 || "{}");
-      const { products, shippingDetails } = orderMeta;
+      const { product, quantity, size, color, shippingDetails } = orderMeta;
 
-      if (!Array.isArray(products) || !shippingDetails?.email) {
-        return res.status(400).send("Missing product or shipping info");
+      if (!product || !shippingDetails?.email) {
+        return res.status(400).send("Missing order info in callback");
       }
 
-      // Validate all products exist
-      for (const item of products) {
-        const exists = await Product.findById(item.product);
-        if (!exists) return res.status(404).send("Product not found");
-      }
+      const fetchedProduct = await Product.findById(product);
+      if (!fetchedProduct) return res.status(404).send("Product not found");
 
       const order = new Order({
-        products,
+        products: [{ product, quantity, size, color }],
         totalPrice: amountFormatted,
         shippingDetails: {
           email: shippingDetails.email,
-          address: shippingDetails.addressLine1,
+          address: shippingDetails.addressLine1, // or full address string
           contactNumber: shippingDetails.contactNumber,
         },
         isPaid: true,
