@@ -108,6 +108,7 @@ const CustomerDirectOrderForm = () => {
     };
 
     try {
+      // 1️⃣ Create order on the backend
       const { data } = await axios.post(
         "https://noirrage.com/api/orders/create",
         orderData,
@@ -115,10 +116,17 @@ const CustomerDirectOrderForm = () => {
       );
 
       const orderId = data._id || data.order?._id;
-      console.log("Created Order ID:", orderId);
+      console.log("✅ Created Order ID:", orderId);
 
       const total = selectedProduct.price * quantity;
 
+      // 2️⃣ Fetch hash from your backend
+      const { data: hashResponse } = await axios.get(
+        `https://noirrage.com/api/payhere/form/${orderId}`
+      );
+      const paymentHash = hashResponse.hash;
+
+      // 3️⃣ Construct the payment object
       const payment = {
         sandbox: false,
         merchant_id: "243630",
@@ -126,7 +134,7 @@ const CustomerDirectOrderForm = () => {
         cancel_url: "https://noirrage.com/payment-cancel",
         notify_url: "https://noirrage.com/api/payhere/notify",
 
-        order_id: `ORDER_${orderId}`, // full ID is fine now
+        order_id: `ORDER_${orderId}`,
         items: `${selectedProduct.name} x ${quantity}`,
         amount: total.toFixed(2),
         currency: "LKR",
@@ -137,6 +145,7 @@ const CustomerDirectOrderForm = () => {
         address: shippingDetails.addressLine1,
         city: shippingDetails.addressLine3 || "Colombo",
         country: "Sri Lanka",
+        hash: paymentHash, // ✅ Must include hash for signature verification
       };
 
       // 🧾 Log full order info
