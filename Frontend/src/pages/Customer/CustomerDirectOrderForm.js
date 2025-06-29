@@ -92,6 +92,9 @@ const CustomerDirectOrderForm = () => {
 
     try {
       // 1️⃣ Send intent to backend (no order creation yet!)
+      const deliveryFee = 475;
+      const total = selectedProduct.price * quantity + deliveryFee;
+
       const response = await axios.post(
         "https://noirrage.com/api/payhere/intend",
         {
@@ -99,7 +102,7 @@ const CustomerDirectOrderForm = () => {
           quantity,
           size,
           color,
-          totalPrice: selectedProduct.price * quantity,
+          totalPrice: total, // ✅ includes delivery
           shippingDetails: {
             email: shippingDetails.email,
             addressLine1: shippingDetails.addressLine1,
