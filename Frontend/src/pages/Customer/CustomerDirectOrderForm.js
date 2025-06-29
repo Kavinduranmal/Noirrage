@@ -793,7 +793,7 @@ const CustomerDirectOrderForm = () => {
                             bgcolor: "#fdc200",
                             color: "black",
                             fontSize: { xs: "1rem", md: "1rem" },
-                            fontWeight: "bold",
+                           
                             "&:hover": { bgcolor: "#e0a800" },
                             width: { xs: "100%", sm: "auto" },
                           }}
@@ -814,7 +814,7 @@ const CustomerDirectOrderForm = () => {
                               bgcolor: "gold",
                               borderColor: "black",
                               color: "black",
-                              fontWeight: "bold",
+                             
                             },
                             width: { xs: "100%", sm: "auto" },
                           }}
