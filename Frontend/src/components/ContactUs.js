@@ -88,9 +88,9 @@ const ContactUs = () => {
                     <Typography variant="body1" sx={{ color: "#fff", mt: 1 }}>
                       0777854037
                     </Typography>
-                    <Typography variant="body1" sx={{ color: "#fff" }}>
+                    {/* <Typography variant="body1" sx={{ color: "#fff" }}>
                       0772353441
-                    </Typography>
+                    </Typography> */}
                   </>
                 }
               />
