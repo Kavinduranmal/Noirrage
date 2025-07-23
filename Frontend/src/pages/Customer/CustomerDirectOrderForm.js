@@ -57,21 +57,35 @@ const CustomerDirectOrderForm = () => {
     };
   }, []);
 
-  useEffect(() => {
-    window.payhere.onCompleted = function (orderId) {
-      toast.success("Payment successful!");
-      navigate("/payment-success");
-    };
 
-    window.payhere.onDismissed = function () {
-      toast.warn("Payment was dismissed.");
-      navigate("/payment-cancel");
-    };
+  const buildOrderData = () => {
+    const fullAddress = [
+      shippingDetails.addressLine1,
+      shippingDetails.addressLine2,
+      shippingDetails.addressLine3,
+      shippingDetails.postalCode,
+    ]
+      .filter(Boolean)
+      .join(", ");
 
-    window.payhere.onError = function (error) {
-      toast.error("Payment Error: " + error);
+    return {
+      products: [
+        {
+          product: selectedProduct._id,
+          quantity,
+          size,
+          color,
+        },
+      ],
+      totalPrice: selectedProduct.price * quantity,
+      shippingDetails: {
+        email: shippingDetails.email,
+        address: fullAddress,
+        contactNumber: shippingDetails.contactNumber,
+      },
+      paymentType: "Card",
     };
-  }, []);
+  };
 
   const handlePayHerePayment = async () => {
     if (!window.payhere) {
@@ -82,17 +96,7 @@ const CustomerDirectOrderForm = () => {
     setProcessing(true);
     setPaymentError(null);
 
-    const fullAddress = [
-      shippingDetails.addressLine1,
-      shippingDetails.addressLine2,
-      shippingDetails.addressLine3,
-      shippingDetails.postalCode,
-    ]
-      .filter(Boolean)
-      .join(", ");
-
     try {
-      // 1️⃣ Send intent to backend (no order creation yet!)
       const deliveryFee = 475;
       const total = selectedProduct.price * quantity + deliveryFee;
 
@@ -103,7 +107,7 @@ const CustomerDirectOrderForm = () => {
           quantity,
           size,
           color,
-          totalPrice: total, // ✅ includes delivery
+          totalPrice: total,
           shippingDetails: {
             email: shippingDetails.email,
             addressLine1: shippingDetails.addressLine1,
@@ -117,17 +121,44 @@ const CustomerDirectOrderForm = () => {
       );
 
       const payment = response.data.payment;
-      console.log("✅ Payment Object from Backend:", payment);
-
-      // 2️⃣ Start PayHere payment
+      console.log("✅ Payment Object:", payment);
       window.payhere.startPayment(payment);
     } catch (error) {
       toast.error("Failed to initialize payment.");
-      console.error("❌ Payment Intent Error:", error);
+      console.error("❌ Payment Init Error:", error);
     } finally {
       setProcessing(false);
     }
   };
+
+  // ✅ Confirm order only after successful PayHere payment
+  useEffect(() => {
+    window.payhere.onCompleted = async function (orderId) {
+      toast.success("Payment successful!");
+
+      try {
+        const orderData = buildOrderData();
+        await axios.post("https://noirrage.com/api/orders/create", orderData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        navigate("/payment-success");
+      } catch (err) {
+        toast.error("Failed to save order after payment.");
+        console.error("❌ Order Save Error:", err);
+        navigate("/payment-cancel");
+      }
+    };
+
+    window.payhere.onDismissed = function () {
+      toast.warn("Payment was dismissed.");
+      navigate("/payment-cancel");
+    };
+
+    window.payhere.onError = function (error) {
+      toast.error("Payment Error: " + error);
+    };
+  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -216,56 +247,8 @@ const CustomerDirectOrderForm = () => {
       return;
     }
 
-    setProcessing(true);
-    setPaymentError(null);
-
-    const fullAddress = [
-      shippingDetails.addressLine1,
-      shippingDetails.addressLine2,
-      shippingDetails.addressLine3,
-      shippingDetails.postalCode,
-    ]
-      .filter(Boolean)
-      .join(", ");
-
-    const orderData = {
-      products: [
-        {
-          product: selectedProduct._id,
-          quantity,
-          size,
-          color,
-        },
-      ],
-      totalPrice: selectedProduct.price * quantity,
-      shippingDetails: {
-        email: shippingDetails.email,
-        address: fullAddress,
-        contactNumber: shippingDetails.contactNumber,
-      },
-    };
-
-    try {
-      const { data } = await axios.post(
-        "https://noirrage.com/api/orders/create",
-        orderData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      // ✅ FIX: Use correct path to order ID
-      const orderId = data._id || data.order?._id;
-
-      console.log("Created Order ID:", orderId);
-
-      handlePayHerePayment(orderId); // ✅ Pass correct ID to PayHere
-    } catch (error) {
-      setPaymentError(
-        error.response?.data?.message || "Failed to process order"
-      );
-      toast.error(error.response?.data?.message || "Failed to process order");
-    } finally {
-      setProcessing(false);
-    }
+    // Step 2: Proceed to PayHere without creating order
+    handlePayHerePayment();
   };
 
   //-------------------------------------------------------------------------------------------
@@ -298,8 +281,8 @@ const CustomerDirectOrderForm = () => {
         address: fullAddress,
         contactNumber: shippingDetails.contactNumber,
       },
-      paymentMethod: "COD", // optional, if your backend supports it
-      isPaid: false, // mark unpaid
+      paymentType: "COD", // 👈 Add this
+      isPaid: false,
     };
 
     try {
@@ -665,7 +648,7 @@ const CustomerDirectOrderForm = () => {
                       fontWeight: "bold",
                       "&:hover": { bgcolor: "black", color: "gray" },
                       width: { xs: "100%", sm: "auto" },
-                       fontSize: { xs: "1rem", md: "1rem" },
+                      fontSize: { xs: "1rem", md: "1rem" },
                     }}
                     type="submit"
                   >
@@ -755,75 +738,71 @@ const CustomerDirectOrderForm = () => {
                       {(selectedProduct.price * quantity + 475).toFixed(2)}
                     </Typography>
 
-                    
-                      <Box
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 3,
+                        justifyContent: "center",
+                        flexDirection: { xs: "column", sm: "row" },
+                        mt: 4,
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={handlePayHerePayment}
+                        disabled={processing}
                         sx={{
-                          display: "flex",
-                          gap: 3,
-                          justifyContent: "center",
-                          flexDirection: { xs: "column", sm: "row" },
-                          mt: 4,
+                          bgcolor: "#fdc200",
+                          color: "black",
+                          fontSize: { xs: "1rem", md: "1rem" },
+                          fontWeight: "bold",
+                          "&:hover": { bgcolor: "#e0a800" },
+                          width: { xs: "100%", sm: "auto" },
                         }}
                       >
+                        Pay with Card
+                      </Button>
 
-                        <Button
-                          variant="contained"
-                          onClick={handlePayHerePayment}
-                          disabled={processing}
-                          sx={{
-                            
-                            bgcolor: "#fdc200",
+                      <Button
+                        variant="outlined"
+                        onClick={handleCashOnDelivery}
+                        disabled={processing}
+                        sx={{
+                          bgcolor: "black",
+                          color: "white",
+
+                          borderColor: "black",
+                          "&:hover": {
+                            bgcolor: "gold",
+                            borderColor: "black",
                             color: "black",
-                            fontSize: { xs: "1rem", md: "1rem" },
                             fontWeight: "bold",
-                            "&:hover": { bgcolor: "#e0a800" },
-                            width: { xs: "100%", sm: "auto" },
-                          }}
-                        >
-                          Pay with Card
-                        </Button>
+                          },
+                          width: { xs: "100%", sm: "auto" },
+                        }}
+                      >
+                        Cash on Delivery
+                      </Button>
 
-                        <Button
-                          variant="outlined"
-                          onClick={handleCashOnDelivery}
-                          disabled={processing}
-                          sx={{
+                      <Button
+                        variant="outlined"
+                        onClick={() => setStep(1)}
+                        sx={{
+                          bgcolor: "black",
+                          color: "white",
+                          borderColor: "black",
+
+                          "&:hover": {
                             bgcolor: "black",
-                            color: "white",
-
+                            color: "gray",
                             borderColor: "black",
-                            "&:hover": {
-                              bgcolor: "gold",
-                              borderColor: "black",
-                              color: "black",
-                              fontWeight: "bold",
-                            },
-                            width: { xs: "100%", sm: "auto" },
-                          }}
-                        >
-                          Cash on Delivery
-                        </Button>
-                        
-                        <Button
-                          variant="outlined"
-                          onClick={() => setStep(1)}
-                          sx={{
-                            bgcolor: "black",
-                            color: "white",
-                            borderColor: "black",
-
-                            "&:hover": {
-                              bgcolor: "black",
-                              color: "gray",
-                              borderColor: "black",
-                            },
-                            width: { xs: "100%", sm: "auto" },
-                          }}
-                        >
-                          Back
-                        </Button>
-                      </Box>
-                    
+                          },
+                          width: { xs: "100%", sm: "auto" },
+                        }}
+                      >
+                        Back
+                      </Button>
+                    </Box>
                   </Box>
                 </>
               )}
