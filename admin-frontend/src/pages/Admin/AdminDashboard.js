@@ -283,6 +283,12 @@ const AdminDashboard = () => {
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
+                Payment Method
+              </TableCell>
+
+              <TableCell
+                sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
+              >
                 Quantity
               </TableCell>
               <TableCell
@@ -295,7 +301,7 @@ const AdminDashboard = () => {
               >
                 Color
               </TableCell>
-              
+
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
@@ -376,6 +382,14 @@ const AdminDashboard = () => {
                         {item.product?.name || "Unknown Product"}
                       </Typography>
                     ))}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color:
+                        order.paymentType === "Card" ? "lightgreen" : "gold",
+                    }}
+                  >
+                    {order.paymentType}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
                     {order.products.map((item) => (
@@ -468,6 +482,12 @@ const AdminDashboard = () => {
               <TableCell
                 sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
               >
+                Payment Method
+              </TableCell>
+
+              <TableCell
+                sx={{ fontWeight: "bold", color: "black", fontSize: "1.3rem" }}
+              >
                 Quantity
               </TableCell>
               <TableCell
@@ -555,6 +575,14 @@ const AdminDashboard = () => {
                         {item.product?.name || "Unknown Product"}
                       </Typography>
                     ))}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color:
+                        order.paymentType === "Card" ? "lightgreen" : "gold",
+                    }}
+                  >
+                    {order.paymentType}
                   </TableCell>
                   <TableCell sx={{ color: "#fff" }}>
                     {order.products.map((item) => (
